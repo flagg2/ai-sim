@@ -33,3 +33,7 @@ export function getMaterial(at: number): MeshStandardMaterial {
 export function getWhiteMaterial(): MeshStandardMaterial {
   return new MeshStandardMaterial({ color: "white" });
 }
+
+export function getPinkMaterial(): MeshStandardMaterial {
+  return new MeshStandardMaterial({ color: "pink" });
+}

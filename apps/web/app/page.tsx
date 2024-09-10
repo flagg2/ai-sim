@@ -2,7 +2,7 @@
 
 import { useControls } from "leva";
 import { useState } from "react";
-import Algo from "./algo";
+import KNNVisualization from "./algo";
 
 export default function KNNPage() {
   const [running, setRunning] = useState(false);
@@ -29,7 +29,7 @@ export default function KNNPage() {
   return (
     <>
       <button onClick={() => setRunning(false)}>Stop</button>
-      <Algo numberOfPoints={numberOfPoints} k={k} />
+      <KNNVisualization numberOfPoints={numberOfPoints} k={k} />
     </>
   );
 }

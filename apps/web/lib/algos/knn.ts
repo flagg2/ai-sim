@@ -17,83 +17,99 @@ type Group = {
   label: string;
   material: MeshStandardMaterial;
 };
-
-// type Step = {
-
-// }
-
 type Simulation<T extends object> = {
   next: (state: T) => T;
   nextMinor: (state: T) => T;
   previous: (state: T) => T;
 };
 
-export type KNNState = {
+type Step = {
+  type: "calculateDistance" | "updateNearestNeighbors";
+  currentIndex: number;
+  distances?: { point: Point; distance: number }[];
+  nearestNeighbors?: Point[];
+};
+
+type Config = {
   points: Point[];
-  groups: Group[];
   k: number;
   queryPoint: Point;
-  distances: { point: Point; distance: number }[];
-  currentIndex: number;
-  nearestNeighbors: Point[];
-  isMajorStep: boolean;
+  groups: Group[];
+};
+
+export type KNNState = {
+  config: Config;
+  steps: Step[];
 };
 
 export const KNN: Simulation<KNNState> = {
   next: (state) => {
     let currentState = state;
-    while (!currentState.isMajorStep) {
+    const lastStep = currentState.steps[currentState.steps.length - 1];
+    if (!lastStep || lastStep.type === "updateNearestNeighbors") {
       currentState = KNN.nextMinor(currentState);
     }
+    currentState = KNN.nextMinor(currentState);
     return currentState;
   },
   nextMinor: (state) => {
-    if (state.isMajorStep) {
-      // Evaluating phase: find k nearest neighbors
-      const kNearest = state.distances
-        .sort((a, b) => a.distance - b.distance)
-        .slice(0, state.k)
+    const lastStep = state.steps[state.steps.length - 1];
+
+    if (!lastStep || lastStep.type === "updateNearestNeighbors") {
+      const currentIndex = lastStep ? lastStep.currentIndex + 1 : 0;
+      if (currentIndex >= state.config.points.length) {
+        return state; // Algorithm finished
+      }
+
+      const currentPoint = state.config.points[currentIndex]!;
+      const distance = calculateDistance(
+        state.config.queryPoint.coords,
+        currentPoint.coords,
+      );
+
+      return {
+        ...state,
+        steps: [
+          ...state.steps,
+          {
+            type: "calculateDistance",
+            currentIndex,
+            distance,
+            distances: [
+              ...(lastStep?.distances || []),
+              { point: currentPoint, distance },
+            ],
+          },
+        ],
+      };
+    } else {
+      // Update nearest neighbors
+      const kNearest = lastStep
+        .distances!.sort((a, b) => a.distance - b.distance)
+        .slice(0, state.config.k)
         .map((d) => d.point);
 
       return {
         ...state,
-        nearestNeighbors: kNearest,
-        finished: true,
+        steps: [
+          ...state.steps,
+          {
+            type: "updateNearestNeighbors",
+            currentIndex: lastStep.currentIndex,
+            distances: lastStep.distances,
+            nearestNeighbors: kNearest,
+          },
+        ],
       };
     }
-
-    if (state.currentIndex >= state.points.length) {
-      return { ...state, isMajorStep: true };
-    }
-
-    const currentPoint = state.points[state.currentIndex]!;
-    const distance = calculateDistance(
-      state.queryPoint.coords,
-      currentPoint.coords,
-    );
-
-    return {
-      ...state,
-      distances: [...state.distances, { point: currentPoint, distance }],
-      currentIndex: state.currentIndex + 1,
-    };
   },
   previous: (state) => {
-    if (state.isMajorStep) {
-      return {
-        ...state,
-        isMajorStep: false,
-        finished: false,
-        nearestNeighbors: [],
-      };
-    }
-    if (state.currentIndex <= 0) {
-      return state; // Can't go back further
+    if (state.steps.length <= 1) {
+      return { ...state, steps: [] }; // Reset to initial state
     }
     return {
       ...state,
-      distances: state.distances.slice(0, -1),
-      currentIndex: state.currentIndex - 1,
+      steps: state.steps.slice(0, -1),
     };
   },
 };

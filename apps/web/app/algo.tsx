@@ -7,12 +7,11 @@ import {
   generateRandomPoints,
   KNN,
   KNNState,
-  Point,
 } from "~/lib/algos/knn";
 import { Canvas } from "@react-three/fiber";
-import { getWhiteMaterial } from "~/lib/utils/materials";
+import { getPinkMaterial, getWhiteMaterial } from "~/lib/utils/materials";
 import { SphereGeometry, Vector3, BufferGeometry } from "three";
-import { Line, OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 
 type AlgoProps = {
   numberOfPoints: number;
@@ -23,40 +22,45 @@ function useKNN({ numberOfPoints, k }: AlgoProps) {
   const groups = generateKGroups(k);
 
   const [state, setState] = useState<KNNState>({
-    points: generateRandomPoints({ k, groups, points: [] }, numberOfPoints),
-    groups,
-    k,
-    queryPoint: {
-      id: "query",
-      coords: { x: 50, y: 50, z: 50 },
-      group: {
-        label: "Current",
-        material: getWhiteMaterial(),
+    config: {
+      points: generateRandomPoints({ k, groups, points: [] }, numberOfPoints),
+      groups,
+      k,
+      queryPoint: {
+        id: "query",
+        coords: { x: 50, y: 50, z: 50 },
+        group: {
+          label: "Current",
+          material: getWhiteMaterial(),
+        },
       },
     },
-    distances: [],
-    currentIndex: 0,
-    nearestNeighbors: [],
-    isMajorStep: false,
+    steps: [],
   });
 
   useEffect(() => {
-    const newPoints = state.points.slice(0, numberOfPoints);
+    const newPoints = state.config.points.slice(0, numberOfPoints);
     while (newPoints.length !== numberOfPoints) {
       newPoints.push(generateRandomPoint({ k, groups, points: newPoints }));
     }
 
     setState({
       ...state,
-      points: newPoints,
+      config: {
+        ...state.config,
+        points: newPoints,
+      },
     });
   }, [numberOfPoints]);
 
   useEffect(() => {
     setState({
       ...state,
-      points: generateRandomPoints(state, numberOfPoints),
-      k,
+      config: {
+        ...state.config,
+        points: generateRandomPoints(state.config, numberOfPoints),
+        k,
+      },
     });
   }, [k]);
 
@@ -75,21 +79,41 @@ function useKNN({ numberOfPoints, k }: AlgoProps) {
     setState(nextState);
   };
 
-  return {
-    state,
-    handleNext,
-    handleNextMinor,
-    handlePrevious,
-  };
+  return { state, handleNext, handleNextMinor, handlePrevious };
 }
 
-export default function Algo({ numberOfPoints, k }: AlgoProps) {
+// Custom findLast implementation
+function findLast<T>(
+  array: T[],
+  predicate: (value: T) => boolean,
+): T | undefined {
+  for (let i = array.length - 1; i >= 0; i--) {
+    if (predicate(array[i]!)) {
+      return array[i];
+    }
+  }
+  return undefined;
+}
+
+// TODO: does not yet work quite correct but is close
+
+export default function KNNVisualization({ numberOfPoints, k }: AlgoProps) {
   const { state, handleNext, handleNextMinor, handlePrevious } = useKNN({
     numberOfPoints,
     k,
   });
 
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
+
+  const lastCalculateDistanceStep = findLast(
+    state.steps,
+    (step) => step.type === "calculateDistance",
+  );
+
+  const lastUpdateNearestNeighborsStep = findLast(
+    state.steps,
+    (step) => step.type === "updateNearestNeighbors",
+  );
 
   return (
     <>
@@ -126,16 +150,16 @@ export default function Algo({ numberOfPoints, k }: AlgoProps) {
           <mesh
             position={
               new Vector3(
-                state.queryPoint.coords.x,
-                state.queryPoint.coords.y,
-                state.queryPoint.coords.z,
+                state.config.queryPoint.coords.x,
+                state.config.queryPoint.coords.y,
+                state.config.queryPoint.coords.z,
               )
             }
             geometry={sphereGeometry}
             material={getWhiteMaterial()}
             scale={10}
           />
-          {state.points.map((point, index) => (
+          {state.config.points.map((point, index) => (
             <mesh
               key={index}
               material={point.group.material}
@@ -146,25 +170,38 @@ export default function Algo({ numberOfPoints, k }: AlgoProps) {
               scale={10}
             />
           ))}
-          {state.distances
-            .filter((x) => state.nearestNeighbors.includes(x.point))
-            .map((distance, index) => (
+          {lastUpdateNearestNeighborsStep?.nearestNeighbors?.map(
+            (point, index) => (
               <lineSegments
                 key={index}
                 geometry={new BufferGeometry().setFromPoints([
+                  new Vector3(point.coords.x, point.coords.y, point.coords.z),
                   new Vector3(
-                    distance.point.coords.x,
-                    distance.point.coords.y,
-                    distance.point.coords.z,
-                  ),
-                  new Vector3(
-                    state.queryPoint.coords.x,
-                    state.queryPoint.coords.y,
-                    state.queryPoint.coords.z,
+                    state.config.queryPoint.coords.x,
+                    state.config.queryPoint.coords.y,
+                    state.config.queryPoint.coords.z,
                   ),
                 ])}
               />
-            ))}
+            ),
+          )}
+          {lastCalculateDistanceStep?.distances?.at(-1) && (
+            <lineSegments
+              material={getPinkMaterial()}
+              geometry={new BufferGeometry().setFromPoints([
+                new Vector3(
+                  lastCalculateDistanceStep.distances.at(-1)!.point.coords.x,
+                  lastCalculateDistanceStep.distances.at(-1)!.point.coords.y,
+                  lastCalculateDistanceStep.distances.at(-1)!.point.coords.z,
+                ),
+                new Vector3(
+                  state.config.queryPoint.coords.x,
+                  state.config.queryPoint.coords.y,
+                  state.config.queryPoint.coords.z,
+                ),
+              ])}
+            />
+          )}
         </Canvas>
       </div>
     </>
