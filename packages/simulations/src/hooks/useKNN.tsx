@@ -13,26 +13,38 @@ import { useAlgorithm } from "./useAlgorithm";
 type AlgoProps = {
   numberOfPoints: number;
   k: number;
+  groupCount: number;
 };
 
 // TODO: maybe make even more generic, export setconfig and dont use useEffect to update points
 
-export function useKNN({ numberOfPoints, k }: AlgoProps) {
-  const groups = generateKGroups(k);
+export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
+  const groups = generateKGroups(groupCount);
 
+  // TODO: show config even be state?
   const algorithm = useAlgorithm<KNNAlgorithm>({
     initialConfig: {
-      points: generateRandomPoints({ k, groups, points: [] }, numberOfPoints),
+      points: generateRandomPoints({ groups, points: [] }, numberOfPoints),
       groups,
       k,
-      initialQueryPoint: {
-        id: "query",
-        coords: { x: 50, y: 50, z: 50 },
-        group: {
-          label: "Current",
-          material: getWhiteMaterial(),
+    },
+    initialStep: {
+      type: "initial",
+      description: <div>Initial state</div>,
+      state: {
+        currentIndex: 0,
+        queryPoint: {
+          id: "query",
+          coords: { x: 50, y: 50, z: 50 },
+          group: {
+            label: "Current",
+            material: getWhiteMaterial(),
+          },
         },
+        nearestNeighbors: [],
+        distances: [],
       },
+      nextStep: "calculateDistance",
     },
   });
 
@@ -41,7 +53,7 @@ export function useKNN({ numberOfPoints, k }: AlgoProps) {
   useEffect(() => {
     const newPoints = config.points.slice(0, numberOfPoints);
     while (newPoints.length !== numberOfPoints) {
-      newPoints.push(generateRandomPoint({ k, groups, points: newPoints }));
+      newPoints.push(generateRandomPoint({ groups, points: newPoints }));
     }
 
     setConfig({
@@ -57,6 +69,14 @@ export function useKNN({ numberOfPoints, k }: AlgoProps) {
       k,
     });
   }, [k]);
+
+  useEffect(() => {
+    setConfig({
+      ...config,
+      points: generateRandomPoints(config, numberOfPoints),
+      groups,
+    });
+  }, [groupCount]);
 
   return useSimulation<KNNAlgorithm>({
     algorithm,

@@ -6,7 +6,6 @@ import { SphereGeometry, Vector3 } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { UseKNNReturn } from "@repo/simulations/hooks/useKNN";
 import { getWhiteMaterial } from "@repo/simulations/utils/materials";
-import { findLast } from "~/lib/utils/common";
 import { TubeGeometry, CatmullRomCurve3, MeshBasicMaterial } from "three";
 
 // TODO: does not yet work quite correct but is close
@@ -14,15 +13,7 @@ import { TubeGeometry, CatmullRomCurve3, MeshBasicMaterial } from "three";
 export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
 
-  const lastCalculateDistanceStep = findLast(
-    knn.steps,
-    (step) => step.type === "calculateDistance",
-  );
-
-  const lastUpdateNearestNeighborsStep = findLast(
-    knn.steps,
-    (step) => step.type === "updateNearestNeighbors",
-  );
+  const { lastStep } = knn;
 
   return (
     <>
@@ -56,18 +47,14 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
           <mesh
             position={
               new Vector3(
-                knn.lastStep?.state.queryPoint.coords.x ??
-                  knn.config.initialQueryPoint.coords.x,
-                knn.lastStep?.state.queryPoint.coords.y ??
-                  knn.config.initialQueryPoint.coords.y,
-                knn.lastStep?.state.queryPoint.coords.z ??
-                  knn.config.initialQueryPoint.coords.z,
+                knn.lastStep.state.queryPoint.coords.x,
+                knn.lastStep.state.queryPoint.coords.y,
+                knn.lastStep.state.queryPoint.coords.z,
               )
             }
             geometry={sphereGeometry}
             material={
-              knn.lastStep?.state.queryPoint.group.material ??
-              getWhiteMaterial()
+              knn.lastStep.state.queryPoint.group.material ?? getWhiteMaterial()
             }
             scale={10}
           />
@@ -82,43 +69,33 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
               scale={10}
             />
           ))}
-          {lastUpdateNearestNeighborsStep?.state.nearestNeighbors?.map(
-            (point, index) => {
-              const curve = new CatmullRomCurve3([
-                new Vector3(point.coords.x, point.coords.y, point.coords.z),
-                new Vector3(
-                  lastUpdateNearestNeighborsStep.state.queryPoint.coords.x,
-                  lastUpdateNearestNeighborsStep.state.queryPoint.coords.y,
-                  lastUpdateNearestNeighborsStep.state.queryPoint.coords.z,
-                ),
-              ]);
-              const geometry = new TubeGeometry(curve, 20, 0.5, 8, false);
-              const material = new MeshBasicMaterial({ color: "white" });
-              return (
-                <mesh key={index} geometry={geometry} material={material} />
-              );
-            },
-          )}
-          {lastCalculateDistanceStep?.state.distances?.at(-1) && (
+          {lastStep.state.nearestNeighbors?.map((point, index) => {
+            const curve = new CatmullRomCurve3([
+              new Vector3(point.coords.x, point.coords.y, point.coords.z),
+              new Vector3(
+                lastStep.state.queryPoint.coords.x,
+                lastStep.state.queryPoint.coords.y,
+                lastStep.state.queryPoint.coords.z,
+              ),
+            ]);
+            const geometry = new TubeGeometry(curve, 20, 0.5, 8, false);
+            const material = new MeshBasicMaterial({ color: "white" });
+            return <mesh key={index} geometry={geometry} material={material} />;
+          })}
+          {lastStep.type === "calculateDistance" && (
             <mesh
               geometry={
                 new TubeGeometry(
                   new CatmullRomCurve3([
                     new Vector3(
-                      lastCalculateDistanceStep.state.distances.at(
-                        -1,
-                      )!.point.coords.x,
-                      lastCalculateDistanceStep.state.distances.at(
-                        -1,
-                      )!.point.coords.y,
-                      lastCalculateDistanceStep.state.distances.at(
-                        -1,
-                      )!.point.coords.z,
+                      lastStep.state.distances.at(-1)!.point.coords.x,
+                      lastStep.state.distances.at(-1)!.point.coords.y,
+                      lastStep.state.distances.at(-1)!.point.coords.z,
                     ),
                     new Vector3(
-                      lastUpdateNearestNeighborsStep!.state.queryPoint.coords.x,
-                      lastUpdateNearestNeighborsStep!.state.queryPoint.coords.y,
-                      lastUpdateNearestNeighborsStep!.state.queryPoint.coords.z,
+                      knn.lastStep.state.queryPoint.coords.x,
+                      knn.lastStep.state.queryPoint.coords.y,
+                      knn.lastStep.state.queryPoint.coords.z,
                     ),
                   ]),
                   20, // tubular segments

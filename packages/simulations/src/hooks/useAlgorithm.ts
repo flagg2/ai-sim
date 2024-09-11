@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import type { Algorithm } from "../algos/common";
+import type { Algorithm, Step } from "../algos/common";
 
-export function useAlgorithm<TAlgorithm extends Algorithm<any, any>>({
+export function useAlgorithm<
+  TAlgorithm extends Algorithm<Step<any, any>, object>,
+>({
   initialConfig,
+  initialStep,
 }: {
   initialConfig: TAlgorithm["config"];
+  initialStep: TAlgorithm["steps"][number];
 }) {
-  const [steps, setSteps] = useState<TAlgorithm["steps"]>([]);
+  const [steps, setSteps] = useState<TAlgorithm["steps"]>([initialStep]);
   const [config, setConfig] = useState<TAlgorithm["config"]>(initialConfig);
   const [algorithm, setAlgorithm] = useState<TAlgorithm>(
     () =>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useControls } from "leva";
 import { useState } from "react";
 import KNNVisualization from "./algo";
 import { useKNN } from "@repo/simulations/hooks/useKNN";
@@ -13,10 +12,12 @@ export default function KNNPage() {
 
   const [numberOfPoints, setNumberOfPoints] = useState(10);
   const [k, setK] = useState(3);
+  const [groupCount, setGroupCount] = useState(2);
 
   const knn = useKNN({
     numberOfPoints,
     k,
+    groupCount,
   });
 
   return (
@@ -26,8 +27,10 @@ export default function KNNPage() {
       configComponent={
         <KNNConfig
           k={k}
+          groupCount={groupCount}
           numberOfPoints={numberOfPoints}
           onNumberOfPointsChange={setNumberOfPoints}
+          onGroupCountChange={setGroupCount}
           onKChange={setK}
         />
       }
@@ -44,15 +47,19 @@ export default function KNNPage() {
 type KNNConfigProps = {
   k: number;
   numberOfPoints: number;
+  groupCount: number;
   onNumberOfPointsChange: (numberOfPoints: number) => void;
   onKChange: (k: number) => void;
+  onGroupCountChange: (groupCount: number) => void;
 };
 
 function KNNConfig({
   k,
   numberOfPoints,
+  groupCount,
   onNumberOfPointsChange,
   onKChange,
+  onGroupCountChange,
 }: KNNConfigProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -75,6 +82,16 @@ function KNNConfig({
           step={1}
         />
         <div className="text-xs text-darkish-text">{k}</div>
+      </Label>
+      <Label label="Group count" info="The number of groups to create">
+        <Slider
+          value={[groupCount]}
+          onValueChange={(value) => onGroupCountChange(value[0]!)}
+          min={1}
+          max={10}
+          step={1}
+        />
+        <div className="text-xs text-darkish-text">{groupCount}</div>
       </Label>
     </div>
   );

@@ -8,44 +8,52 @@ export type Point = {
   group: Group;
 };
 
+type KNNStepType =
+  | "calculateDistance"
+  | "updateNearestNeighbors"
+  | "updateQueryPoint";
+
 type KNNStepState = {
   currentIndex: number;
-  distances?: { point: Point; distance: number }[];
+  distances: { point: Point; distance: number }[];
   nearestNeighbors?: Point[];
   queryPoint: Point;
 };
 
-type KNNStep = Step<
-  KNNStepState,
-  "calculateDistance" | "updateNearestNeighbors" | "updateQueryPoint"
->;
+type KNNStep = Step<KNNStepState, KNNStepType>;
 
 type KNNConfig = {
   points: Point[];
   k: number;
   groups: Group[];
-  initialQueryPoint: Point;
 };
 
 export type KNNAlgorithm = Algorithm<KNNStep, KNNConfig>;
 
+function getLastStep(knn: KNNAlgorithm): KNNStep {
+  if (knn.steps.length === 0) {
+    throw new Error("No steps found");
+  }
+  return knn.steps[knn.steps.length - 1]!;
+}
+
 export function stepKNN(knn: KNNAlgorithm): KNNStep {
-  const lastStep = knn.steps[knn.steps.length - 1];
+  const lastStep = getLastStep(knn);
 
-  // if we are at the end, update the query point
-  if (lastStep?.state.distances?.length === knn.config.points.length) {
-    return updateQueryPointStep(knn);
+  switch (lastStep.nextStep) {
+    case "calculateDistance":
+      return calculateDistanceStep(knn);
+    case "updateNearestNeighbors":
+      return updateNearestNeighborsStep(knn);
+    case "updateQueryPoint":
+      return updateQueryPointStep(knn);
+    default:
+      return lastStep;
   }
-
-  if (lastStep?.type === "calculateDistance") {
-    return updateNearestNeighborsStep(knn);
-  }
-
-  return calculateDistanceStep(knn);
 }
 
 function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
-  const lastStep = knn.steps[knn.steps.length - 1]!;
+  const lastStep = getLastStep(knn);
 
   // find most common group among nearest neighbors
   const nearestNeighbors = lastStep.state.nearestNeighbors || [];
@@ -68,6 +76,7 @@ function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
   });
 
   if (!mostCommonGroup) {
+    // TODO: this was thrown somehow
     throw new Error("No most common group found");
   }
 
@@ -82,6 +91,7 @@ function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
       ...lastStep.state,
       queryPoint: updatedQueryPoint,
     },
+    nextStep: null, // Algorithm complete
     description: (
       <div>
         <p>Updating query point to {mostCommonGroup?.label}</p>
@@ -91,15 +101,13 @@ function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
 }
 
 function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
-  const lastStep = knn.steps[knn.steps.length - 1];
-  const currentIndex = lastStep ? lastStep.state.currentIndex + 1 : 0;
-
-  if (currentIndex >= knn.config.points.length) {
+  const lastStep = getLastStep(knn);
+  const currentIndex = lastStep.state.currentIndex + 1;
+  const currentPoint = knn.config.points[currentIndex];
+  if (!currentPoint) {
     return lastStep;
   }
 
-  const currentPoint =
-    lastStep.state.queryPoint ?? knn.config.initialQueryPoint;
   const distance = calculateDistance(
     lastStep?.state.queryPoint.coords,
     currentPoint.coords,
@@ -108,13 +116,14 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
   return {
     type: "calculateDistance",
     state: {
-      currentIndex,
+      ...lastStep.state,
       distances: [
         ...(lastStep?.state.distances || []),
         { point: currentPoint, distance },
       ],
-      queryPoint: currentPoint,
+      currentIndex,
     },
+    nextStep: "updateNearestNeighbors",
     description: (
       <div>
         <p>Calculating distance between point {currentIndex} and query point</p>
@@ -125,11 +134,14 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
 }
 
 function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
-  const lastStep = knn.steps[knn.steps.length - 1]!;
+  const lastStep = getLastStep(knn);
   const kNearest = lastStep.state
     .distances!.sort((a, b) => a.distance - b.distance)
     .slice(0, knn.config.k)
     .map((d) => d.point);
+
+  const isLastPoint =
+    lastStep.state.currentIndex === knn.config.points.length - 1;
 
   return {
     type: "updateNearestNeighbors",
@@ -137,6 +149,7 @@ function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
       ...lastStep.state,
       nearestNeighbors: kNearest,
     },
+    nextStep: isLastPoint ? "updateQueryPoint" : "calculateDistance",
     description: (
       <div>
         <p>
@@ -173,15 +186,13 @@ function randomValue(similarityTendency: number, group: Group): number {
 const defaultGroupSimilarityTendency = 0;
 
 export function generateRandomPoint({
-  k,
   groups,
   points,
 }: {
-  k: number;
   groups: Group[];
   points: Point[];
 }): Point {
-  const group = groups[Math.floor(Math.random() * k)]!;
+  const group = groups[Math.floor(Math.random() * groups.length)]!;
   const coords = {
     x: randomValue(defaultGroupSimilarityTendency, group),
     y: randomValue(defaultGroupSimilarityTendency, group),
@@ -206,7 +217,7 @@ export function generateRandomPoint({
 
   // TODO: doesn't work
   if (distance < 10) {
-    return generateRandomPoint({ k, groups, points });
+    return generateRandomPoint({ groups, points });
   }
   return {
     id: crypto.randomUUID(),
@@ -221,7 +232,6 @@ export function generateRandomPoint({
 
 export function generateRandomPoints(
   state: {
-    k: number;
     groups: Group[];
     points: Point[];
   },

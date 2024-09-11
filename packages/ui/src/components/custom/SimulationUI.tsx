@@ -94,7 +94,14 @@ export default function SimulationUI({
                     <span className="sr-only">Forward</span>
                   </Button>
                 </div>
-                <Button onClick={onStop}>Stop</Button>
+                <Button
+                  onClick={() => {
+                    onStop();
+                    reset();
+                  }}
+                >
+                  Stop
+                </Button>
               </>
             ) : (
               <div className="flex flex-col  gap-2">

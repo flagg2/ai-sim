@@ -16,8 +16,9 @@ export type Group = {
 };
 
 export type Step<TState extends object, TStepType extends string> = {
-  type: TStepType;
+  type: TStepType | "initial";
   description: React.ReactNode;
+  nextStep: TStepType | null;
   state: TState;
 };
 

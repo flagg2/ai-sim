@@ -1,9 +1,11 @@
 import { useCallback, useState } from "react";
-import type { Algorithm } from "../algos/common";
+import type { Algorithm, Step } from "../algos/common";
 import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithm";
 
-export function useSimulation<TAlgorithm extends Algorithm<any, any>>({
+export function useSimulation<
+  TAlgorithm extends Algorithm<Step<any, any>, object>,
+>({
   algorithm: { steps, config, algorithm, setSteps },
   stepFunction,
 }: {
@@ -22,6 +24,11 @@ export function useSimulation<TAlgorithm extends Algorithm<any, any>>({
 
   useInterval(
     () => {
+      if (steps.at(-1)?.nextStep === null) {
+        setIsPlaying(false);
+        return;
+      }
+
       forward();
     },
     isPlaying ? 500 : null,
@@ -32,25 +39,29 @@ export function useSimulation<TAlgorithm extends Algorithm<any, any>>({
   }, [algorithm, stepFunction, setSteps]);
 
   const backward = useCallback(() => {
-    setSteps((prevSteps) => prevSteps.slice(0, -1));
-  }, [algorithm, setSteps]);
+    if (steps.length > 1) {
+      setSteps((prevSteps) => prevSteps.slice(0, -1));
+    }
+  }, [steps, setSteps]);
 
   const reset = useCallback(() => {
-    setSteps([]);
-  }, []);
+    setSteps(steps.slice(0, 1));
+  }, [steps]);
+
+  const lastStep = steps.at(-1) as TAlgorithm["steps"][number];
+  const canGoForward = lastStep.nextStep !== null;
 
   return {
     steps,
     config,
-    lastStep: steps.at(-1) as TAlgorithm["steps"][number] | undefined,
+    lastStep,
     backward,
     forward,
     reset,
     play,
     pause,
-    //TODO: implement me
-    canGoForward: true,
-    canGoBackward: steps.length > 0,
+    canGoForward,
+    canGoBackward: steps.length > 1,
     isPlaying,
   };
 }
