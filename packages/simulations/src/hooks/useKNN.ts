@@ -3,25 +3,29 @@ import {
   generateKGroups,
   generateRandomPoint,
   generateRandomPoints,
-  KNN,
-  type KNNState,
+  stepKNN,
+  type KNNAlgorithm,
 } from "../algos/knn";
 import { getWhiteMaterial } from "../utils/materials";
+import { useSimulation } from "./useSimulation";
+import { useAlgorithm } from "./useAlgorithm";
 
 type AlgoProps = {
   numberOfPoints: number;
   k: number;
 };
 
+// TODO: maybe make even more generic, export setconfig and dont use useEffect to update points
+
 export function useKNN({ numberOfPoints, k }: AlgoProps) {
   const groups = generateKGroups(k);
 
-  const [state, setState] = useState<KNNState>({
-    config: {
+  const algorithm = useAlgorithm<KNNAlgorithm>({
+    initialConfig: {
       points: generateRandomPoints({ k, groups, points: [] }, numberOfPoints),
       groups,
       k,
-      queryPoint: {
+      initialQueryPoint: {
         id: "query",
         coords: { x: 50, y: 50, z: 50 },
         group: {
@@ -30,65 +34,34 @@ export function useKNN({ numberOfPoints, k }: AlgoProps) {
         },
       },
     },
-    steps: [],
   });
 
+  const { config, setConfig } = algorithm;
+
   useEffect(() => {
-    const newPoints = state.config.points.slice(0, numberOfPoints);
+    const newPoints = config.points.slice(0, numberOfPoints);
     while (newPoints.length !== numberOfPoints) {
       newPoints.push(generateRandomPoint({ k, groups, points: newPoints }));
     }
 
-    setState({
-      ...state,
-      config: {
-        ...state.config,
-        points: newPoints,
-      },
+    setConfig({
+      ...config,
+      points: newPoints,
     });
   }, [numberOfPoints]);
 
   useEffect(() => {
-    setState({
-      ...state,
-      config: {
-        ...state.config,
-        points: generateRandomPoints(state.config, numberOfPoints),
-        k,
-      },
+    setConfig({
+      ...config,
+      points: generateRandomPoints(config, numberOfPoints),
+      k,
     });
   }, [k]);
 
-  const forward = () => {
-    const nextState = KNN.fastForward(state);
-    setState(nextState);
-  };
-
-  const fastForward = () => {
-    const nextState = KNN.forward(state);
-    setState(nextState);
-  };
-
-  const backward = () => {
-    const nextState = KNN.backward(state);
-    setState(nextState);
-  };
-
-  const fastBackward = () => {
-    const nextState = KNN.fastBackward(state);
-    setState(nextState);
-  };
-
-  const stepDescription = state.steps.at(-1)?.description;
-
-  return {
-    state,
-    forward,
-    fastForward,
-    backward,
-    fastBackward,
-    stepDescription,
-  };
+  return useSimulation<KNNAlgorithm>({
+    algorithm,
+    stepFunction: stepKNN,
+  });
 }
 
 export type UseKNNReturn = ReturnType<typeof useKNN>;

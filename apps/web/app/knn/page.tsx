@@ -5,42 +5,77 @@ import { useState } from "react";
 import KNNVisualization from "./algo";
 import { useKNN } from "@repo/simulations/hooks/useKNN";
 import SimulationUI from "@repo/ui/components/custom/SimulationUI";
+import { Slider } from "@repo/ui/components/shadcn/slider";
+import { Label } from "@repo/ui/components/custom/Label";
 
 export default function KNNPage() {
   const [running, setRunning] = useState(false);
 
-  const { numberOfPoints, k } = useControls({
-    numberOfPoints: {
-      value: 10,
-      min: 1,
-      max: 20,
-      step: 1,
-    },
-    k: {
-      value: 3,
-      min: 1,
-      max: 10,
-      step: 1,
-    },
-  });
+  const [numberOfPoints, setNumberOfPoints] = useState(10);
+  const [k, setK] = useState(3);
 
   const knn = useKNN({
     numberOfPoints,
     k,
   });
 
-  if (!running) {
-    return <button onClick={() => setRunning(true)}>Start</button>;
-  }
-
   return (
     <SimulationUI
-      useSimulation={knn}
-      canvasComponent={<KNNVisualization state={knn.state} />}
-      configComponent={<div>Config</div>}
+      simulation={knn}
+      canvasComponent={<KNNVisualization knn={knn} />}
+      configComponent={
+        <KNNConfig
+          k={k}
+          numberOfPoints={numberOfPoints}
+          onNumberOfPointsChange={setNumberOfPoints}
+          onKChange={setK}
+        />
+      }
       running={running}
       onRun={() => setRunning(true)}
       onStop={() => setRunning(false)}
+      algorithmDescription="
+      KNN is a simple algorithm that is used to classify data points into different categories. It works by finding the k nearest neighbors of a data point and then classifying the data point into the category of the majority of its neighbors.
+      "
     />
+  );
+}
+
+type KNNConfigProps = {
+  k: number;
+  numberOfPoints: number;
+  onNumberOfPointsChange: (numberOfPoints: number) => void;
+  onKChange: (k: number) => void;
+};
+
+function KNNConfig({
+  k,
+  numberOfPoints,
+  onNumberOfPointsChange,
+  onKChange,
+}: KNNConfigProps) {
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      <Label label="Number of points" info="The number of points to generate">
+        <Slider
+          value={[numberOfPoints]}
+          onValueChange={(value) => onNumberOfPointsChange(value[0]!)}
+          min={1}
+          max={20}
+          step={1}
+        />
+        <div className="text-xs text-darkish-text">{numberOfPoints}</div>
+      </Label>
+      <Label label="K" info="The number of nearest neighbors to consider">
+        <Slider
+          value={[k]}
+          onValueChange={(value) => onKChange(value[0]!)}
+          min={1}
+          max={10}
+          step={1}
+        />
+        <div className="text-xs text-darkish-text">{k}</div>
+      </Label>
+    </div>
   );
 }

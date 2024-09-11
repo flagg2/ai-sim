@@ -2,40 +2,25 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { SphereGeometry, Vector3, BufferGeometry } from "three";
+import { SphereGeometry, Vector3 } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { UseKNNReturn } from "@repo/simulations/hooks/useKNN";
-import {
-  getPinkMaterial,
-  getWhiteMaterial,
-} from "@repo/simulations/utils/materials";
-import { KNNState } from "@repo/simulations/algos/knn";
-
-// Custom findLast implementation
-function findLast<T>(
-  array: T[],
-  predicate: (value: T) => boolean,
-): T | undefined {
-  for (let i = array.length - 1; i >= 0; i--) {
-    if (predicate(array[i]!)) {
-      return array[i];
-    }
-  }
-  return undefined;
-}
+import { getWhiteMaterial } from "@repo/simulations/utils/materials";
+import { findLast } from "~/lib/utils/common";
+import { TubeGeometry, CatmullRomCurve3, MeshBasicMaterial } from "three";
 
 // TODO: does not yet work quite correct but is close
 
-export default function KNNVisualization({ state }: { state: KNNState }) {
+export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
 
   const lastCalculateDistanceStep = findLast(
-    state.steps,
+    knn.steps,
     (step) => step.type === "calculateDistance",
   );
 
   const lastUpdateNearestNeighborsStep = findLast(
-    state.steps,
+    knn.steps,
     (step) => step.type === "updateNearestNeighbors",
   );
 
@@ -71,16 +56,22 @@ export default function KNNVisualization({ state }: { state: KNNState }) {
           <mesh
             position={
               new Vector3(
-                state.config.queryPoint.coords.x,
-                state.config.queryPoint.coords.y,
-                state.config.queryPoint.coords.z,
+                knn.lastStep?.state.queryPoint.coords.x ??
+                  knn.config.initialQueryPoint.coords.x,
+                knn.lastStep?.state.queryPoint.coords.y ??
+                  knn.config.initialQueryPoint.coords.y,
+                knn.lastStep?.state.queryPoint.coords.z ??
+                  knn.config.initialQueryPoint.coords.z,
               )
             }
             geometry={sphereGeometry}
-            material={getWhiteMaterial()}
+            material={
+              knn.lastStep?.state.queryPoint.group.material ??
+              getWhiteMaterial()
+            }
             scale={10}
           />
-          {state.config.points.map((point, index) => (
+          {knn.config.points.map((point, index) => (
             <mesh
               key={index}
               material={point.group.material}
@@ -91,36 +82,52 @@ export default function KNNVisualization({ state }: { state: KNNState }) {
               scale={10}
             />
           ))}
-          {lastUpdateNearestNeighborsStep?.nearestNeighbors?.map(
-            (point, index) => (
-              <lineSegments
-                key={index}
-                geometry={new BufferGeometry().setFromPoints([
-                  new Vector3(point.coords.x, point.coords.y, point.coords.z),
-                  new Vector3(
-                    state.config.queryPoint.coords.x,
-                    state.config.queryPoint.coords.y,
-                    state.config.queryPoint.coords.z,
-                  ),
-                ])}
-              />
-            ),
+          {lastUpdateNearestNeighborsStep?.state.nearestNeighbors?.map(
+            (point, index) => {
+              const curve = new CatmullRomCurve3([
+                new Vector3(point.coords.x, point.coords.y, point.coords.z),
+                new Vector3(
+                  lastUpdateNearestNeighborsStep.state.queryPoint.coords.x,
+                  lastUpdateNearestNeighborsStep.state.queryPoint.coords.y,
+                  lastUpdateNearestNeighborsStep.state.queryPoint.coords.z,
+                ),
+              ]);
+              const geometry = new TubeGeometry(curve, 20, 0.5, 8, false);
+              const material = new MeshBasicMaterial({ color: "white" });
+              return (
+                <mesh key={index} geometry={geometry} material={material} />
+              );
+            },
           )}
-          {lastCalculateDistanceStep?.distances?.at(-1) && (
-            <lineSegments
-              material={getPinkMaterial()}
-              geometry={new BufferGeometry().setFromPoints([
-                new Vector3(
-                  lastCalculateDistanceStep.distances.at(-1)!.point.coords.x,
-                  lastCalculateDistanceStep.distances.at(-1)!.point.coords.y,
-                  lastCalculateDistanceStep.distances.at(-1)!.point.coords.z,
-                ),
-                new Vector3(
-                  state.config.queryPoint.coords.x,
-                  state.config.queryPoint.coords.y,
-                  state.config.queryPoint.coords.z,
-                ),
-              ])}
+          {lastCalculateDistanceStep?.state.distances?.at(-1) && (
+            <mesh
+              geometry={
+                new TubeGeometry(
+                  new CatmullRomCurve3([
+                    new Vector3(
+                      lastCalculateDistanceStep.state.distances.at(
+                        -1,
+                      )!.point.coords.x,
+                      lastCalculateDistanceStep.state.distances.at(
+                        -1,
+                      )!.point.coords.y,
+                      lastCalculateDistanceStep.state.distances.at(
+                        -1,
+                      )!.point.coords.z,
+                    ),
+                    new Vector3(
+                      lastUpdateNearestNeighborsStep!.state.queryPoint.coords.x,
+                      lastUpdateNearestNeighborsStep!.state.queryPoint.coords.y,
+                      lastUpdateNearestNeighborsStep!.state.queryPoint.coords.z,
+                    ),
+                  ]),
+                  20, // tubular segments
+                  0.5, // radius
+                  8, // radial segments
+                  false, // closed
+                )
+              }
+              material={new MeshBasicMaterial({ color: "pink" })}
             />
           )}
         </Canvas>

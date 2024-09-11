@@ -1,6 +1,6 @@
+import type { MeshStandardMaterial } from "three";
 import { getMaterial } from "../utils/materials";
-import React from "react";
-import type { Coords, Group, Simulation } from "./common";
+import type { Algorithm, Coords, Group, Simulation, Step } from "./common";
 
 export type Point = {
   id: string;
@@ -8,121 +8,143 @@ export type Point = {
   group: Group;
 };
 
-type Step = {
-  type: "calculateDistance" | "updateNearestNeighbors";
+type KNNStepState = {
   currentIndex: number;
   distances?: { point: Point; distance: number }[];
   nearestNeighbors?: Point[];
-  description: React.ReactNode;
+  queryPoint: Point;
 };
 
-type Config = {
+type KNNStep = Step<
+  KNNStepState,
+  "calculateDistance" | "updateNearestNeighbors" | "updateQueryPoint"
+>;
+
+type KNNConfig = {
   points: Point[];
   k: number;
-  queryPoint: Point;
   groups: Group[];
+  initialQueryPoint: Point;
 };
 
-export type KNNState = {
-  config: Config;
-  steps: Step[];
-};
+export type KNNAlgorithm = Algorithm<KNNStep, KNNConfig>;
 
-export const KNN: Simulation<KNNState> = {
-  fastForward: (state) => {
-    let currentState = state;
-    const lastStep = currentState.steps[currentState.steps.length - 1];
-    if (!lastStep || lastStep.type === "updateNearestNeighbors") {
-      currentState = KNN.forward(currentState);
-    }
-    currentState = KNN.forward(currentState);
-    return currentState;
-  },
-  forward: (state) => {
-    const lastStep = state.steps[state.steps.length - 1];
+export function stepKNN(knn: KNNAlgorithm): KNNStep {
+  const lastStep = knn.steps[knn.steps.length - 1];
 
-    if (!lastStep || lastStep.type === "updateNearestNeighbors") {
-      return calculateDistanceStep(state);
-    } else {
-      return updateNearestNeighborsStep(state);
-    }
-  },
-  backward: (state) => {
-    if (state.steps.length <= 1) {
-      return { ...state, steps: [] }; // Reset to initial state
-    }
-    return {
-      ...state,
-      steps: state.steps.slice(0, -1),
-    };
-  },
-  fastBackward: (state) => {
-    return { ...state, steps: [] };
-  },
-};
-
-function calculateDistanceStep(state: KNNState): KNNState {
-  const lastStep = state.steps[state.steps.length - 1];
-  const currentIndex = lastStep ? lastStep.currentIndex + 1 : 0;
-
-  if (currentIndex >= state.config.points.length) {
-    return state; // Algorithm finished
+  // if we are at the end, update the query point
+  if (lastStep?.state.distances?.length === knn.config.points.length) {
+    return updateQueryPointStep(knn);
   }
 
-  const currentPoint = state.config.points[currentIndex]!;
+  if (lastStep?.type === "calculateDistance") {
+    return updateNearestNeighborsStep(knn);
+  }
+
+  return calculateDistanceStep(knn);
+}
+
+function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
+  const lastStep = knn.steps[knn.steps.length - 1]!;
+
+  // find most common group among nearest neighbors
+  const nearestNeighbors = lastStep.state.nearestNeighbors || [];
+  const groupCounts = new Map<Group["label"], number>();
+
+  nearestNeighbors.forEach((neighbor) => {
+    const groupLabel = neighbor.group.label;
+    groupCounts.set(groupLabel, (groupCounts.get(groupLabel) || 0) + 1);
+  });
+
+  // find the group with the most count
+  let mostCommonGroup: Group | undefined;
+  let maxCount = 0;
+
+  groupCounts.forEach((count, groupLabel) => {
+    if (count > maxCount) {
+      maxCount = count;
+      mostCommonGroup = knn.config.groups.find((g) => g.label === groupLabel);
+    }
+  });
+
+  if (!mostCommonGroup) {
+    throw new Error("No most common group found");
+  }
+
+  const updatedQueryPoint = {
+    ...lastStep.state.queryPoint,
+    group: mostCommonGroup,
+  };
+
+  return {
+    type: "updateQueryPoint",
+    state: {
+      ...lastStep.state,
+      queryPoint: updatedQueryPoint,
+    },
+    description: (
+      <div>
+        <p>Updating query point to {mostCommonGroup?.label}</p>
+      </div>
+    ),
+  };
+}
+
+function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
+  const lastStep = knn.steps[knn.steps.length - 1];
+  const currentIndex = lastStep ? lastStep.state.currentIndex + 1 : 0;
+
+  if (currentIndex >= knn.config.points.length) {
+    return lastStep;
+  }
+
+  const currentPoint =
+    lastStep.state.queryPoint ?? knn.config.initialQueryPoint;
   const distance = calculateDistance(
-    state.config.queryPoint.coords,
+    lastStep?.state.queryPoint.coords,
     currentPoint.coords,
   );
 
   return {
-    ...state,
-    steps: [
-      ...state.steps,
-      {
-        type: "calculateDistance",
-        currentIndex,
-        distances: [
-          ...(lastStep?.distances || []),
-          { point: currentPoint, distance },
-        ],
-        description: (
-          <div>
-            <p>
-              Calculating distance between point {currentIndex} and query point
-            </p>
-            <p>Distance: {distance.toFixed(2)}</p>
-          </div>
-        ),
-      },
-    ],
+    type: "calculateDistance",
+    state: {
+      currentIndex,
+      distances: [
+        ...(lastStep?.state.distances || []),
+        { point: currentPoint, distance },
+      ],
+      queryPoint: currentPoint,
+    },
+    description: (
+      <div>
+        <p>Calculating distance between point {currentIndex} and query point</p>
+        <p>Distance: {distance.toFixed(2)}</p>
+      </div>
+    ),
   };
 }
 
-function updateNearestNeighborsStep(state: KNNState): KNNState {
-  const lastStep = state.steps[state.steps.length - 1]!;
-  const kNearest = lastStep
+function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
+  const lastStep = knn.steps[knn.steps.length - 1]!;
+  const kNearest = lastStep.state
     .distances!.sort((a, b) => a.distance - b.distance)
-    .slice(0, state.config.k)
+    .slice(0, knn.config.k)
     .map((d) => d.point);
 
   return {
-    ...state,
-    steps: [
-      ...state.steps,
-      {
-        type: "updateNearestNeighbors",
-        currentIndex: lastStep.currentIndex,
-        distances: lastStep.distances,
-        nearestNeighbors: kNearest,
-        description: (
-          <div>
-            <p>Updating nearest neighbors for point {lastStep.currentIndex}</p>
-            <p>Nearest neighbors: {kNearest.map((p) => p.id).join(", ")}</p>
-          </div>
-        ),
-      },
-    ],
+    type: "updateNearestNeighbors",
+    state: {
+      ...lastStep.state,
+      nearestNeighbors: kNearest,
+    },
+    description: (
+      <div>
+        <p>
+          Updating nearest neighbors for point {lastStep.state.currentIndex}
+        </p>
+        <p>Nearest neighbors: {kNearest.map((p) => p.id).join(", ")}</p>
+      </div>
+    ),
   };
 }
 

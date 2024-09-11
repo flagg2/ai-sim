@@ -1,10 +1,7 @@
 import type { MeshStandardMaterial } from "three";
 
 export type Simulation<T extends object> = {
-  fastForward: (state: T) => T;
   forward: (state: T) => T;
-  backward: (state: T) => T;
-  fastBackward: (state: T) => T;
 };
 
 export type Coords = {
@@ -16,4 +13,15 @@ export type Coords = {
 export type Group = {
   label: string;
   material: MeshStandardMaterial;
+};
+
+export type Step<TState extends object, TStepType extends string> = {
+  type: TStepType;
+  description: React.ReactNode;
+  state: TState;
+};
+
+export type Algorithm<TStep extends Step<any, any>, TConfig extends object> = {
+  config: TConfig;
+  steps: TStep[];
 };

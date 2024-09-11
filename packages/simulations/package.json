@@ -5,7 +5,8 @@
   "dependencies": {
     "three": "0.168.0",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "usehooks-ts": "3.1.0"
   },
   "devDependencies": {
     "@types/bun": "latest"
