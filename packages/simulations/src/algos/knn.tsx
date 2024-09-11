@@ -1,11 +1,6 @@
-import { MeshStandardMaterial } from "three";
 import { getMaterial } from "../utils/materials";
-
-type Coords = {
-  x: number;
-  y: number;
-  z: number;
-};
+import React from "react";
+import type { Coords, Group, Simulation } from "./common";
 
 export type Point = {
   id: string;
@@ -13,21 +8,12 @@ export type Point = {
   group: Group;
 };
 
-type Group = {
-  label: string;
-  material: MeshStandardMaterial;
-};
-type Simulation<T extends object> = {
-  next: (state: T) => T;
-  nextMinor: (state: T) => T;
-  previous: (state: T) => T;
-};
-
 type Step = {
   type: "calculateDistance" | "updateNearestNeighbors";
   currentIndex: number;
   distances?: { point: Point; distance: number }[];
   nearestNeighbors?: Point[];
+  description: React.ReactNode;
 };
 
 type Config = {
@@ -43,67 +29,25 @@ export type KNNState = {
 };
 
 export const KNN: Simulation<KNNState> = {
-  next: (state) => {
+  fastForward: (state) => {
     let currentState = state;
     const lastStep = currentState.steps[currentState.steps.length - 1];
     if (!lastStep || lastStep.type === "updateNearestNeighbors") {
-      currentState = KNN.nextMinor(currentState);
+      currentState = KNN.forward(currentState);
     }
-    currentState = KNN.nextMinor(currentState);
+    currentState = KNN.forward(currentState);
     return currentState;
   },
-  nextMinor: (state) => {
+  forward: (state) => {
     const lastStep = state.steps[state.steps.length - 1];
 
     if (!lastStep || lastStep.type === "updateNearestNeighbors") {
-      const currentIndex = lastStep ? lastStep.currentIndex + 1 : 0;
-      if (currentIndex >= state.config.points.length) {
-        return state; // Algorithm finished
-      }
-
-      const currentPoint = state.config.points[currentIndex]!;
-      const distance = calculateDistance(
-        state.config.queryPoint.coords,
-        currentPoint.coords,
-      );
-
-      return {
-        ...state,
-        steps: [
-          ...state.steps,
-          {
-            type: "calculateDistance",
-            currentIndex,
-            distance,
-            distances: [
-              ...(lastStep?.distances || []),
-              { point: currentPoint, distance },
-            ],
-          },
-        ],
-      };
+      return calculateDistanceStep(state);
     } else {
-      // Update nearest neighbors
-      const kNearest = lastStep
-        .distances!.sort((a, b) => a.distance - b.distance)
-        .slice(0, state.config.k)
-        .map((d) => d.point);
-
-      return {
-        ...state,
-        steps: [
-          ...state.steps,
-          {
-            type: "updateNearestNeighbors",
-            currentIndex: lastStep.currentIndex,
-            distances: lastStep.distances,
-            nearestNeighbors: kNearest,
-          },
-        ],
-      };
+      return updateNearestNeighborsStep(state);
     }
   },
-  previous: (state) => {
+  backward: (state) => {
     if (state.steps.length <= 1) {
       return { ...state, steps: [] }; // Reset to initial state
     }
@@ -112,7 +56,75 @@ export const KNN: Simulation<KNNState> = {
       steps: state.steps.slice(0, -1),
     };
   },
+  fastBackward: (state) => {
+    return { ...state, steps: [] };
+  },
 };
+
+function calculateDistanceStep(state: KNNState): KNNState {
+  const lastStep = state.steps[state.steps.length - 1];
+  const currentIndex = lastStep ? lastStep.currentIndex + 1 : 0;
+
+  if (currentIndex >= state.config.points.length) {
+    return state; // Algorithm finished
+  }
+
+  const currentPoint = state.config.points[currentIndex]!;
+  const distance = calculateDistance(
+    state.config.queryPoint.coords,
+    currentPoint.coords,
+  );
+
+  return {
+    ...state,
+    steps: [
+      ...state.steps,
+      {
+        type: "calculateDistance",
+        currentIndex,
+        distances: [
+          ...(lastStep?.distances || []),
+          { point: currentPoint, distance },
+        ],
+        description: (
+          <div>
+            <p>
+              Calculating distance between point {currentIndex} and query point
+            </p>
+            <p>Distance: {distance.toFixed(2)}</p>
+          </div>
+        ),
+      },
+    ],
+  };
+}
+
+function updateNearestNeighborsStep(state: KNNState): KNNState {
+  const lastStep = state.steps[state.steps.length - 1]!;
+  const kNearest = lastStep
+    .distances!.sort((a, b) => a.distance - b.distance)
+    .slice(0, state.config.k)
+    .map((d) => d.point);
+
+  return {
+    ...state,
+    steps: [
+      ...state.steps,
+      {
+        type: "updateNearestNeighbors",
+        currentIndex: lastStep.currentIndex,
+        distances: lastStep.distances,
+        nearestNeighbors: kNearest,
+        description: (
+          <div>
+            <p>Updating nearest neighbors for point {lastStep.currentIndex}</p>
+            <p>Nearest neighbors: {kNearest.map((p) => p.id).join(", ")}</p>
+          </div>
+        ),
+      },
+    ],
+  };
+}
 
 // Helper function to calculate Euclidean distance
 function calculateDistance(a: Point["coords"], b: Point["coords"]): number {

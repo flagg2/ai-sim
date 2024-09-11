@@ -1,0 +1,31 @@
+{
+  "name": "@repo/simulations",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "three": "0.168.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {},
+  "exports": {
+    "./algos/*": [
+      "./src/algos/*.tsx",
+      "./src/algos/*.ts"
+    ],
+    "./utils/*": [
+      "./src/utils/*.ts",
+      "./src/utils/*.tsx"
+    ],
+    "./hooks/*": [
+      "./src/hooks/*.ts",
+      "./src/hooks/*.tsx"
+    ]
+  }
+}

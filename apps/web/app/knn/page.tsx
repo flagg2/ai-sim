@@ -3,6 +3,8 @@
 import { useControls } from "leva";
 import { useState } from "react";
 import KNNVisualization from "./algo";
+import { useKNN } from "@repo/simulations/hooks/useKNN";
+import SimulationUI from "@repo/ui/components/custom/SimulationUI";
 
 export default function KNNPage() {
   const [running, setRunning] = useState(false);
@@ -22,14 +24,23 @@ export default function KNNPage() {
     },
   });
 
+  const knn = useKNN({
+    numberOfPoints,
+    k,
+  });
+
   if (!running) {
     return <button onClick={() => setRunning(true)}>Start</button>;
   }
 
   return (
-    <>
-      <button onClick={() => setRunning(false)}>Stop</button>
-      <KNNVisualization numberOfPoints={numberOfPoints} k={k} />
-    </>
+    <SimulationUI
+      useSimulation={knn}
+      canvasComponent={<KNNVisualization state={knn.state} />}
+      configComponent={<div>Config</div>}
+      running={running}
+      onRun={() => setRunning(true)}
+      onStop={() => setRunning(false)}
+    />
   );
 }

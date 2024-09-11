@@ -1,86 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import {
-  generateKGroups,
-  generateRandomPoint,
-  generateRandomPoints,
-  KNN,
-  KNNState,
-} from "~/lib/algos/knn";
+import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { getPinkMaterial, getWhiteMaterial } from "~/lib/utils/materials";
 import { SphereGeometry, Vector3, BufferGeometry } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-
-type AlgoProps = {
-  numberOfPoints: number;
-  k: number;
-};
-
-function useKNN({ numberOfPoints, k }: AlgoProps) {
-  const groups = generateKGroups(k);
-
-  const [state, setState] = useState<KNNState>({
-    config: {
-      points: generateRandomPoints({ k, groups, points: [] }, numberOfPoints),
-      groups,
-      k,
-      queryPoint: {
-        id: "query",
-        coords: { x: 50, y: 50, z: 50 },
-        group: {
-          label: "Current",
-          material: getWhiteMaterial(),
-        },
-      },
-    },
-    steps: [],
-  });
-
-  useEffect(() => {
-    const newPoints = state.config.points.slice(0, numberOfPoints);
-    while (newPoints.length !== numberOfPoints) {
-      newPoints.push(generateRandomPoint({ k, groups, points: newPoints }));
-    }
-
-    setState({
-      ...state,
-      config: {
-        ...state.config,
-        points: newPoints,
-      },
-    });
-  }, [numberOfPoints]);
-
-  useEffect(() => {
-    setState({
-      ...state,
-      config: {
-        ...state.config,
-        points: generateRandomPoints(state.config, numberOfPoints),
-        k,
-      },
-    });
-  }, [k]);
-
-  const handleNext = () => {
-    const nextState = KNN.next(state);
-    setState(nextState);
-  };
-
-  const handleNextMinor = () => {
-    const nextState = KNN.nextMinor(state);
-    setState(nextState);
-  };
-
-  const handlePrevious = () => {
-    const nextState = KNN.previous(state);
-    setState(nextState);
-  };
-
-  return { state, handleNext, handleNextMinor, handlePrevious };
-}
+import { UseKNNReturn } from "@repo/simulations/hooks/useKNN";
+import {
+  getPinkMaterial,
+  getWhiteMaterial,
+} from "@repo/simulations/utils/materials";
+import { KNNState } from "@repo/simulations/algos/knn";
 
 // Custom findLast implementation
 function findLast<T>(
@@ -97,12 +26,7 @@ function findLast<T>(
 
 // TODO: does not yet work quite correct but is close
 
-export default function KNNVisualization({ numberOfPoints, k }: AlgoProps) {
-  const { state, handleNext, handleNextMinor, handlePrevious } = useKNN({
-    numberOfPoints,
-    k,
-  });
-
+export default function KNNVisualization({ state }: { state: KNNState }) {
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
 
   const lastCalculateDistanceStep = findLast(
@@ -117,9 +41,6 @@ export default function KNNVisualization({ numberOfPoints, k }: AlgoProps) {
 
   return (
     <>
-      <button onClick={handleNext}>Next</button>
-      <button onClick={handleNextMinor}>Next Minor</button>
-      <button onClick={handlePrevious}>Previous</button>
       <div className="h-screen w-screen">
         <Canvas
           className="h-screen w-screen"
