@@ -93,7 +93,7 @@ function initializeCentroidsStep(kmeans: KMeansAlgorithm): KMeansStep {
     nextStep: "assignPointsToClusters",
     description: (
       <div>
-        <p>Initializing {k} random centroids:</p>
+        <p>Start by initializing {k} random centroids:</p>
         <ul>
           {centroids.map((centroid, index) => (
             <li key={centroid.id}>
@@ -157,7 +157,9 @@ function updateCentroidsStep(kmeans: KMeansAlgorithm): KMeansStep {
     nextStep: "checkConvergence",
     description: (
       <div>
-        <p>Updating centroid positions:</p>
+        <p>
+          We update the centroids to the mean of the points in each cluster.
+        </p>
         <ul>
           {updatedCentroids.map((centroid, index) => (
             <li key={centroid.id}>
@@ -171,16 +173,30 @@ function updateCentroidsStep(kmeans: KMeansAlgorithm): KMeansStep {
   };
 }
 
+function getStateText(
+  state: "continue" | "maxIterations" | "converged",
+): string {
+  switch (state) {
+    case "continue":
+      return "The algorithm will continue to the next iteration.";
+    case "maxIterations":
+      return "The algorithm has reached the maximum number of iterations.";
+    case "converged":
+      return "The algorithm has converged.";
+  }
+}
+
 function checkConvergenceStep(kmeans: KMeansAlgorithm): KMeansStep {
   const lastConvergenceStep = getPreviousStepOfType(kmeans, "updateCentroids");
   const lastStep = getLastStep(kmeans);
-  let hasConverged = false;
-  if (lastConvergenceStep) {
+  let state = "continue" as "continue" | "maxIterations" | "converged";
+  if (lastStep.state.iteration >= kmeans.config.maxIterations) {
+    state = "maxIterations";
+  } else if (lastConvergenceStep) {
     const { iteration, centroids } = lastStep.state;
     const { maxIterations } = kmeans.config;
 
-    hasConverged =
-      iteration >= maxIterations ||
+    if (
       centroids.every((centroid, index) => {
         const previousCentroid =
           lastConvergenceStep.state.centroids[index]?.coords;
@@ -188,25 +204,30 @@ function checkConvergenceStep(kmeans: KMeansAlgorithm): KMeansStep {
           previousCentroid &&
           calculateDistance(centroid.coords, previousCentroid) === 0
         );
-      });
+      })
+    ) {
+      state = "converged";
+    }
   }
 
   return {
     type: "checkConvergence",
     state: lastStep.state,
-    nextStep: hasConverged ? null : "assignPointsToClusters",
+    nextStep: state === "continue" ? "assignPointsToClusters" : null,
     description: (
       <div>
-        <p>Checking convergence:</p>
+        <p>
+          We check for convergence by comparing the current centroids to the
+          previous centroids. If the centroids do not change, the algorithm has
+          converged. Alternatively, we also stop the algorithm if it has reached
+          the maximum number of iterations.
+        </p>
+        <br />
         <p>
           Current iteration: {lastStep.state.iteration} /{" "}
           {kmeans.config.maxIterations}
         </p>
-        {hasConverged ? (
-          <p>The algorithm has converged or reached the maximum iterations.</p>
-        ) : (
-          <p>The algorithm will continue to the next iteration.</p>
-        )}
+        {getStateText(state)}
       </div>
     ),
   };

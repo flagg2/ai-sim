@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import type { Algorithm, Step } from "../algos/common";
 import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithm";
+import type { ThreeEvent } from "@react-three/fiber";
 
 export function useSimulation<
   TAlgorithm extends Algorithm<Step<any, any>, object>,
@@ -13,6 +14,7 @@ export function useSimulation<
   stepFunction: (algo: TAlgorithm) => TAlgorithm["steps"][number];
 }) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [tooltip, setTooltip] = useState<React.ReactNode | null>(null);
 
   const play = useCallback(() => {
     setIsPlaying(true);
@@ -48,11 +50,22 @@ export function useSimulation<
     setSteps(steps.slice(0, 1));
   }, [steps]);
 
+  const tooltipHandlers = useCallback((tooltip: React.ReactNode) => {
+    return {
+      onPointerOver: (e: ThreeEvent<PointerEvent>) => {
+        e.stopPropagation();
+        setTooltip(tooltip);
+      },
+      onPointerOut: () => setTooltip(null),
+    };
+  }, []);
+
   const lastStep = steps.at(-1) as TAlgorithm["steps"][number];
   const canGoForward = lastStep.nextStep !== null;
 
   return {
     steps,
+    tooltip,
     config,
     lastStep,
     backward,
@@ -63,6 +76,7 @@ export function useSimulation<
     canGoForward,
     canGoBackward: steps.length > 1,
     isPlaying,
+    tooltipHandlers,
   };
 }
 

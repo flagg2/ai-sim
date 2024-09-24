@@ -31,6 +31,7 @@ export default function SimulationUI({
     canGoBackward,
     lastStep,
     steps,
+    tooltip,
   },
   started,
   onStart,
@@ -128,6 +129,14 @@ export default function SimulationUI({
                   {algorithmDescription}
                 </div>
               </div>
+            )}
+          </div>
+          <div className="">
+            {tooltip && (
+              <>
+                <h3 className="text-xl font-bold">Hover Info</h3>
+                {tooltip}
+              </>
             )}
           </div>
         </div>

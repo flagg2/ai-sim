@@ -6,7 +6,7 @@ import SimulationUI from "@repo/ui/components/custom/SimulationUI";
 import { Slider } from "@repo/ui/components/shadcn/slider";
 import { Label } from "@repo/ui/components/custom/Label";
 import Header from "@repo/ui/components/custom/Header";
-import KMeansVisualization from "./algo";
+import KMeansVisualization from "./canvas";
 
 export default function KMeansPage() {
   const [running, setRunning] = useState(false);

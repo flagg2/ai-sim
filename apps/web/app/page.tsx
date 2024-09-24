@@ -10,11 +10,11 @@ const visualizations = [
     description: "Explore the K-Nearest Neighbors algorithm in 3D.",
   },
   {
-    href: "#",
+    href: "/kmeans",
     src: "/placeholder.svg",
-    alt: "Principal Component Analysis",
-    title: "Principal Component Analysis",
-    description: "Visualize the dimensionality reduction of PCA.",
+    alt: "K-Means Clustering",
+    title: "K-Means Clustering",
+    description: "Visualize the K-Means Clustering algorithm in 3D.",
   },
   {
     href: "#",

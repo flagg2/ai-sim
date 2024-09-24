@@ -9,6 +9,7 @@ import {
 } from "../algos/kmeans";
 import { useSimulation } from "./useSimulation";
 import { useAlgorithm } from "./useAlgorithm";
+import { MeshStandardMaterial } from "three";
 
 type AlgoProps = {
   numberOfPoints: number;
@@ -42,7 +43,15 @@ export function useKMeans({ numberOfPoints, k, maxIterations }: AlgoProps) {
 
   useEffect(() => {
     const newPoints = generateRandomPoints(
-      { groups, points: [] },
+      {
+        groups: [
+          {
+            label: "No Group",
+            material: new MeshStandardMaterial({ color: "white" }),
+          },
+        ],
+        points: [],
+      },
       numberOfPoints,
     );
     while (newPoints.length !== numberOfPoints) {
@@ -66,7 +75,6 @@ export function useKMeans({ numberOfPoints, k, maxIterations }: AlgoProps) {
   }, [numberOfPoints]);
 
   useEffect(() => {
-    const newGroups = generateKGroups(k);
     setConfig({
       ...config,
       k,
