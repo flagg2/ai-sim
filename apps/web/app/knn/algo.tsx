@@ -17,9 +17,9 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
 
   return (
     <>
-      <div className="h-screen w-screen">
+      <div className="h-full w-screen">
         <Canvas
-          className="h-screen w-screen"
+          className="h-full w-screen"
           flat
           dpr={[1, 1.5]}
           gl={{ antialias: false }}

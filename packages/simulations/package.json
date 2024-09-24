@@ -6,7 +6,8 @@
     "three": "0.168.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "usehooks-ts": "3.1.0"
+    "usehooks-ts": "3.1.0",
+    "better-react-mathjax": "2.0.3"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -1,39 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import KNNVisualization from "./algo";
-import { useKNN } from "@repo/simulations/hooks/useKNN";
+import { useKMeans } from "@repo/simulations/hooks/useKMeans";
 import SimulationUI from "@repo/ui/components/custom/SimulationUI";
 import { Slider } from "@repo/ui/components/shadcn/slider";
 import { Label } from "@repo/ui/components/custom/Label";
 import Header from "@repo/ui/components/custom/Header";
+import KMeansVisualization from "./algo";
 
-export default function KNNPage() {
+export default function KMeansPage() {
   const [running, setRunning] = useState(false);
 
   const [numberOfPoints, setNumberOfPoints] = useState(10);
   const [k, setK] = useState(3);
-  const [groupCount, setGroupCount] = useState(2);
+  const [maxIterations, setMaxIterations] = useState(10);
 
-  const knn = useKNN({
+  const kmeans = useKMeans({
     numberOfPoints,
     k,
-    groupCount,
+    maxIterations,
   });
 
   return (
     <>
-      <Header title="K-Nearest Neighbors" />
+      <Header title="K-Means Clustering" />
       <SimulationUI
-        simulation={knn}
-        canvasComponent={<KNNVisualization knn={knn} />}
+        simulation={kmeans}
+        canvasComponent={<KMeansVisualization kmeans={kmeans} />}
         configComponent={
-          <KNNConfig
+          <KMeansConfig
             k={k}
-            groupCount={groupCount}
+            maxIterations={maxIterations}
             numberOfPoints={numberOfPoints}
             onNumberOfPointsChange={setNumberOfPoints}
-            onGroupCountChange={setGroupCount}
+            onMaxIterationsChange={setMaxIterations}
             onKChange={setK}
           />
         }
@@ -41,30 +41,30 @@ export default function KNNPage() {
         onStart={() => setRunning(true)}
         onStop={() => setRunning(false)}
         algorithmDescription="
-      KNN is a simple algorithm that is used to classify data points into different categories. It works by finding the k nearest neighbors of a data point and then classifying the data point into the category of the majority of its neighbors.
+      K-means is an unsupervised learning algorithm that partitions a dataset into K clusters. It works by iteratively assigning points to the nearest centroid and then updating the centroids based on the mean of the assigned points.
       "
       />
     </>
   );
 }
 
-type KNNConfigProps = {
+type KMeansConfigProps = {
   k: number;
   numberOfPoints: number;
-  groupCount: number;
+  maxIterations: number;
   onNumberOfPointsChange: (numberOfPoints: number) => void;
   onKChange: (k: number) => void;
-  onGroupCountChange: (groupCount: number) => void;
+  onMaxIterationsChange: (maxIterations: number) => void;
 };
 
-function KNNConfig({
+function KMeansConfig({
   k,
   numberOfPoints,
-  groupCount,
+  maxIterations,
   onNumberOfPointsChange,
   onKChange,
-  onGroupCountChange,
-}: KNNConfigProps) {
+  onMaxIterationsChange,
+}: KMeansConfigProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
       <Label label="Number of points" info="The number of points to generate">
@@ -72,30 +72,30 @@ function KNNConfig({
           value={[numberOfPoints]}
           onValueChange={(value) => onNumberOfPointsChange(value[0]!)}
           min={1}
-          max={20}
+          max={100}
           step={1}
         />
         <div className="text-xs text-darkish-text">{numberOfPoints}</div>
       </Label>
-      <Label label="K" info="The number of nearest neighbors to consider">
+      <Label label="K" info="The number of clusters to create">
         <Slider
           value={[k]}
           onValueChange={(value) => onKChange(value[0]!)}
-          min={1}
+          min={2}
           max={10}
           step={1}
         />
         <div className="text-xs text-darkish-text">{k}</div>
       </Label>
-      <Label label="Group count" info="The number of groups to create">
+      <Label label="Max Iterations" info="Maximum number of iterations">
         <Slider
-          value={[groupCount]}
-          onValueChange={(value) => onGroupCountChange(value[0]!)}
+          value={[maxIterations]}
+          onValueChange={(value) => onMaxIterationsChange(value[0]!)}
           min={1}
-          max={10}
+          max={50}
           step={1}
         />
-        <div className="text-xs text-darkish-text">{groupCount}</div>
+        <div className="text-xs text-darkish-text">{maxIterations}</div>
       </Label>
     </div>
   );

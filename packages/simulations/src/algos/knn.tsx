@@ -1,6 +1,7 @@
 import type { MeshStandardMaterial } from "three";
 import { getMaterial } from "../utils/materials";
 import type { Algorithm, Coords, Group, Simulation, Step } from "./common";
+import { MathJax } from "better-react-mathjax";
 
 export type Point = {
   id: string;
@@ -94,7 +95,17 @@ function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
     nextStep: null, // Algorithm complete
     description: (
       <div>
-        <p>Updating query point to {mostCommonGroup?.label}</p>
+        <p>We've found the most common group among the nearest neighbors.</p>
+        <p>
+          The query point is now classified as:{" "}
+          <strong
+            style={{
+              color: `#${mostCommonGroup?.material.color.getHexString()}`,
+            }}
+          >
+            {mostCommonGroup?.label}
+          </strong>
+        </p>
       </div>
     ),
   };
@@ -126,8 +137,19 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
     nextStep: "updateNearestNeighbors",
     description: (
       <div>
-        <p>Calculating distance between point {currentIndex} and query point</p>
-        <p>Distance: {distance.toFixed(2)}</p>
+        <MathJax>
+          <p>
+            Calculating the distance between point {currentIndex} and the query
+            point:
+          </p>
+          {`$$\\text{distance} = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2} = ${distance.toFixed(2)}$$`}
+          <br />
+          {`$$(x_2-x_1) = ${currentPoint.coords.x - lastStep.state.queryPoint.coords.x}$$`}
+          {`$$(y_2-y_1) = ${currentPoint.coords.y - lastStep.state.queryPoint.coords.y}$$`}
+          {`$$(z_2-z_1) = ${currentPoint.coords.z - lastStep.state.queryPoint.coords.z}$$`}
+          <br />
+          {`$$\\text{distance} = \\sqrt{(${currentPoint.coords.x - lastStep.state.queryPoint.coords.x})^2 + (${currentPoint.coords.y - lastStep.state.queryPoint.coords.y})^2 + (${currentPoint.coords.z - lastStep.state.queryPoint.coords.z})^2} = ${distance.toFixed(2)}$$`}
+        </MathJax>
       </div>
     ),
   };
@@ -152,10 +174,31 @@ function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
     nextStep: isLastPoint ? "updateQueryPoint" : "calculateDistance",
     description: (
       <div>
+        <p>The {knn.config.k} nearest neighbors for the current point are:</p>
+        <ul>
+          {kNearest.map((p) => (
+            <li key={p.id}>
+              Point {p.id} (Group:{" "}
+              <span
+                style={{
+                  color: `#${p.group.material.color.getHexString()}`,
+                }}
+              >
+                {p.group.label}
+              </span>
+              ) Distance:{" "}
+              {lastStep.state.distances
+                ?.find((d) => d.point.id === p.id)
+                ?.distance.toFixed(2)}
+            </li>
+          ))}
+        </ul>
+        <br />
         <p>
-          Updating nearest neighbors for point {lastStep.state.currentIndex}
+          We do this step after each new distance for visualization purposes.
+          Normally, we would wait until we've calculated the distance for all
+          points before updating the nearest neighbors.
         </p>
-        <p>Nearest neighbors: {kNearest.map((p) => p.id).join(", ")}</p>
       </div>
     ),
   };
@@ -184,6 +227,12 @@ function randomValue(similarityTendency: number, group: Group): number {
 }
 
 const defaultGroupSimilarityTendency = 0;
+
+let id = 0;
+
+function getNextId() {
+  return id++;
+}
 
 export function generateRandomPoint({
   groups,
@@ -220,7 +269,7 @@ export function generateRandomPoint({
     return generateRandomPoint({ groups, points });
   }
   return {
-    id: crypto.randomUUID(),
+    id: getNextId().toString(),
     coords: {
       x: randomValue(defaultGroupSimilarityTendency, group),
       y: randomValue(defaultGroupSimilarityTendency, group),

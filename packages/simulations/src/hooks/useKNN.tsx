@@ -30,7 +30,9 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
     },
     initialStep: {
       type: "initial",
-      description: <div>Initial state</div>,
+      description: (
+        <div>We want to determine which group the query point belongs to.</div>
+      ),
       state: {
         currentIndex: 0,
         queryPoint: {
