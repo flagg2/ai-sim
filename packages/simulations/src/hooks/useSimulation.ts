@@ -1,54 +1,26 @@
 import { useCallback, useState } from "react";
 import type { Algorithm, Step } from "../algos/common";
-import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithm";
+import { useRunner } from "./useRunner";
+import { useStepCount } from "./useStepCount";
 import type { ThreeEvent } from "@react-three/fiber";
 
 export function useSimulation<
   TAlgorithm extends Algorithm<Step<any, any>, object>,
 >({
-  algorithm: { steps, config, algorithm, setSteps },
+  algorithm,
   stepFunction,
 }: {
   algorithm: UseAlgorithmReturn<TAlgorithm>;
   stepFunction: (algo: TAlgorithm) => TAlgorithm["steps"][number];
 }) {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const interactiveRunner = useRunner({
+    algorithm,
+    stepFunction,
+  });
   const [tooltip, setTooltip] = useState<React.ReactNode | null>(null);
 
-  const play = useCallback(() => {
-    setIsPlaying(true);
-  }, []);
-
-  const pause = useCallback(() => {
-    setIsPlaying(false);
-  }, []);
-
-  useInterval(
-    () => {
-      if (steps.at(-1)?.nextStep === null) {
-        setIsPlaying(false);
-        return;
-      }
-
-      forward();
-    },
-    isPlaying ? 500 : null,
-  );
-
-  const forward = useCallback(() => {
-    setSteps((prevSteps) => [...prevSteps, stepFunction(algorithm)]);
-  }, [algorithm, stepFunction, setSteps]);
-
-  const backward = useCallback(() => {
-    if (steps.length > 1) {
-      setSteps((prevSteps) => prevSteps.slice(0, -1));
-    }
-  }, [steps, setSteps]);
-
-  const reset = useCallback(() => {
-    setSteps(steps.slice(0, 1));
-  }, [steps]);
+  const totalSteps = useStepCount(algorithm, stepFunction);
 
   const tooltipHandlers = useCallback((tooltip: React.ReactNode) => {
     return {
@@ -60,22 +32,10 @@ export function useSimulation<
     };
   }, []);
 
-  const lastStep = steps.at(-1) as TAlgorithm["steps"][number];
-  const canGoForward = lastStep.nextStep !== null;
-
   return {
-    steps,
+    runner: interactiveRunner,
+    totalSteps,
     tooltip,
-    config,
-    lastStep,
-    backward,
-    forward,
-    reset,
-    play,
-    pause,
-    canGoForward,
-    canGoBackward: steps.length > 1,
-    isPlaying,
     tooltipHandlers,
   };
 }

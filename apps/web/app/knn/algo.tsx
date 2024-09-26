@@ -13,7 +13,7 @@ import { TubeGeometry, CatmullRomCurve3, MeshBasicMaterial } from "three";
 export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
 
-  const { lastStep } = knn;
+  const { lastStep, config } = knn.runner;
 
   return (
     <>
@@ -47,18 +47,18 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
           <mesh
             position={
               new Vector3(
-                knn.lastStep.state.queryPoint.coords.x,
-                knn.lastStep.state.queryPoint.coords.y,
-                knn.lastStep.state.queryPoint.coords.z,
+                lastStep.state.queryPoint.coords.x,
+                lastStep.state.queryPoint.coords.y,
+                lastStep.state.queryPoint.coords.z,
               )
             }
             geometry={sphereGeometry}
             material={
-              knn.lastStep.state.queryPoint.group.material ?? getWhiteMaterial()
+              lastStep.state.queryPoint.group.material ?? getWhiteMaterial()
             }
             scale={10}
           />
-          {knn.config.points.map((point, index) => (
+          {config.points.map((point, index) => (
             <mesh
               key={index}
               material={point.group.material}
@@ -93,9 +93,9 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
                       lastStep.state.distances.at(-1)!.point.coords.z,
                     ),
                     new Vector3(
-                      knn.lastStep.state.queryPoint.coords.x,
-                      knn.lastStep.state.queryPoint.coords.y,
-                      knn.lastStep.state.queryPoint.coords.z,
+                      lastStep.state.queryPoint.coords.x,
+                      lastStep.state.queryPoint.coords.y,
+                      lastStep.state.queryPoint.coords.z,
                     ),
                   ]),
                   20, // tubular segments

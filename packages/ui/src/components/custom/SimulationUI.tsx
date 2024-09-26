@@ -21,17 +21,20 @@ type SimulationUIProps = {
 export default function SimulationUI({
   algorithmDescription,
   simulation: {
-    forward,
-    backward,
-    reset,
-    play,
-    pause,
-    isPlaying,
-    canGoForward,
-    canGoBackward,
-    lastStep,
-    steps,
+    runner: {
+      forward,
+      backward,
+      reset,
+      play,
+      pause,
+      isPlaying,
+      canGoForward,
+      canGoBackward,
+      lastStep,
+      steps,
+    },
     tooltip,
+    totalSteps,
   },
   started,
   onStart,
@@ -117,7 +120,12 @@ export default function SimulationUI({
           <div className="grid gap-2">
             {started ? (
               <>
-                <h3 className="text-xl font-bold">Step {steps.length}</h3>
+                {!totalSteps.isPending && (
+                  <h3 className="text-xl font-bold">
+                    Step {steps.length} of {totalSteps.stepCount}
+                  </h3>
+                )}
+                <h2 className="text-lg font-bold">{lastStep?.title}</h2>
                 <div className="prose text-muted-foreground">
                   {lastStep?.description}
                 </div>

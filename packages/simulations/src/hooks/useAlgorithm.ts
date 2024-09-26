@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Algorithm, Step } from "../algos/common";
 
-export function useAlgorithm<
+export function useAlgorithmState<
   TAlgorithm extends Algorithm<Step<any, any>, object>,
 >({
   initialConfig,
@@ -38,4 +38,4 @@ export function useAlgorithm<
 }
 
 export type UseAlgorithmReturn<TAlgorithm extends Algorithm<any, any>> =
-  ReturnType<typeof useAlgorithm<TAlgorithm>>;
+  ReturnType<typeof useAlgorithmState<TAlgorithm>>;

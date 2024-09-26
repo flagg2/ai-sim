@@ -8,7 +8,7 @@ import {
 } from "../algos/knn";
 import { getWhiteMaterial } from "../utils/materials";
 import { useSimulation } from "./useSimulation";
-import { useAlgorithm } from "./useAlgorithm";
+import { useAlgorithmState } from "./useAlgorithm";
 
 type AlgoProps = {
   numberOfPoints: number;
@@ -22,7 +22,7 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
   const groups = generateKGroups(groupCount);
 
   // TODO: show config even be state?
-  const algorithm = useAlgorithm<KNNAlgorithm>({
+  const algorithmState = useAlgorithmState<KNNAlgorithm>({
     initialConfig: {
       points: generateRandomPoints({ groups, points: [] }, numberOfPoints),
       groups,
@@ -30,6 +30,7 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
     },
     initialStep: {
       type: "initial",
+      title: "Initial State",
       description: (
         <div>We want to determine which group the query point belongs to.</div>
       ),
@@ -50,7 +51,7 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
     },
   });
 
-  const { config, setConfig } = algorithm;
+  const { config, setConfig } = algorithmState;
 
   useEffect(() => {
     const newPoints = config.points.slice(0, numberOfPoints);
@@ -81,7 +82,7 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
   }, [groupCount]);
 
   return useSimulation<KNNAlgorithm>({
-    algorithm,
+    algorithmState,
     stepFunction: stepKNN,
   });
 }

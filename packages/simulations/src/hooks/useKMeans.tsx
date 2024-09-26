@@ -8,7 +8,7 @@ import {
   type Point,
 } from "../algos/kmeans";
 import { useSimulation } from "./useSimulation";
-import { useAlgorithm } from "./useAlgorithm";
+import { useAlgorithmState } from "./useAlgorithm";
 import { MeshStandardMaterial } from "three";
 
 type AlgoProps = {
@@ -20,7 +20,7 @@ type AlgoProps = {
 export function useKMeans({ numberOfPoints, k, maxIterations }: AlgoProps) {
   const groups = generateKGroups(k);
 
-  const algorithm = useAlgorithm<KMeansAlgorithm>({
+  const algorithm = useAlgorithmState<KMeansAlgorithm>({
     initialConfig: {
       k,
       maxIterations,

@@ -1,6 +1,5 @@
-import type { MeshStandardMaterial } from "three";
 import { getMaterial } from "../utils/materials";
-import type { Algorithm, Coords, Group, Simulation, Step } from "./common";
+import type { Algorithm, Coords, Group, Step } from "./common";
 import { MathJax } from "better-react-mathjax";
 
 export type Point = {
@@ -88,6 +87,7 @@ function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
 
   return {
     type: "updateQueryPoint",
+    title: "Update Query Point",
     state: {
       ...lastStep.state,
       queryPoint: updatedQueryPoint,
@@ -126,6 +126,7 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
 
   return {
     type: "calculateDistance",
+    title: "Calculate Distance",
     state: {
       ...lastStep.state,
       distances: [
@@ -139,10 +140,10 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
       <div>
         <MathJax>
           <p>
-            Calculating the distance between point {currentIndex} and the query
-            point:
+            We calculate the euclidean distance between point {currentIndex} and
+            the query point:
           </p>
-          {`$$\\text{distance} = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2} = ${distance.toFixed(2)}$$`}
+          {`$$\\text{distance} = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2}$$`}
           <br />
           {`$$(x_2-x_1) = ${currentPoint.coords.x - lastStep.state.queryPoint.coords.x}$$`}
           {`$$(y_2-y_1) = ${currentPoint.coords.y - lastStep.state.queryPoint.coords.y}$$`}
@@ -167,6 +168,7 @@ function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
 
   return {
     type: "updateNearestNeighbors",
+    title: "Update Nearest Neighbors",
     state: {
       ...lastStep.state,
       nearestNeighbors: kNearest,
@@ -195,9 +197,9 @@ function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
         </ul>
         <br />
         <p>
-          We do this step after each new distance for visualization purposes.
-          Normally, we would wait until we've calculated the distance for all
-          points before updating the nearest neighbors.
+          We do this step after each new distance is calculated for
+          visualization purposes. Normally, we would wait until we've calculated
+          the distance for all points before updating the nearest neighbors.
         </p>
       </div>
     ),
