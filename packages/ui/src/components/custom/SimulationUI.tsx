@@ -1,17 +1,12 @@
 import { Button } from "../shadcn/button";
-import {
-  FaFastBackward,
-  FaBackward,
-  FaForward,
-  FaPlay,
-  FaPause,
-  FaBars,
-} from "react-icons/fa";
+import { FaBackward, FaForward, FaPlay, FaPause } from "react-icons/fa";
+import { IoMdMore } from "react-icons/io";
+import { VscSettings } from "react-icons/vsc";
 import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
 import { Step } from "@repo/simulations/algos/common";
 import { Slider } from "../shadcn/slider";
 import { Drawer, DrawerContent, DrawerTrigger } from "../shadcn/drawer";
-import { useState, useEffect } from "react";
+import Loader from "./Loader";
 
 type SimulationUIProps = {
   algorithmDescription: string;
@@ -24,57 +19,47 @@ export default function SimulationUI({
   canvasComponent,
   ...props
 }: SimulationUIProps) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768); // Adjust breakpoint as needed
-    };
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
-    return () => window.removeEventListener("resize", checkIsMobile);
-  }, []);
-
-  if (isMobile) {
-    return (
-      <div className="flex flex-col w-full h-[calc(100vh-68px)]">
-        <div className="flex-1 relative">
-          <div className="w-full h-full flex items-center justify-center">
-            {canvasComponent}
-          </div>
-          <Drawer>
-            <MobileControls {...props} canvasComponent={canvasComponent} />
-
-            <DrawerContent>
-              <div className="p-4">
-                <SimulationControls {...props} />
-              </div>
-            </DrawerContent>
-          </Drawer>
-        </div>
-      </div>
-    );
-  }
-
-  // Desktop layout remains unchanged
   return (
-    <div className="flex flex-col w-full h-[calc(100vh-68px)]">
-      <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
-        <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
-          <div className="w-full h-full flex items-center justify-center">
-            {canvasComponent}
+    <div className="flex flex-col w-full  h-[calc(100vh-68px)]">
+      {/* Mobile layout */}
+      <div className="xl:hidden flex-1 relative">
+        <div className="w-full h-full flex items-center justify-center">
+          {canvasComponent}
+        </div>
+        {props.simulation.tooltip && (
+          <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px] z-10">
+            {props.simulation.tooltip}
           </div>
-          {props.simulation.tooltip && (
-            <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px]">
-              <h3 className="text-xl font-bold mb-2">Hover Info</h3>
-              {props.simulation.tooltip}
+        )}
+        <Drawer>
+          <MobileControls {...props} canvasComponent={canvasComponent} />
+
+          <DrawerContent className="h-full max-h-[80vh]">
+            <div className="p-4 flex flex-col h-full">
+              <SimulationControls {...props} />
             </div>
-          )}
-        </div>
-        <div className="bg-background rounded-lg border p-6 flex flex-col gap-6">
-          <SimulationControls {...props} />
-        </div>
-      </main>
+          </DrawerContent>
+        </Drawer>
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden xl:flex flex-col w-full h-[65vh] xl:h-[calc(100vh-68px)]">
+        <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
+          <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
+            <div className="w-full h-full flex items-center justify-center">
+              {canvasComponent}
+            </div>
+            {props.simulation.tooltip && (
+              <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px]">
+                {props.simulation.tooltip}
+              </div>
+            )}
+          </div>
+          <div className="bg-background rounded-lg border p-6 flex flex-col gap-6">
+            <SimulationControls {...props} />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
@@ -87,9 +72,7 @@ function MobileControls({ simulation: { runner } }: SimulationUIProps) {
           Start
         </Button>
         <DrawerTrigger asChild>
-          <Button variant="outline" size="icon">
-            <FaBars className="h-5 w-5" />
-          </Button>
+          <Button variant="outline">Configure</Button>
         </DrawerTrigger>
       </div>
     );
@@ -97,18 +80,16 @@ function MobileControls({ simulation: { runner } }: SimulationUIProps) {
   if (runner.status !== "running") {
     return null;
   }
-  const { forward, backward, canGoForward, canGoBackward } = runner;
 
   return (
     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
       <RunningButtons
         runner={runner}
         variant="outline"
+        showReset={false}
         extraButtons={
           <DrawerTrigger asChild>
-            <Button variant="outline" size="icon">
-              <FaBars className="h-5 w-5" />
-            </Button>
+            <Button variant="outline">Show Step</Button>
           </DrawerTrigger>
         }
       />
@@ -132,7 +113,7 @@ function SimulationControls({
     return (
       <div className="bg-background rounded-lg border p-6 flex flex-col gap-6">
         <div className="grid gap-2">
-          <h3 className="text-xl font-bold">Configuration</h3>
+          <h3 className="hidden xl:block text-xl font-bold">Configuration</h3>
           {configComponent}
           <Button onClick={start}>Run</Button>
         </div>
@@ -147,49 +128,31 @@ function SimulationControls({
   }
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-background flex items-center justify-center h-full">
+        <Loader />
+      </div>
+    );
   }
 
-  const {
-    forward,
-    backward,
-    reset,
-    play,
-    pause,
-    stop,
-    canGoForward,
-    canGoBackward,
-    currentStep,
-    isPlaying,
-    totalStepCount,
-    currentStepIndex,
-  } = runner;
+  const { currentStep, totalStepCount, currentStepIndex } = runner;
 
   return (
-    <div className="bg-background rounded-lg border p-6 flex flex-col gap-6">
+    <div className="bg-background rounded-lg border p-6 flex flex-col-reverse lg:flex-col gap-6 h-full">
       <div className="grid gap-2">
         <>
-          <h3 className="text-xl font-bold">Simulation Controls</h3>
+          <h3 className="hidden lg:block text-xl font-bold">
+            Simulation Controls
+          </h3>
           <div className="flex items-center gap-2">
             <RunningButtons runner={runner} />
           </div>
-          <Button
-            onClick={() => {
-              stop();
-              reset();
-            }}
-          >
-            Stop
-          </Button>
         </>
       </div>
-      <div className="grid gap-2">
-        <>
-          <h3 className="text-xl font-bold">
-            Step {currentStep.index} of {totalStepCount}
-          </h3>
+      <div className="flex-grow flex flex-col">
+        <div className="flex flex-col-reverse lg:flex-col gap-2 flex-grow">
           <Slider
-            className="mb-4"
+            className="lg:mb-4"
             // value={[currentStep.index]}
             min={0}
             max={totalStepCount - 1}
@@ -198,11 +161,18 @@ function SimulationControls({
               runner.goto(value[0]!);
             }}
           />
-          <h2 className="text-lg font-bold">{currentStep.title}</h2>
-          <div className="prose text-muted-foreground">
-            {currentStep.description}
+          <div className="flex flex-col gap-2 flex-grow">
+            <div className="text-md font-bold flex justify-between">
+              <span>{currentStep.title}</span>
+              <span className="text-muted-foreground">
+                {currentStep.index} / {totalStepCount}
+              </span>
+            </div>
+            <div className="prose text-muted-foreground max-h-[44vh] xl:max-h-[60vh] overflow-scroll">
+              {currentStep.description}
+            </div>
           </div>
-        </>
+        </div>
       </div>
     </div>
   );
@@ -212,10 +182,12 @@ function RunningButtons({
   runner,
   variant = "ghost",
   extraButtons,
+  showReset = true,
 }: {
   runner: UseSimulationReturn<any, any>["runner"];
   variant?: "ghost" | "outline";
   extraButtons?: React.ReactNode;
+  showReset?: boolean;
 }) {
   if (runner.status !== "running") {
     return null;
@@ -226,21 +198,13 @@ function RunningButtons({
     forward,
     pause,
     play,
+    stop,
     canGoBackward,
     canGoForward,
     isPlaying,
   } = runner;
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        variant={variant}
-        size="icon"
-        onClick={reset}
-        disabled={!canGoBackward}
-      >
-        <FaFastBackward className="h-5 w-5" />
-        <span className="sr-only">Reset</span>
-      </Button>
+    <div className="flex items-center gap-2 w-full">
       <Button
         variant={variant}
         size="icon"
@@ -276,6 +240,20 @@ function RunningButtons({
         <span className="sr-only">Forward</span>
       </Button>
       {extraButtons}
+      {showReset && (
+        <Button
+          className="ml-auto"
+          variant={variant}
+          size="icon"
+          onClick={() => {
+            stop();
+            reset();
+          }}
+        >
+          <VscSettings className="h-5 w-5" />
+          <span className="sr-only">Settings</span>
+        </Button>
+      )}
     </div>
   );
 }

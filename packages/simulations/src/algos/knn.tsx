@@ -2,6 +2,8 @@ import { getMaterial } from "../utils/materials";
 import type { Algorithm, Coords, Group, Step } from "./common";
 import { MathJax } from "better-react-mathjax";
 
+// TODO: one point gets skipped - evident with few points
+
 export type Point = {
   id: string;
   coords: Coords;
@@ -145,13 +147,14 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
             We calculate the euclidean distance between point {currentIndex} and
             the query point:
           </p>
-          {`$$\\text{distance} = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2}$$`}
+          {/* Overflows on mobile - find a solution */}
+          {/* {`$$\\text{distance} = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2}$$`}
           <br />
           {`$$(x_2-x_1) = ${currentPoint.coords.x - lastStep.state.queryPoint.coords.x}$$`}
           {`$$(y_2-y_1) = ${currentPoint.coords.y - lastStep.state.queryPoint.coords.y}$$`}
           {`$$(z_2-z_1) = ${currentPoint.coords.z - lastStep.state.queryPoint.coords.z}$$`}
           <br />
-          {`$$\\text{distance} = \\sqrt{(${currentPoint.coords.x - lastStep.state.queryPoint.coords.x})^2 + (${currentPoint.coords.y - lastStep.state.queryPoint.coords.y})^2 + (${currentPoint.coords.z - lastStep.state.queryPoint.coords.z})^2} = ${distance.toFixed(2)}$$`}
+          {`$$\\text{distance} = \\sqrt{(${currentPoint.coords.x - lastStep.state.queryPoint.coords.x})^2 + (${currentPoint.coords.y - lastStep.state.queryPoint.coords.y})^2 + (${currentPoint.coords.z - lastStep.state.queryPoint.coords.z})^2} = ${distance.toFixed(2)}$$`} */}
         </MathJax>
       </div>
     ),
