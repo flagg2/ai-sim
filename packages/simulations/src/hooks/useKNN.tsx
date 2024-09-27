@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import {
   generateKGroups,
-  generateRandomPoint,
   generateRandomPoints,
   stepKNN,
-  type KNNAlgorithm,
+  type KNNConfig,
+  type KNNStep,
 } from "../algos/knn";
 import { getWhiteMaterial } from "../utils/materials";
 import { useSimulation } from "./useSimulation";
-import { useAlgorithmState } from "./useAlgorithm";
 
 type AlgoProps = {
   numberOfPoints: number;
@@ -21,68 +20,50 @@ type AlgoProps = {
 export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
   const groups = generateKGroups(groupCount);
 
-  // TODO: show config even be state?
-  const algorithmState = useAlgorithmState<KNNAlgorithm>({
-    initialConfig: {
-      points: generateRandomPoints({ groups, points: [] }, numberOfPoints),
-      groups,
-      k,
-    },
-    initialStep: {
-      type: "initial",
-      title: "Initial State",
-      description: (
-        <div>We want to determine which group the query point belongs to.</div>
-      ),
-      state: {
-        currentIndex: 0,
-        queryPoint: {
-          id: "query",
-          coords: { x: 50, y: 50, z: 50 },
-          group: {
-            label: "Current",
-            material: getWhiteMaterial(),
+  const config = useMemo(
+    () =>
+      ({
+        points: generateRandomPoints({ groups, points: [] }, numberOfPoints),
+        groups,
+        k,
+      }) as KNNConfig,
+    [numberOfPoints, k, groupCount],
+  );
+
+  const initialStep = useMemo(
+    () =>
+      ({
+        type: "initial",
+        title: "Initial State",
+        description: (
+          <div>
+            We want to determine which group the query point belongs to.
+          </div>
+        ),
+        index: 1,
+        state: {
+          currentIndex: 0,
+          queryPoint: {
+            id: "query",
+            coords: { x: 50, y: 50, z: 50 },
+            group: {
+              label: "Current",
+              material: getWhiteMaterial(),
+            },
           },
+          nearestNeighbors: [],
+          distances: [],
         },
-        nearestNeighbors: [],
-        distances: [],
-      },
-      nextStep: "calculateDistance",
+        nextStep: "calculateDistance",
+      }) as KNNStep,
+    [config],
+  );
+
+  return useSimulation<KNNStep, KNNConfig>({
+    initial: {
+      step: initialStep,
+      config,
     },
-  });
-
-  const { config, setConfig } = algorithmState;
-
-  useEffect(() => {
-    const newPoints = config.points.slice(0, numberOfPoints);
-    while (newPoints.length !== numberOfPoints) {
-      newPoints.push(generateRandomPoint({ groups, points: newPoints }));
-    }
-
-    setConfig({
-      ...config,
-      points: newPoints,
-    });
-  }, [numberOfPoints]);
-
-  useEffect(() => {
-    setConfig({
-      ...config,
-      points: generateRandomPoints(config, numberOfPoints),
-      k,
-    });
-  }, [k]);
-
-  useEffect(() => {
-    setConfig({
-      ...config,
-      points: generateRandomPoints(config, numberOfPoints),
-      groups,
-    });
-  }, [groupCount]);
-
-  return useSimulation<KNNAlgorithm>({
-    algorithmState,
     stepFunction: stepKNN,
   });
 }

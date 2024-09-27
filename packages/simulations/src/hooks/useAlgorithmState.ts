@@ -12,7 +12,7 @@ export function useAlgorithmState<
 }) {
   const [steps, setSteps] = useState<TAlgorithm["steps"]>([initialStep]);
   const [config, setConfig] = useState<TAlgorithm["config"]>(initialConfig);
-  const [algorithm, setAlgorithm] = useState<TAlgorithm>(
+  const [algorithmState, setAlgorithm] = useState<TAlgorithm>(
     () =>
       ({
         steps,
@@ -28,10 +28,16 @@ export function useAlgorithmState<
     }));
   }, [steps, config]);
 
+  useEffect(() => {
+    setSteps([initialStep]);
+    setConfig(initialConfig);
+  }, [initialStep, initialConfig]);
+
   return {
     config,
     steps,
-    algorithm,
+    algorithmState,
+    initialStep,
     setConfig,
     setSteps,
   };

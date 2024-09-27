@@ -8,7 +8,7 @@ import {
   type Point,
 } from "../algos/kmeans";
 import { useSimulation } from "./useSimulation";
-import { useAlgorithmState } from "./useAlgorithm";
+import { useAlgorithmState } from "./useAlgorithmState";
 import { MeshStandardMaterial } from "three";
 
 type AlgoProps = {

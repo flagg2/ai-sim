@@ -20,9 +20,9 @@ type KNNStepState = {
   queryPoint: Point;
 };
 
-type KNNStep = Step<KNNStepState, KNNStepType>;
+export type KNNStep = Step<KNNStepState, KNNStepType>;
 
-type KNNConfig = {
+export type KNNConfig = {
   points: Point[];
   k: number;
   groups: Group[];
@@ -88,6 +88,7 @@ function updateQueryPointStep(knn: KNNAlgorithm): KNNStep {
   return {
     type: "updateQueryPoint",
     title: "Update Query Point",
+    index: lastStep.index + 1,
     state: {
       ...lastStep.state,
       queryPoint: updatedQueryPoint,
@@ -127,6 +128,7 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
   return {
     type: "calculateDistance",
     title: "Calculate Distance",
+    index: lastStep.index + 1,
     state: {
       ...lastStep.state,
       distances: [
@@ -159,7 +161,7 @@ function calculateDistanceStep(knn: KNNAlgorithm): KNNStep {
 function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
   const lastStep = getLastStep(knn);
   const kNearest = lastStep.state
-    .distances!.sort((a, b) => a.distance - b.distance)
+    .distances!.toSorted((a, b) => a.distance - b.distance)
     .slice(0, knn.config.k)
     .map((d) => d.point);
 
@@ -169,6 +171,7 @@ function updateNearestNeighborsStep(knn: KNNAlgorithm): KNNStep {
   return {
     type: "updateNearestNeighbors",
     title: "Update Nearest Neighbors",
+    index: lastStep.index + 1,
     state: {
       ...lastStep.state,
       nearestNeighbors: kNearest,

@@ -1,26 +1,34 @@
 import { useCallback, useState } from "react";
 import type { Algorithm, Step } from "../algos/common";
-import type { UseAlgorithmReturn } from "./useAlgorithm";
+import { useAlgorithmState } from "./useAlgorithmState";
 import { useRunner } from "./useRunner";
-import { useStepCount } from "./useStepCount";
 import type { ThreeEvent } from "@react-three/fiber";
 
 export function useSimulation<
-  TAlgorithm extends Algorithm<Step<any, any>, object>,
+  TStep extends Step<any, any>,
+  TConfig extends object,
 >({
-  algorithm,
+  initial,
   stepFunction,
 }: {
-  algorithm: UseAlgorithmReturn<TAlgorithm>;
-  stepFunction: (algo: TAlgorithm) => TAlgorithm["steps"][number];
+  initial: {
+    step: TStep;
+    config: TConfig;
+  };
+  stepFunction: (
+    algo: Algorithm<TStep, TConfig>,
+  ) => Algorithm<TStep, TConfig>["steps"][number];
 }) {
+  const interactiveRunnerState = useAlgorithmState({
+    initialConfig: initial.config,
+    initialStep: initial.step,
+  });
+
   const interactiveRunner = useRunner({
-    algorithm,
+    state: interactiveRunnerState as any,
     stepFunction,
   });
   const [tooltip, setTooltip] = useState<React.ReactNode | null>(null);
-
-  const totalSteps = useStepCount(algorithm, stepFunction);
 
   const tooltipHandlers = useCallback((tooltip: React.ReactNode) => {
     return {
@@ -34,11 +42,12 @@ export function useSimulation<
 
   return {
     runner: interactiveRunner,
-    totalSteps,
     tooltip,
     tooltipHandlers,
   };
 }
 
-export type UseSimulationReturn<TAlgorithm extends Algorithm<any, any>> =
-  ReturnType<typeof useSimulation<TAlgorithm>>;
+export type UseSimulationReturn<
+  TStep extends Step<any, any>,
+  TConfig extends object,
+> = ReturnType<typeof useSimulation<TStep, TConfig>>;

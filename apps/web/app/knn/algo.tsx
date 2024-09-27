@@ -13,7 +13,10 @@ import { TubeGeometry, CatmullRomCurve3, MeshBasicMaterial } from "three";
 export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
 
-  const { lastStep, config } = knn.runner;
+  const { tooltipHandlers } = knn;
+  const { currentStep, config } = knn.runner;
+
+  console.log(currentStep.state);
 
   return (
     <>
@@ -47,14 +50,31 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
           <mesh
             position={
               new Vector3(
-                lastStep.state.queryPoint.coords.x,
-                lastStep.state.queryPoint.coords.y,
-                lastStep.state.queryPoint.coords.z,
+                currentStep.state.queryPoint.coords.x,
+                currentStep.state.queryPoint.coords.y,
+                currentStep.state.queryPoint.coords.z,
               )
             }
+            {...tooltipHandlers(
+              <div>
+                Query Point
+                <br />
+                Coords: {currentStep.state.queryPoint.coords.x}&nbsp;
+                {currentStep.state.queryPoint.coords.y}&nbsp;
+                {currentStep.state.queryPoint.coords.z}
+                <br />
+                <span
+                  style={{
+                    color: `#${currentStep.state.queryPoint.group.material.color.getHexString()}`,
+                  }}
+                >
+                  {currentStep.state.queryPoint.group.label}
+                </span>
+              </div>,
+            )}
             geometry={sphereGeometry}
             material={
-              lastStep.state.queryPoint.group.material ?? getWhiteMaterial()
+              currentStep.state.queryPoint.group.material ?? getWhiteMaterial()
             }
             scale={10}
           />
@@ -63,39 +83,53 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
               key={index}
               material={point.group.material}
               geometry={sphereGeometry}
+              {...tooltipHandlers(
+                <div>
+                  Point {point.id} <br />
+                  Coords: {point.coords.x} {point.coords.y} {point.coords.z}
+                  <br />
+                  <span
+                    style={{
+                      color: `#${point.group.material.color.getHexString()}`,
+                    }}
+                  >
+                    {point.group.label}
+                  </span>
+                </div>,
+              )}
               position={
                 new Vector3(point.coords.x, point.coords.y, point.coords.z)
               }
               scale={10}
             />
           ))}
-          {lastStep.state.nearestNeighbors?.map((point, index) => {
+          {currentStep.state.nearestNeighbors?.map((point, index) => {
             const curve = new CatmullRomCurve3([
               new Vector3(point.coords.x, point.coords.y, point.coords.z),
               new Vector3(
-                lastStep.state.queryPoint.coords.x,
-                lastStep.state.queryPoint.coords.y,
-                lastStep.state.queryPoint.coords.z,
+                currentStep.state.queryPoint.coords.x,
+                currentStep.state.queryPoint.coords.y,
+                currentStep.state.queryPoint.coords.z,
               ),
             ]);
             const geometry = new TubeGeometry(curve, 20, 0.5, 8, false);
             const material = new MeshBasicMaterial({ color: "white" });
             return <mesh key={index} geometry={geometry} material={material} />;
           })}
-          {lastStep.type === "calculateDistance" && (
+          {currentStep.type === "calculateDistance" && (
             <mesh
               geometry={
                 new TubeGeometry(
                   new CatmullRomCurve3([
                     new Vector3(
-                      lastStep.state.distances.at(-1)!.point.coords.x,
-                      lastStep.state.distances.at(-1)!.point.coords.y,
-                      lastStep.state.distances.at(-1)!.point.coords.z,
+                      currentStep.state.distances.at(-1)!.point.coords.x,
+                      currentStep.state.distances.at(-1)!.point.coords.y,
+                      currentStep.state.distances.at(-1)!.point.coords.z,
                     ),
                     new Vector3(
-                      lastStep.state.queryPoint.coords.x,
-                      lastStep.state.queryPoint.coords.y,
-                      lastStep.state.queryPoint.coords.z,
+                      currentStep.state.queryPoint.coords.x,
+                      currentStep.state.queryPoint.coords.y,
+                      currentStep.state.queryPoint.coords.z,
                     ),
                   ]),
                   20, // tubular segments

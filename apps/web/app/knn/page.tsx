@@ -9,8 +9,6 @@ import { Label } from "@repo/ui/components/custom/Label";
 import Header from "@repo/ui/components/custom/Header";
 
 export default function KNNPage() {
-  const [running, setRunning] = useState(false);
-
   const [numberOfPoints, setNumberOfPoints] = useState(10);
   const [k, setK] = useState(3);
   const [groupCount, setGroupCount] = useState(2);
@@ -37,9 +35,6 @@ export default function KNNPage() {
             onKChange={setK}
           />
         }
-        started={running}
-        onStart={() => setRunning(true)}
-        onStop={() => setRunning(false)}
         algorithmDescription="
       KNN is a simple algorithm that is used to classify data points into different categories. It works by finding the k nearest neighbors of a data point and then classifying the data point into the category of the majority of its neighbors.
       "

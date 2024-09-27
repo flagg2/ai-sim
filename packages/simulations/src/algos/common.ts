@@ -16,6 +16,7 @@ export type Group = {
 };
 
 export type Step<TState extends object, TStepType extends string> = {
+  index: number;
   type: TStepType | "initial";
   title: string;
   description: React.ReactNode;
