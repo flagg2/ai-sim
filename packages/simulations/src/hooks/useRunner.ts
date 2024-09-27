@@ -16,6 +16,7 @@ export function useRunner<
 }):
   | {
       currentStep: TAlgorithm["steps"][number];
+      currentStepIndex: number;
       config: TAlgorithm["config"];
       start: () => void;
       status: "configuring";
@@ -23,6 +24,7 @@ export function useRunner<
   | {
       status: "loading";
       currentStep: TAlgorithm["steps"][number];
+      currentStepIndex: number;
       config: TAlgorithm["config"];
     }
   | {
@@ -115,6 +117,7 @@ export function useRunner<
   if (!isStarted) {
     return {
       currentStep: algorithmState.steps[0]!,
+      currentStepIndex: 0,
       config,
       start,
       status: "configuring",
@@ -125,6 +128,7 @@ export function useRunner<
     return {
       status: "loading",
       currentStep: algorithmState.steps[0]!,
+      currentStepIndex: 0,
       config,
     };
   }

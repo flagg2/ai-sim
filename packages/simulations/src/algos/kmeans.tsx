@@ -20,11 +20,12 @@ type KMeansStepState = {
   iteration: number;
 };
 
-type KMeansStep = Step<KMeansStepState, KMeansStepType>;
+export type KMeansStep = Step<KMeansStepState, KMeansStepType>;
 
-type KMeansConfig = {
+export type KMeansConfig = {
   k: number;
   maxIterations: number;
+  initialPoints: Point[];
 };
 
 export type KMeansAlgorithm = Algorithm<KMeansStep, KMeansConfig>;
@@ -79,11 +80,14 @@ export function stepKMeans(kmeans: KMeansAlgorithm): KMeansStep {
 }
 
 function initializeCentroidsStep(kmeans: KMeansAlgorithm): KMeansStep {
-  const { points } = kmeans.steps.at(-1)!.state;
+  const lastStep = getLastStep(kmeans);
+  const { points } = lastStep.state;
   const { k } = kmeans.config;
   const centroids = generateRandomCentroids(points, k);
 
   return {
+    index: lastStep.index + 1,
+    title: "Initialize Centroids",
     type: "initializeCentroids",
     state: {
       points,
@@ -117,6 +121,8 @@ function assignPointsToClustersStep(kmeans: KMeansAlgorithm): KMeansStep {
   });
 
   return {
+    index: lastStep.index + 1,
+    title: "Assign Points to Clusters",
     type: "assignPointsToClusters",
     state: {
       ...lastStep.state,
@@ -148,6 +154,8 @@ function updateCentroidsStep(kmeans: KMeansAlgorithm): KMeansStep {
   });
 
   return {
+    index: lastStep.index + 1,
+    title: "Update Centroids",
     type: "updateCentroids",
     state: {
       ...lastStep.state,
@@ -211,6 +219,8 @@ function checkConvergenceStep(kmeans: KMeansAlgorithm): KMeansStep {
   }
 
   return {
+    index: lastStep.index + 1,
+    title: "Check Convergence",
     type: "checkConvergence",
     state: lastStep.state,
     nextStep: state === "continue" ? "assignPointsToClusters" : null,

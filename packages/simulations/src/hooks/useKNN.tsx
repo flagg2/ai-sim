@@ -18,17 +18,16 @@ type AlgoProps = {
 // TODO: maybe make even more generic, export setconfig and dont use useEffect to update points
 
 export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
-  const groups = generateKGroups(groupCount);
+  const config = useMemo(() => {
+    const groups = generateKGroups(groupCount);
+    const points = generateRandomPoints({ groups, points: [] }, numberOfPoints);
 
-  const config = useMemo(
-    () =>
-      ({
-        points: generateRandomPoints({ groups, points: [] }, numberOfPoints),
-        groups,
-        k,
-      }) as KNNConfig,
-    [numberOfPoints, k, groupCount],
-  );
+    return {
+      points,
+      groups,
+      k,
+    } as KNNConfig;
+  }, [numberOfPoints, k, groupCount]);
 
   const initialStep = useMemo(
     () =>

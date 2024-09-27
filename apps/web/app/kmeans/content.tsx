@@ -15,7 +15,8 @@ export default function KMeansVisualizationContent({
   console.log(kmeans);
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
 
-  const { lastStep, steps, tooltipHandlers } = kmeans;
+  const { tooltipHandlers } = kmeans;
+  const { currentStep, currentStepIndex } = kmeans.runner;
 
   return (
     <>
@@ -41,7 +42,7 @@ export default function KMeansVisualizationContent({
       <axesHelper scale={200} />
 
       {/* Render points */}
-      {lastStep.state.points.map((point, index) => (
+      {currentStep.state.points.map((point, index) => (
         <mesh
           key={index}
           {...tooltipHandlers(
@@ -59,7 +60,7 @@ export default function KMeansVisualizationContent({
             </div>,
           )}
           material={
-            steps.length <= 2 ? getWhiteMaterial() : point.group.material
+            currentStepIndex < 2 ? getWhiteMaterial() : point.group.material
           }
           geometry={sphereGeometry}
           position={new Vector3(point.coords.x, point.coords.y, point.coords.z)}
@@ -68,7 +69,7 @@ export default function KMeansVisualizationContent({
       ))}
 
       {/* Render centroids */}
-      {lastStep.state.centroids.map((centroid, index) => (
+      {currentStep.state.centroids.map((centroid, index) => (
         <mesh
           key={`centroid-${index}`}
           {...tooltipHandlers(
@@ -95,9 +96,9 @@ export default function KMeansVisualizationContent({
       ))}
 
       {/* Render lines between centroids and their cluster points */}
-      {steps.length > 2 &&
-        lastStep.state.centroids.map((centroid, centroidIndex) =>
-          lastStep.state.points
+      {currentStepIndex > 1 &&
+        currentStep.state.centroids.map((centroid, centroidIndex) =>
+          currentStep.state.points
             .filter((point) => point.group.label === centroid.group.label)
             .map((point, pointIndex) => {
               const curve = new CatmullRomCurve3([

@@ -9,8 +9,6 @@ import Header from "@repo/ui/components/custom/Header";
 import KMeansVisualization from "./canvas";
 
 export default function KMeansPage() {
-  const [running, setRunning] = useState(false);
-
   const [numberOfPoints, setNumberOfPoints] = useState(10);
   const [k, setK] = useState(3);
   const [maxIterations, setMaxIterations] = useState(10);
@@ -37,9 +35,6 @@ export default function KMeansPage() {
             onKChange={setK}
           />
         }
-        started={running}
-        onStart={() => setRunning(true)}
-        onStop={() => setRunning(false)}
         algorithmDescription="
       K-means is an unsupervised learning algorithm that partitions a dataset into K clusters. It works by iteratively assigning points to the nearest centroid and then updating the centroids based on the mean of the assigned points.
       "

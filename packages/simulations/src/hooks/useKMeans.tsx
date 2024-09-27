@@ -1,14 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   generateKGroups,
-  generateRandomPoint,
   generateRandomPoints,
   stepKMeans,
-  type KMeansAlgorithm,
-  type Point,
+  type KMeansConfig,
+  type KMeansStep,
 } from "../algos/kmeans";
 import { useSimulation } from "./useSimulation";
-import { useAlgorithmState } from "./useAlgorithmState";
 import { MeshStandardMaterial } from "three";
 
 type AlgoProps = {
@@ -18,31 +16,9 @@ type AlgoProps = {
 };
 
 export function useKMeans({ numberOfPoints, k, maxIterations }: AlgoProps) {
-  const groups = generateKGroups(k);
-
-  const algorithm = useAlgorithmState<KMeansAlgorithm>({
-    initialConfig: {
-      k,
-      maxIterations,
-    },
-    initialStep: {
-      type: "initial",
-      description: (
-        <div>We will cluster the points into {k} groups using K-means.</div>
-      ),
-      state: {
-        points: [],
-        centroids: [],
-        iteration: 0,
-      },
-      nextStep: "initializeCentroids",
-    },
-  });
-
-  const { config, setConfig, setSteps } = algorithm;
-
-  useEffect(() => {
-    const newPoints = generateRandomPoints(
+  const config = useMemo(() => {
+    //  const groups = generateKGroups(k);
+    const points = generateRandomPoints(
       {
         groups: [
           {
@@ -54,42 +30,40 @@ export function useKMeans({ numberOfPoints, k, maxIterations }: AlgoProps) {
       },
       numberOfPoints,
     );
-    while (newPoints.length !== numberOfPoints) {
-      newPoints.push(generateRandomPoint({ groups, points: newPoints }));
-    }
 
-    setSteps([
-      {
+    return {
+      initialPoints: points,
+      // groups,
+      k,
+      maxIterations,
+    } as KMeansConfig;
+  }, [numberOfPoints, k, maxIterations]);
+
+  const initialStep = useMemo(
+    () =>
+      ({
+        index: 1,
         type: "initial",
+        title: "Initial State",
         description: (
           <div>We will cluster the points into {k} groups using K-means.</div>
         ),
         state: {
-          points: newPoints,
+          // TODO:
+          points: config.initialPoints,
           centroids: [],
           iteration: 0,
         },
         nextStep: "initializeCentroids",
-      },
-    ]);
-  }, [numberOfPoints]);
+      }) as KMeansStep,
+    [config],
+  );
 
-  useEffect(() => {
-    setConfig({
-      ...config,
-      k,
-    });
-  }, [k]);
-
-  useEffect(() => {
-    setConfig({
-      ...config,
-      maxIterations,
-    });
-  }, [maxIterations]);
-
-  return useSimulation<KMeansAlgorithm>({
-    algorithm,
+  return useSimulation<KMeansStep, KMeansConfig>({
+    initial: {
+      step: initialStep,
+      config,
+    },
     stepFunction: stepKMeans,
   });
 }
