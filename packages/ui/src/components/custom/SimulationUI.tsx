@@ -5,10 +5,13 @@ import {
   FaForward,
   FaPlay,
   FaPause,
+  FaBars,
 } from "react-icons/fa";
 import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
 import { Step } from "@repo/simulations/algos/common";
 import { Slider } from "../shadcn/slider";
+import { Drawer, DrawerContent, DrawerTrigger } from "../shadcn/drawer";
+import { useState, useEffect } from "react";
 
 type SimulationUIProps = {
   algorithmDescription: string;
@@ -21,6 +24,39 @@ export default function SimulationUI({
   canvasComponent,
   ...props
 }: SimulationUIProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768); // Adjust breakpoint as needed
+    };
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col w-full h-[calc(100vh-68px)]">
+        <div className="flex-1 relative">
+          <div className="w-full h-full flex items-center justify-center">
+            {canvasComponent}
+          </div>
+          <Drawer>
+            <MobileControls {...props} canvasComponent={canvasComponent} />
+
+            <DrawerContent>
+              <div className="p-4">
+                <SimulationControls {...props} />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop layout remains unchanged
   return (
     <div className="flex flex-col w-full h-[calc(100vh-68px)]">
       <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
@@ -39,6 +75,43 @@ export default function SimulationUI({
           <SimulationControls {...props} />
         </div>
       </main>
+    </div>
+  );
+}
+
+function MobileControls({ simulation: { runner } }: SimulationUIProps) {
+  if (runner.status === "configuring") {
+    return (
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
+        <Button variant="outline" onClick={runner.start}>
+          Start
+        </Button>
+        <DrawerTrigger asChild>
+          <Button variant="outline" size="icon">
+            <FaBars className="h-5 w-5" />
+          </Button>
+        </DrawerTrigger>
+      </div>
+    );
+  }
+  if (runner.status !== "running") {
+    return null;
+  }
+  const { forward, backward, canGoForward, canGoBackward } = runner;
+
+  return (
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
+      <RunningButtons
+        runner={runner}
+        variant="outline"
+        extraButtons={
+          <DrawerTrigger asChild>
+            <Button variant="outline" size="icon">
+              <FaBars className="h-5 w-5" />
+            </Button>
+          </DrawerTrigger>
+        }
+      />
     </div>
   );
 }
@@ -98,49 +171,7 @@ function SimulationControls({
         <>
           <h3 className="text-xl font-bold">Simulation Controls</h3>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={reset}
-              disabled={!canGoBackward}
-            >
-              <FaFastBackward className="h-5 w-5" />
-              <span className="sr-only">Reset</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={backward}
-              disabled={!canGoBackward}
-            >
-              <FaBackward className="h-5 w-5" />
-              <span className="sr-only">Backward</span>
-            </Button>
-            {isPlaying ? (
-              <Button variant="ghost" size="icon" onClick={pause}>
-                <FaPause className="h-5 w-5" />
-                <span className="sr-only">Pause</span>
-              </Button>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={play}
-                disabled={!canGoForward}
-              >
-                <FaPlay className="h-5 w-5" />
-                <span className="sr-only">Play</span>
-              </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={forward}
-              disabled={!canGoForward}
-            >
-              <FaForward className="h-5 w-5" />
-              <span className="sr-only">Forward</span>
-            </Button>
+            <RunningButtons runner={runner} />
           </div>
           <Button
             onClick={() => {
@@ -173,6 +204,78 @@ function SimulationControls({
           </div>
         </>
       </div>
+    </div>
+  );
+}
+
+function RunningButtons({
+  runner,
+  variant = "ghost",
+  extraButtons,
+}: {
+  runner: UseSimulationReturn<any, any>["runner"];
+  variant?: "ghost" | "outline";
+  extraButtons?: React.ReactNode;
+}) {
+  if (runner.status !== "running") {
+    return null;
+  }
+  const {
+    reset,
+    backward,
+    forward,
+    pause,
+    play,
+    canGoBackward,
+    canGoForward,
+    isPlaying,
+  } = runner;
+  return (
+    <div className="flex items-center gap-2">
+      <Button
+        variant={variant}
+        size="icon"
+        onClick={reset}
+        disabled={!canGoBackward}
+      >
+        <FaFastBackward className="h-5 w-5" />
+        <span className="sr-only">Reset</span>
+      </Button>
+      <Button
+        variant={variant}
+        size="icon"
+        onClick={backward}
+        disabled={!canGoBackward}
+      >
+        <FaBackward className="h-5 w-5" />
+        <span className="sr-only">Backward</span>
+      </Button>
+      {isPlaying ? (
+        <Button variant={variant} size="icon" onClick={pause}>
+          <FaPause className="h-5 w-5" />
+          <span className="sr-only">Pause</span>
+        </Button>
+      ) : (
+        <Button
+          variant={variant}
+          size="icon"
+          onClick={play}
+          disabled={!canGoForward}
+        >
+          <FaPlay className="h-5 w-5" />
+          <span className="sr-only">Play</span>
+        </Button>
+      )}
+      <Button
+        variant={variant}
+        size="icon"
+        onClick={forward}
+        disabled={!canGoForward}
+      >
+        <FaForward className="h-5 w-5" />
+        <span className="sr-only">Forward</span>
+      </Button>
+      {extraButtons}
     </div>
   );
 }
