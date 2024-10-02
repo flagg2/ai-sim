@@ -6,7 +6,7 @@ import SimulationUI from "@repo/ui/components/custom/SimulationUI";
 import { Slider } from "@repo/ui/components/shadcn/slider";
 import { Label } from "@repo/ui/components/custom/Label";
 import Header from "@repo/ui/components/custom/Header";
-import KMeansVisualization from "./canvas";
+import KMeansVisualization from "./content";
 
 export default function KMeansPage() {
   const [numberOfPoints, setNumberOfPoints] = useState(10);
@@ -24,7 +24,7 @@ export default function KMeansPage() {
       <Header title="K-Means Clustering" />
       <SimulationUI
         simulation={kmeans}
-        canvasComponent={<KMeansVisualization kmeans={kmeans} />}
+        sceneContent={<KMeansVisualization kmeans={kmeans} />}
         configComponent={
           <KMeansConfig
             k={k}

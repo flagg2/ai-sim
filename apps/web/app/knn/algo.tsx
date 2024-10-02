@@ -2,13 +2,12 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { SphereGeometry, Vector3 } from "three";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { MeshBasicMaterial, SphereGeometry, Vector3 } from "three";
+import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { UseKNNReturn } from "@repo/simulations/hooks/useKNN";
 import { getWhiteMaterial } from "@repo/simulations/utils/materials";
-import { TubeGeometry, CatmullRomCurve3, MeshBasicMaterial } from "three";
-
-// TODO: does not yet work quite correct but is close
+import { TubeGeometry, CatmullRomCurve3 } from "three";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 
 export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
@@ -25,7 +24,7 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
           className="h-full w-screen"
           flat
           dpr={[1, 1.5]}
-          gl={{ antialias: false }}
+          gl={{ antialias: true }}
         >
           <PerspectiveCamera
             makeDefault
@@ -39,14 +38,27 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
             enableZoom={true}
             enableRotate={true}
             minDistance={100}
-            maxDistance={1000}
+            maxDistance={400}
             minPolarAngle={Math.PI / 3} // 60 degrees from top
             maxPolarAngle={Math.PI / 2} // 90 degrees (horizontal)
           />
-          <color attach="background" args={["#000"]} />
+          <color attach="background" args={["#050505"]} />
+          <fog attach="fog" args={["#070710", 100, 700]} />
+          <Grid
+            position={[0, -0.01, 0]}
+            args={[1000, 1000]} // Increased size
+            cellSize={10}
+            cellThickness={0.5}
+            cellColor="#1a1a1a"
+            sectionSize={30}
+            sectionThickness={1}
+            sectionColor="#2a2a2a"
+            fadeDistance={1000} // Increased fade distance
+            fadeStrength={1}
+          />
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={1} />
-          <axesHelper scale={200} />
+          <axesHelper args={[1000]} /> // Increased size of axes
           <mesh
             position={
               new Vector3(
@@ -103,6 +115,7 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
               scale={10}
             />
           ))}
+          {/* Static lines for established nearest neighbors */}
           {currentStep.state.nearestNeighbors?.map((point, index) => {
             const curve = new CatmullRomCurve3([
               new Vector3(point.coords.x, point.coords.y, point.coords.z),
@@ -112,8 +125,12 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
                 currentStep.state.queryPoint.coords.z,
               ),
             ]);
-            const geometry = new TubeGeometry(curve, 20, 0.5, 8, false);
-            const material = new MeshBasicMaterial({ color: "white" });
+            const geometry = new TubeGeometry(curve, 20, 0.2, 8, false);
+            const material = new MeshBasicMaterial({
+              color: "white",
+              transparent: true,
+              opacity: 0.6,
+            });
             return <mesh key={index} geometry={geometry} material={material} />;
           })}
           {currentStep.type === "calculateDistance" && (
@@ -141,6 +158,14 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
               material={new MeshBasicMaterial({ color: "pink" })}
             />
           )}
+          <EffectComposer>
+            <Bloom
+              luminanceThreshold={0.2}
+              intensity={0.5}
+              levels={9}
+              mipmapBlur
+            />
+          </EffectComposer>
         </Canvas>
       </div>
     </>

@@ -2,17 +2,15 @@
 
 import { useMemo } from "react";
 import { SphereGeometry, Vector3 } from "three";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { TubeGeometry, CatmullRomCurve3, MeshBasicMaterial } from "three";
 import { UseKMeansReturn } from "@repo/simulations/hooks/useKMeans";
 import { getWhiteMaterial } from "@repo/simulations/utils/materials";
 
-export default function KMeansVisualizationContent({
+export default function KMeansVisualization({
   kmeans,
 }: {
   kmeans: UseKMeansReturn;
 }) {
-  console.log(kmeans);
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
 
   const { tooltipHandlers } = kmeans;
@@ -20,27 +18,6 @@ export default function KMeansVisualizationContent({
 
   return (
     <>
-      <PerspectiveCamera
-        makeDefault
-        position={[250, 250, 250]}
-        fov={60}
-        near={0.1}
-        far={2000}
-      />
-      <OrbitControls
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        minDistance={100}
-        maxDistance={1000}
-        minPolarAngle={Math.PI / 3}
-        maxPolarAngle={Math.PI / 2}
-      />
-      <color attach="background" args={["#000"]} />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 5, 5]} intensity={1} />
-      <axesHelper scale={200} />
-
       {/* Render points */}
       {currentStep.state.points.map((point, index) => (
         <mesh

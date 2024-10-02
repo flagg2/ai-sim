@@ -9,16 +9,17 @@ import Loader from "./Loader";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import Scene from "./Scene";
 
 type SimulationUIProps = {
   algorithmDescription: string;
   simulation: UseSimulationReturn<any, any>;
-  canvasComponent: React.ReactNode;
+  sceneContent: React.ReactNode;
   configComponent: React.ReactNode;
 };
 
 export default function SimulationUI({
-  canvasComponent,
+  sceneContent,
   ...props
 }: SimulationUIProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +28,7 @@ export default function SimulationUI({
       {/* Mobile layout */}
       <div className="xl:hidden flex-1 relative">
         <div className="w-full h-full flex items-center justify-center">
-          {canvasComponent}
+          <Scene>{sceneContent}</Scene>
         </div>
         {props.simulation.tooltip && (
           <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px] z-10">
@@ -37,7 +38,7 @@ export default function SimulationUI({
         <Drawer onOpenChange={setIsOpen}>
           <MobileControls
             {...props}
-            canvasComponent={canvasComponent}
+            sceneContent={sceneContent}
             isDrawerOpen={isOpen}
           />
 
@@ -54,7 +55,7 @@ export default function SimulationUI({
         <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
           <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
             <div className="w-full h-full flex items-center justify-center">
-              {canvasComponent}
+              <Scene>{sceneContent}</Scene>
             </div>
             {props.simulation.tooltip && (
               <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px]">

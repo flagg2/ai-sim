@@ -33,7 +33,11 @@
     "next": "14.2.9",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^1.0.0"
+    "vaul": "^1.0.0",
+    "@react-three/fiber": "8.17.7",
+    "@react-three/drei": "9.112.0",
+    "@react-three/postprocessing": "2.16.3",
+    "framer-motion": "11.9.0"
   },
   "exports": {
     "./globals.css": "./src/globals.css",

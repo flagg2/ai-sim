@@ -24,7 +24,7 @@ export default function KNNPage() {
       <Header title="K-Nearest Neighbors" />
       <SimulationUI
         simulation={knn}
-        canvasComponent={<KNNVisualization knn={knn} />}
+        sceneContent={<KNNVisualization knn={knn} />}
         configComponent={
           <KNNConfig
             k={k}
