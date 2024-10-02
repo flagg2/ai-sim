@@ -21,7 +21,8 @@
     "leva": "0.9.35",
     "three": "0.168.0",
     "@react-three/fiber": "8.17.7",
-    "@react-three/drei": "9.112.0"
+    "@react-three/drei": "9.112.0",
+    "framer-motion": "11.9.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "14.2.4",

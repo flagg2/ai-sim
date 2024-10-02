@@ -38,7 +38,7 @@ const visualizations = [
     description: "Dive into the inner workings of neural networks.",
   },
   {
-    href: "#",
+    href: "/svm",
     src: "/placeholder.svg",
     alt: "Support Vector Machine Visualization",
     title: "Support Vector Machine",

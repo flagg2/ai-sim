@@ -3,7 +3,7 @@ import type { Algorithm, Step } from "../algos/common";
 import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithmState";
 
-const MAX_STEPS = 1000;
+const MAX_STEPS = 10000;
 
 export function useRunner<
   TAlgorithm extends Algorithm<Step<any, any>, object>,

@@ -1,12 +1,14 @@
 import { Button } from "../shadcn/button";
 import { FaBackward, FaForward, FaPlay, FaPause } from "react-icons/fa";
-import { IoMdMore } from "react-icons/io";
 import { VscSettings } from "react-icons/vsc";
 import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
 import { Step } from "@repo/simulations/algos/common";
 import { Slider } from "../shadcn/slider";
 import { Drawer, DrawerContent, DrawerTrigger } from "../shadcn/drawer";
 import Loader from "./Loader";
+import { IoInformationCircleOutline } from "react-icons/io5";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 type SimulationUIProps = {
   algorithmDescription: string;
@@ -19,6 +21,7 @@ export default function SimulationUI({
   canvasComponent,
   ...props
 }: SimulationUIProps) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="flex flex-col w-full  h-[calc(100vh-68px)]">
       {/* Mobile layout */}
@@ -31,8 +34,12 @@ export default function SimulationUI({
             {props.simulation.tooltip}
           </div>
         )}
-        <Drawer>
-          <MobileControls {...props} canvasComponent={canvasComponent} />
+        <Drawer onOpenChange={setIsOpen}>
+          <MobileControls
+            {...props}
+            canvasComponent={canvasComponent}
+            isDrawerOpen={isOpen}
+          />
 
           <DrawerContent className="h-full max-h-[80vh]">
             <div className="p-4 flex flex-col h-full">
@@ -64,36 +71,77 @@ export default function SimulationUI({
   );
 }
 
-function MobileControls({ simulation: { runner } }: SimulationUIProps) {
+function MobileControls({
+  simulation: { runner },
+  isDrawerOpen,
+}: SimulationUIProps & {
+  isDrawerOpen: boolean;
+}) {
   if (runner.status === "configuring") {
     return (
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
-        <Button variant="outline" onClick={runner.start}>
-          Start
-        </Button>
-        <DrawerTrigger asChild>
-          <Button variant="outline">Configure</Button>
-        </DrawerTrigger>
+      <div className="absolute bottom-4 left-0 right-0 px-4">
+        <div className="flex gap-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4">
+          <Button className="flex-grow" onClick={runner.start}>
+            Start
+          </Button>
+          <DrawerTrigger asChild>
+            <Button className="flex-grow" variant="outline">
+              Configure
+            </Button>
+          </DrawerTrigger>
+        </div>
       </div>
     );
   }
+
   if (runner.status !== "running") {
     return null;
   }
 
+  const { currentStep, totalStepCount, currentStepIndex } = runner;
+
   return (
-    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
-      <RunningButtons
-        runner={runner}
-        variant="outline"
-        showReset={false}
-        extraButtons={
-          <DrawerTrigger asChild>
-            <Button variant="outline">Show Step</Button>
-          </DrawerTrigger>
-        }
-      />
-    </div>
+    <AnimatePresence>
+      {!isDrawerOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute bottom-4 left-0 right-0 px-4"
+        >
+          <div className="flex flex-col gap-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4">
+            <div className="flex justify-between items-center">
+              <span className="font-bold">{currentStep.title}</span>
+              <span className="text-muted-foreground">
+                {currentStepIndex + 1} / {totalStepCount}
+              </span>
+            </div>
+            <Slider
+              min={0}
+              max={totalStepCount - 1}
+              value={[currentStepIndex]}
+              onValueChange={(value) => {
+                runner.goto(value[0]!);
+              }}
+            />
+            <RunningButtons
+              runner={runner}
+              variant="outline"
+              showReset={false}
+              extraButtons={
+                <DrawerTrigger asChild>
+                  <Button className="ml-auto" variant="outline" size="icon">
+                    <IoInformationCircleOutline className="h-5 w-5" />
+                    <span className="sr-only">Show Step Details</span>
+                  </Button>
+                </DrawerTrigger>
+              }
+            />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -111,8 +159,8 @@ function SimulationControls({
   if (status === "configuring") {
     const { start } = runner;
     return (
-      <div className="bg-background rounded-lg border p-6 flex flex-col gap-6">
-        <div className="grid gap-2">
+      <div className="bg-background rounded-lg border p-6 flex flex-col-reverse xl:flex-col gap-6">
+        <div className="grid gap-4">
           <h3 className="hidden xl:block text-xl font-bold">Configuration</h3>
           {configComponent}
           <Button onClick={start}>Run</Button>
