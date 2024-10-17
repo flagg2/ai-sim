@@ -1,10 +1,10 @@
-import type { Algorithm, Coords, Group, Step } from "./common";
+import type { Algorithm, Coords3D, Group, Step } from "./common";
 import { MathJax } from "better-react-mathjax";
 import { getMaterial } from "../utils/materials";
 
 export type Point = {
   id: string;
-  coords: Coords;
+  coords: Coords3D;
   group: Group;
 };
 
@@ -260,7 +260,7 @@ function findNearestCentroid(point: Point, centroids: Point[]): Point {
   });
 }
 
-function calculateMeanCoords(points: Point[]): Coords {
+function calculateMeanCoords(points: Point[]): Coords3D {
   const sum = points.reduce(
     (acc, point) => ({
       x: acc.x + point.coords.x,

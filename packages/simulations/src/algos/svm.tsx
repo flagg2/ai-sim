@@ -1,5 +1,5 @@
 import { getMaterial, getWhiteMaterial } from "../utils/materials";
-import type { Algorithm, Coords, Group, Step } from "./common";
+import type { Algorithm, Coords3D, Group, Step } from "./common";
 
 // this just doesnt work, probably have to do it myself
 
@@ -11,7 +11,7 @@ function getNextId() {
 
 function generateRandomPointForGroup(
   group: Group,
-  centerOffset: Coords,
+  centerOffset: Coords3D,
 ): Point {
   const spread = 20; // Adjust this to control the spread of points within a group
   const coords = {
@@ -71,7 +71,7 @@ export function generateQueryPoint(): Point {
 
 export type Point = {
   id: string;
-  coords: Coords;
+  coords: Coords3D;
   group: Group;
 };
 
@@ -84,7 +84,7 @@ type SVMStepType =
 type SVMStepState = {
   queryPoint: Point;
   hyperplane: {
-    weights: Coords;
+    weights: Coords3D;
     bias: number;
   };
   supportVectors: Point[];
@@ -156,10 +156,10 @@ function initializeHyperplaneStep(svm: SVMAlgorithm): SVMStep {
 
 function hingeLossAndGradient(
   point: Point,
-  weights: Coords,
+  weights: Coords3D,
   bias: number,
   C: number,
-): { loss: number; gradW: Coords; gradB: number } {
+): { loss: number; gradW: Coords3D; gradB: number } {
   const x = point.coords;
   const y = point.group.label === "Group 1" ? 1 : -1;
   const margin =
@@ -375,7 +375,7 @@ function getDefaultGroup(): Group {
 }
 
 function calculateDistanceToHyperplane(
-  point: Coords,
+  point: Coords3D,
   hyperplane: SVMStepState["hyperplane"],
 ): number {
   const { weights, bias } = hyperplane;

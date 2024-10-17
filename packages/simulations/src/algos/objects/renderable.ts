@@ -17,6 +17,14 @@ export interface Renderable {
   getTooltip: () => React.ReactNode;
 }
 
+export type RenderFn<TState, TConfig> = (
+  state: TState,
+  config: TConfig,
+) => {
+  objects: Renderable[];
+  dimension: "2D" | "3D";
+};
+
 export class RenderableObject {
   getTooltip: (object: RenderableObject) => React.ReactNode;
   three: ThreeProps;

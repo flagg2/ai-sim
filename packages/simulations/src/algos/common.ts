@@ -5,10 +5,15 @@ export type Simulation<T extends object> = {
   forward: (state: T) => T;
 };
 
-export type Coords = {
+export type Coords3D = {
   x: number;
   y: number;
   z: number;
+};
+
+export type Coords2D = {
+  x: number;
+  y: number;
 };
 
 export type Group = {

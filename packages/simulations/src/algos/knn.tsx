@@ -3,17 +3,17 @@ import {
   getPinkMaterial,
   getWhiteMaterial,
 } from "../utils/materials";
-import type { Algorithm, Coords, Group, Step } from "./common";
+import type { Algorithm, Coords3D, Group, Step } from "./common";
 import { MathJax } from "better-react-mathjax";
 import type { Renderable } from "./objects/renderable";
-import { Point } from "./objects/point";
+import { Point3D } from "./objects/point";
 import { Tube } from "./objects/tube";
 
 // TODO: one point gets skipped - evident with few points
 
 export type DataPoint = {
   id: string;
-  coords: Coords;
+  coords: Coords3D;
   group: Group;
 };
 
@@ -47,7 +47,7 @@ export function renderKNN(
 
   // Render query point
   renderables.push(
-    new Point({
+    new Point3D({
       coords: state.queryPoint.coords,
       material: state.queryPoint.group.material,
       tooltip: (
@@ -74,7 +74,7 @@ export function renderKNN(
   // Render all points
   config.points.forEach((point) => {
     renderables.push(
-      new Point({
+      new Point3D({
         coords: point.coords,
         material: point.group.material,
         tooltip: (

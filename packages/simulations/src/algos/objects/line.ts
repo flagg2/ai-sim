@@ -1,16 +1,16 @@
 import { CatmullRomCurve3, Material, TubeGeometry, Vector3 } from "three";
-import type { Coords3D } from "../common";
+import type { Coords2D } from "../common";
 import { RenderableObject, type Renderable } from "./renderable";
 
 type LineProps = {
-  from: Coords3D;
-  to: Coords3D;
+  from: Coords2D;
+  to: Coords2D;
   material: Material;
   name?: string;
   radius?: number;
 };
 
-export class Tube implements Renderable {
+export class Line implements Renderable {
   public object: RenderableObject;
 
   constructor(props: LineProps) {
@@ -19,8 +19,8 @@ export class Tube implements Renderable {
       three: {
         geometry: new TubeGeometry(
           new CatmullRomCurve3([
-            new Vector3(from.x, from.y, from.z),
-            new Vector3(to.x, to.y, to.z),
+            new Vector3(from.x, from.y, 0),
+            new Vector3(to.x, to.y, 0),
           ]),
           20, // tubular segments
           radius, // radius
