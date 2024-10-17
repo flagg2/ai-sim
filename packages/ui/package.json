@@ -37,7 +37,8 @@
     "@react-three/fiber": "8.17.7",
     "@react-three/drei": "9.112.0",
     "@react-three/postprocessing": "2.16.3",
-    "framer-motion": "11.9.0"
+    "framer-motion": "11.9.0",
+    "framer-motion-3d": "11.11.9"
   },
   "exports": {
     "./globals.css": "./src/globals.css",

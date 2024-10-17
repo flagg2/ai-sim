@@ -16,10 +16,12 @@ type SimulationUIProps = {
   simulation: UseSimulationReturn<any, any>;
   sceneContent: React.ReactNode;
   configComponent: React.ReactNode;
+  is3D: boolean;
 };
 
 export default function SimulationUI({
   sceneContent,
+  is3D,
   ...props
 }: SimulationUIProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +30,7 @@ export default function SimulationUI({
       {/* Mobile layout */}
       <div className="xl:hidden flex-1 relative">
         <div className="w-full h-full flex items-center justify-center">
-          <Scene>{sceneContent}</Scene>
+          <Scene is3D={is3D}>{sceneContent}</Scene>
         </div>
         {props.simulation.tooltip && (
           <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px] z-10">
@@ -38,6 +40,7 @@ export default function SimulationUI({
         <Drawer onOpenChange={setIsOpen}>
           <MobileControls
             {...props}
+            is3D
             sceneContent={sceneContent}
             isDrawerOpen={isOpen}
           />
@@ -55,7 +58,7 @@ export default function SimulationUI({
         <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
           <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
             <div className="w-full h-full flex items-center justify-center">
-              <Scene>{sceneContent}</Scene>
+              <Scene is3D={is3D}>{sceneContent}</Scene>
             </div>
             {props.simulation.tooltip && (
               <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px]">
