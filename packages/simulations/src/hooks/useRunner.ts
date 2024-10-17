@@ -1,18 +1,19 @@
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import type { Algorithm, Step } from "../algos/common";
 import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithmState";
-
-const MAX_STEPS = 10000;
 
 export function useRunner<
   TAlgorithm extends Algorithm<Step<any, any>, object>,
 >({
   state: { config, algorithmState, setSteps, initialStep },
-  stepFunction,
+  simulateSteps,
 }: {
   state: UseAlgorithmReturn<TAlgorithm>;
-  stepFunction: (algo: TAlgorithm) => TAlgorithm["steps"][number];
+  simulateSteps: (
+    config: TAlgorithm["config"],
+    initialStep: TAlgorithm["steps"][number],
+  ) => TAlgorithm["steps"][number][];
 }):
   | {
       currentStep: TAlgorithm["steps"][number];
@@ -58,6 +59,10 @@ export function useRunner<
     setIsPlaying(false);
   }, [setIsPlaying]);
 
+  const currentStep = useMemo(() => {
+    return algorithmState.steps[currentStepIndex] ?? initialStep;
+  }, [algorithmState.steps, currentStepIndex, initialStep]);
+
   useInterval(
     () => {
       if (currentStepIndex >= algorithmState.steps.length - 1) {
@@ -93,25 +98,18 @@ export function useRunner<
 
   const start = useCallback(() => {
     setIsStarted(true);
-    const steps: TAlgorithm["steps"] = algorithmState.steps;
-    let currentState = algorithmState;
     startTransition(() => {
-      for (let i = 0; i < MAX_STEPS; i++) {
-        const step = stepFunction(currentState);
-        steps.push(step);
-        if (step.nextStep === null) break;
-        currentState = { ...currentState, ...step.nextStep };
-      }
+      const steps = simulateSteps(config, initialStep);
+      console.log(steps);
       setSteps(steps);
     });
-  }, [algorithmState.steps, stepFunction, setSteps, startTransition]);
+  }, [algorithmState.steps, simulateSteps, setSteps, startTransition]);
 
   const stop = useCallback(() => {
     setIsStarted(false);
     setSteps([initialStep]);
   }, [setIsStarted, setSteps, initialStep]);
 
-  const currentStep = algorithmState.steps[currentStepIndex];
   const canGoForward = currentStepIndex < algorithmState.steps.length - 1;
 
   if (!isStarted) {

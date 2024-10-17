@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import KNNVisualization from "./algo";
 import { useKNN } from "@repo/simulations/hooks/useKNN";
 import SimulationUI from "@repo/ui/components/custom/SimulationUI";
 import { Slider } from "@repo/ui/components/shadcn/slider";
 import { Label } from "@repo/ui/components/custom/Label";
 import Header from "@repo/ui/components/custom/Header";
+import Renderer from "./render";
+import { renderKNN } from "@repo/simulations/algos/knn";
 
 export default function KNNPage() {
   const [numberOfPoints, setNumberOfPoints] = useState(10);
@@ -24,7 +25,7 @@ export default function KNNPage() {
       <Header title="K-Nearest Neighbors" />
       <SimulationUI
         simulation={knn}
-        sceneContent={<KNNVisualization knn={knn} />}
+        sceneContent={<Renderer simulation={knn} renderFn={renderKNN} />}
         configComponent={
           <KNNConfig
             k={k}

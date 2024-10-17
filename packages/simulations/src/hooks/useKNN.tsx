@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import {
   generateKGroups,
   generateRandomPoints,
-  stepKNN,
   type KNNConfig,
   type KNNStep,
+  simulateKNN,
 } from "../algos/knn";
 import { getWhiteMaterial } from "../utils/materials";
 import { useSimulation } from "./useSimulation";
@@ -53,7 +53,6 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
           nearestNeighbors: [],
           distances: [],
         },
-        nextStep: "calculateDistance",
       }) as KNNStep,
     [config],
   );
@@ -63,7 +62,7 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
       step: initialStep,
       config,
     },
-    stepFunction: stepKNN,
+    simulateSteps: simulateKNN,
   });
 }
 

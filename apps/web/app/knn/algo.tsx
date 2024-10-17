@@ -5,7 +5,6 @@ import { MeshBasicMaterial, SphereGeometry, Vector3 } from "three";
 import { UseKNNReturn } from "@repo/simulations/hooks/useKNN";
 import { getWhiteMaterial } from "@repo/simulations/utils/materials";
 import { TubeGeometry, CatmullRomCurve3 } from "three";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
 
 export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
   const sphereGeometry = useMemo(() => new SphereGeometry(0.5, 32, 32), []);
@@ -114,9 +113,6 @@ export default function KNNVisualization({ knn }: { knn: UseKNNReturn }) {
           material={new MeshBasicMaterial({ color: "pink" })}
         />
       )}
-      <EffectComposer>
-        <Bloom luminanceThreshold={0.2} intensity={0.5} levels={9} mipmapBlur />
-      </EffectComposer>
     </>
   );
 }

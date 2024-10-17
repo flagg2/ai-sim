@@ -64,7 +64,7 @@ export function useKMeans({ numberOfPoints, k, maxIterations }: AlgoProps) {
       step: initialStep,
       config,
     },
-    stepFunction: stepKMeans,
+    simulateSteps: stepKMeans,
   });
 }
 

@@ -1,4 +1,5 @@
 import type { MeshStandardMaterial } from "three";
+import type { Renderable } from "./objects/renderable";
 
 export type Simulation<T extends object> = {
   forward: (state: T) => T;
@@ -20,11 +21,11 @@ export type Step<TState extends object, TStepType extends string> = {
   type: TStepType | "initial";
   title: string;
   description: React.ReactNode;
-  nextStep: TStepType | null;
   state: TState;
 };
 
 export type Algorithm<TStep extends Step<any, any>, TConfig extends object> = {
   config: TConfig;
   steps: TStep[];
+  render: (state: TStep["state"]) => Renderable[];
 };

@@ -68,7 +68,7 @@ export function useSVM({
       step: initialStep,
       config,
     },
-    stepFunction: stepSVM,
+    simulateSteps: stepSVM,
   });
 }
 
