@@ -1,11 +1,11 @@
 import { useAlgorithmState } from "./useAlgorithmState";
 import { useRunner } from "./useRunner";
 import { useTooltip } from "./useTooltip";
-import type { Step } from "../algos/common";
+import type { Config, Step } from "../algos/common";
 
 export function useSimulation<
   TStep extends Step<any, any>,
-  TConfig extends object,
+  TConfig extends Config,
 >({
   initial,
   simulateSteps,
@@ -37,5 +37,5 @@ export function useSimulation<
 
 export type UseSimulationReturn<
   TStep extends Step<any, any>,
-  TConfig extends object,
+  TConfig extends Config,
 > = ReturnType<typeof useSimulation<TStep, TConfig>>;

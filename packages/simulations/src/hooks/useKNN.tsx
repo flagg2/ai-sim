@@ -15,8 +15,6 @@ type AlgoProps = {
   groupCount: number;
 };
 
-// TODO: maybe make even more generic, export setconfig and dont use useEffect to update points
-
 export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
   const config = useMemo(() => {
     const groups = generateKGroups(groupCount);
@@ -26,6 +24,9 @@ export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
       points,
       groups,
       k,
+      sceneSetup: {
+        dimension: "3D",
+      },
     } as KNNConfig;
   }, [numberOfPoints, k, groupCount]);
 

@@ -3,7 +3,7 @@ import {
   getPinkMaterial,
   getWhiteMaterial,
 } from "../utils/materials";
-import type { Algorithm, Coords3D, Group, Step } from "./common";
+import type { Algorithm, Config, Coords3D, Group, Step } from "./common";
 import { MathJax } from "better-react-mathjax";
 import type { Renderable } from "./objects/renderable";
 import { Point3D } from "./objects/point";
@@ -31,7 +31,7 @@ type KNNStepState = {
 
 export type KNNStep = Step<KNNStepState, KNNStepType>;
 
-export type KNNConfig = {
+export type KNNConfig = Config & {
   points: DataPoint[];
   k: number;
   groups: Group[];

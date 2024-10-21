@@ -21,15 +21,24 @@ export type Group = {
   material: MeshStandardMaterial;
 };
 
+type SceneSetup = {
+  dimension: "2D" | "3D";
+};
+
+export type Config = {
+  sceneSetup?: SceneSetup;
+} & Record<string, any>;
+
 export type Step<TState extends object, TStepType extends string> = {
   index: number;
   type: TStepType | "initial";
   title: string;
   description: React.ReactNode;
   state: TState;
+  sceneSetup?: SceneSetup;
 };
 
-export type Algorithm<TStep extends Step<any, any>, TConfig extends object> = {
+export type Algorithm<TStep extends Step<any, any>, TConfig extends Config> = {
   config: TConfig;
   steps: TStep[];
   render: (state: TStep["state"]) => Renderable[];

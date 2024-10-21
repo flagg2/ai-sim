@@ -16,31 +16,29 @@ type SimulationUIProps = {
   simulation: UseSimulationReturn<any, any>;
   sceneContent: React.ReactNode;
   configComponent: React.ReactNode;
-  is3D: boolean;
 };
 
 export default function SimulationUI({
   sceneContent,
-  is3D,
   ...props
 }: SimulationUIProps) {
+  const { simulation } = props;
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="flex flex-col w-full  h-[calc(100vh-68px)]">
       {/* Mobile layout */}
       <div className="xl:hidden flex-1 relative">
         <div className="w-full h-full flex items-center justify-center">
-          <Scene is3D={is3D}>{sceneContent}</Scene>
+          <Scene simulation={simulation}>{sceneContent}</Scene>
         </div>
-        {props.simulation.tooltip && (
+        {simulation.tooltip && (
           <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px] z-10">
-            {props.simulation.tooltip}
+            {simulation.tooltip}
           </div>
         )}
         <Drawer onOpenChange={setIsOpen}>
           <MobileControls
             {...props}
-            is3D
             sceneContent={sceneContent}
             isDrawerOpen={isOpen}
           />
@@ -58,11 +56,11 @@ export default function SimulationUI({
         <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
           <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
             <div className="w-full h-full flex items-center justify-center">
-              <Scene is3D={is3D}>{sceneContent}</Scene>
+              <Scene simulation={simulation}>{sceneContent}</Scene>
             </div>
-            {props.simulation.tooltip && (
+            {simulation.tooltip && (
               <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px]">
-                {props.simulation.tooltip}
+                {simulation.tooltip}
               </div>
             )}
           </div>

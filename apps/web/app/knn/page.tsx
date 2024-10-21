@@ -13,7 +13,6 @@ export default function KNNPage() {
   const [numberOfPoints, setNumberOfPoints] = useState(10);
   const [k, setK] = useState(3);
   const [groupCount, setGroupCount] = useState(2);
-  const [is3D, setIs3D] = useState(true);
 
   const knn = useKNN({
     numberOfPoints,
@@ -24,9 +23,7 @@ export default function KNNPage() {
   return (
     <>
       <Header title="K-Nearest Neighbors" />
-      <button onClick={() => setIs3D(!is3D)}>Toggle 3D</button>
       <SimulationUI
-        is3D={is3D}
         simulation={knn}
         sceneContent={<Renderer simulation={knn} renderFn={renderKNN} />}
         configComponent={

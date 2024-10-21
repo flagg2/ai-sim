@@ -49,7 +49,6 @@ export default function Scene({ children }: { children: React.ReactNode }) {
           />
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={1} />
-          <axesHelper args={[1000]} />
           {children}
           <EffectComposer>
             <Bloom

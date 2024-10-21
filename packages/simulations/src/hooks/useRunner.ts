@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState, useTransition } from "react";
-import type { Algorithm, Step } from "../algos/common";
+import type { Algorithm, Config, Step } from "../algos/common";
 import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithmState";
 
 export function useRunner<
-  TAlgorithm extends Algorithm<Step<any, any>, object>,
+  TAlgorithm extends Algorithm<Step<any, any>, Config>,
 >({
   state: { config, algorithmState, setSteps, initialStep },
   simulateSteps,

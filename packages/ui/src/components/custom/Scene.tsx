@@ -3,13 +3,14 @@
 import { Canvas } from "@react-three/fiber";
 import { useRef } from "react";
 import { SceneSetup } from "./SceneSetup";
+import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
 
 export default function Scene({
   children,
-  is3D = true,
+  simulation,
 }: {
   children: React.ReactNode;
-  is3D?: boolean;
+  simulation: UseSimulationReturn<any, any>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -23,7 +24,7 @@ export default function Scene({
           dpr={[1, 1.5]}
           gl={{ antialias: true }}
         >
-          <SceneSetup is3D={is3D}>{children}</SceneSetup>
+          <SceneSetup simulation={simulation}>{children}</SceneSetup>
         </Canvas>
       </div>
     </>
