@@ -1,7 +1,7 @@
 import { useAlgorithmState } from "./useAlgorithmState";
 import { useRunner } from "./useRunner";
 import { useTooltip } from "./useTooltip";
-import type { Config, Step } from "../algos/common";
+import type { Config, Step } from "../algos/types";
 
 export function useSimulation<
   TStep extends Step<any, any>,

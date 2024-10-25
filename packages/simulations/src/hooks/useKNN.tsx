@@ -2,10 +2,11 @@ import { useMemo } from "react";
 import {
   generateKGroups,
   generateRandomPoints,
+  knn,
   type KNNConfig,
   type KNNStep,
   simulateKNN,
-} from "../algos/knn";
+} from "../algos/knn/knn";
 import { getWhiteMaterial } from "../utils/materials";
 import { useSimulation } from "./useSimulation";
 
@@ -15,20 +16,8 @@ type AlgoProps = {
   groupCount: number;
 };
 
-export function useKNN({ numberOfPoints, k, groupCount }: AlgoProps) {
-  const config = useMemo(() => {
-    const groups = generateKGroups(groupCount);
-    const points = generateRandomPoints({ groups, points: [] }, numberOfPoints);
-
-    return {
-      points,
-      groups,
-      k,
-      sceneSetup: {
-        dimension: "3D",
-      },
-    } as KNNConfig;
-  }, [numberOfPoints, k, groupCount]);
+export function useKNN(params: KNNStep) {
+  const config = knn.getConfig(params);
 
   const initialStep = useMemo(
     () =>

@@ -1,5 +1,5 @@
 import { CatmullRomCurve3, Material, TubeGeometry, Vector3 } from "three";
-import type { Coords3D } from "../common";
+import type { Coords3D } from "../types";
 import { RenderableObject, type Renderable } from "./renderable";
 
 type LineProps = {

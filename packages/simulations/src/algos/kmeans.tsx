@@ -1,4 +1,4 @@
-import type { Algorithm, Coords3D, Group, Step } from "./common";
+import type { Algorithm, Coords3D, Group, Step } from "./types";
 import { MathJax } from "better-react-mathjax";
 import { getMaterial } from "../utils/materials";
 

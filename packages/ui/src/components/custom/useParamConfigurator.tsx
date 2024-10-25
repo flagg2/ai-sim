@@ -1,23 +1,27 @@
 "use client";
 
-import { Param } from "@repo/simulations/algos/params/param";
-import { SliderParam } from "@repo/simulations/algos/params/slider";
-import { SwitchParam } from "@repo/simulations/algos/params/switch";
+import { ParamConfigurator } from "@repo/simulations/algos/paramConfigurators/param";
+import { SliderParamConfigurator } from "@repo/simulations/algos/paramConfigurators/slider";
+import { SwitchParamConfigurator } from "@repo/simulations/algos/paramConfigurators/switch";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { Label } from "../../components/custom/Label";
 import { Slider } from "../../components/shadcn/slider";
 import { Switch } from "../../components/ui/switch";
 
-type ParamConfiguratorProps<TParams extends Record<string, Param<any>>> = {
+type ParamConfiguratorProps<
+  TParams extends Record<string, ParamConfigurator<any>>,
+> = {
   params: TParams;
 };
 
-type ParamConfiguratorState<TParams extends Record<string, Param<any>>> = {
+type ParamConfiguratorState<
+  TParams extends Record<string, ParamConfigurator<any>>,
+> = {
   [key in keyof TParams]: TParams[key]["defaultValue"];
 };
 
 export function useParamConfigurator<
-  TParams extends Record<string, Param<any>>,
+  TParams extends Record<string, ParamConfigurator<any>>,
 >(params: ParamConfiguratorProps<TParams>["params"]) {
   const [state, setState] = useState<ParamConfiguratorState<TParams>>(
     Object.fromEntries(
@@ -33,7 +37,7 @@ export function useParamConfigurator<
   };
 }
 
-function Configurator<TParams extends Record<string, Param<any>>>({
+function Configurator<TParams extends Record<string, ParamConfigurator<any>>>({
   params,
   state,
   setState,
@@ -42,8 +46,8 @@ function Configurator<TParams extends Record<string, Param<any>>>({
   setState: Dispatch<SetStateAction<ParamConfiguratorState<TParams>>>;
 }) {
   const getParamComponent = useCallback(
-    (param: Param<any>, key: keyof TParams) => {
-      if (param instanceof SliderParam) {
+    (param: ParamConfigurator<any>, key: keyof TParams) => {
+      if (param instanceof SliderParamConfigurator) {
         return (
           <>
             <Slider
@@ -58,7 +62,7 @@ function Configurator<TParams extends Record<string, Param<any>>>({
           </>
         );
       }
-      if (param instanceof SwitchParam) {
+      if (param instanceof SwitchParamConfigurator) {
         return (
           <Switch
             checked={state[key]!}

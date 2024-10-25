@@ -1,5 +1,5 @@
 import { SphereGeometry, Vector3, type MeshStandardMaterial } from "three";
-import type { Coords3D } from "../common";
+import type { Coords3D } from "../types";
 import { RenderableObject, type Renderable } from "./renderable";
 
 type PointProps = {

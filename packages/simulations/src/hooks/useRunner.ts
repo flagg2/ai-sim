@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useTransition } from "react";
-import type { Algorithm, Config, Step } from "../algos/common";
+import type { Algorithm, Config, Step } from "../algos/types";
 import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithmState";
 

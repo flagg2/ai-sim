@@ -1,5 +1,5 @@
 import { getMaterial, getWhiteMaterial } from "../utils/materials";
-import type { Algorithm, Coords3D, Group, Step } from "./common";
+import type { Algorithm, Coords3D, Group, Step } from "./types";
 
 // this just doesnt work, probably have to do it myself
 

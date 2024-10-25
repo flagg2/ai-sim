@@ -1,6 +1,6 @@
-import { Param } from "./param";
+import { ParamConfigurator } from "./param";
 
-type SliderParamProps = {
+type SliderParamConfiguratorProps = {
   min: number;
   max: number;
   defaultValue: number;
@@ -9,12 +9,12 @@ type SliderParamProps = {
   description?: string;
 };
 
-export class SliderParam extends Param<number> {
+export class SliderParamConfigurator extends ParamConfigurator<number> {
   public min: number;
   public max: number;
   public step: number;
 
-  constructor(props: SliderParamProps) {
+  constructor(props: SliderParamConfiguratorProps) {
     super({
       label: props.label,
       description: props.description,
