@@ -10,31 +10,19 @@ import {
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import AxesHelper from "./AxesHelper";
-import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
+import { SceneSetup } from "@repo/simulations/algos/types";
 
 interface SceneSetupProps {
   children: React.ReactNode;
-  simulation: UseSimulationReturn<any, any>;
+  sceneSetup: SceneSetup;
 }
 
-export const SceneSetup: React.FC<SceneSetupProps> = ({
+export const SceneSetupComponent: React.FC<SceneSetupProps> = ({
   children,
-  simulation,
+  sceneSetup,
 }) => {
-  const { dimension: stepDimension } =
-    simulation.runner.currentStep.sceneSetup ?? {};
-  const { dimension: configDimension } =
-    simulation.runner.config.sceneSetup ?? {};
-
-  const is3d = useMemo(() => {
-    if (stepDimension) {
-      return stepDimension === "3D";
-    }
-    if (configDimension) {
-      return configDimension === "3D";
-    }
-    return true;
-  }, [stepDimension, configDimension]);
+  const { dimension } = sceneSetup;
+  const is3d = dimension === "3D";
 
   const only3d = useMemo(() => {
     return (

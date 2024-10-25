@@ -1,17 +1,22 @@
-import { Step } from "@repo/simulations/algos/common";
-import { Renderable } from "@repo/simulations/algos/objects/renderable";
+import { ParamConfigurator } from "@repo/simulations/algos/paramConfigurators/param";
+import { RenderFunction, Step } from "@repo/simulations/algos/types";
 import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
 import { useMemo } from "react";
 
-type Props<TStep extends Step<any, any>, TConfig extends object> = {
-  simulation: UseSimulationReturn<TStep, TConfig>;
-  renderFn: (state: TStep["state"], config: TConfig) => Renderable[];
+type Props<
+  TStep extends Step<any, any>,
+  TConfig extends object,
+  TParamConfigurators extends Record<string, ParamConfigurator<any>>,
+> = {
+  simulation: UseSimulationReturn<TStep, TConfig, TParamConfigurators>;
+  renderFn: RenderFunction<TStep, TConfig>;
 };
 
 export default function Renderer<
   TStep extends Step<any, any>,
   TConfig extends object,
->({ simulation, renderFn }: Props<TStep, TConfig>) {
+  TParamConfigurators extends Record<string, ParamConfigurator<any>>,
+>({ simulation, renderFn }: Props<TStep, TConfig, TParamConfigurators>) {
   const renderables = useMemo(
     () =>
       renderFn(

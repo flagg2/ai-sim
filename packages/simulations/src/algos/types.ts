@@ -1,10 +1,9 @@
 import type { MeshStandardMaterial } from "three";
 import type { Renderable } from "./objects/renderable";
-import type { ParamConfigurator } from "./paramConfigurators/param";
-
-export type Simulation<T extends object> = {
-  forward: (state: T) => T;
-};
+import type {
+  ParamConfigurator,
+  ParamConfiguratorDict,
+} from "./paramConfigurators/param";
 
 export type Coords3D = {
   x: number;
@@ -22,12 +21,14 @@ export type Group = {
   material: MeshStandardMaterial;
 };
 
-type SceneSetup = {
-  dimension: "2D" | "3D";
+export type SceneSetup = {
+  dimension?: "2D" | "3D";
 };
 
-export type Step<TState extends object, TStepType extends string> = {
-  index: number;
+export type Step<
+  TState extends object = object,
+  TStepType extends string = string,
+> = {
   type: TStepType | "initial";
   title: string;
   description: React.ReactNode;
@@ -37,45 +38,29 @@ export type Step<TState extends object, TStepType extends string> = {
 export type Params<
   TParamConfigurators extends {
     [key: string]: ParamConfigurator<any>;
+  } = {
+    [key: string]: ParamConfigurator<unknown>;
   },
 > = {
   [key in keyof TParamConfigurators]: TParamConfigurators[key]["defaultValue"];
 };
 
-export type Algorithm<
-  TStep extends Step<any, any>,
-  TConfig extends object,
-  TParamConfigurators extends {
-    [key: string]: ParamConfigurator<any>;
-  },
-> = {
-  config: TConfig;
-  steps: TStep[];
-  paramConfigurators: TParamConfigurators;
-  getConfig: (params: Params<TParamConfigurators>) => TConfig;
-  getInitialStep: (config: TConfig) => TStep;
-  render: (state: TStep["state"]) => {
-    objects: Renderable[];
-    sceneSetup?: SceneSetup;
-  };
-};
+export type RenderFunction<
+  TStep extends Step<any, any> = Step<object, string>,
+  TConfig extends object = object,
+> = (state: TStep["state"], config: TConfig) => Renderable[];
 
 export type AlgorithmDefinition<
-  TStep extends Step<any, any>,
-  TConfig extends object,
-  TParamConfigurators extends {
-    [key: string]: ParamConfigurator<any>;
-  },
+  TStep extends Step = Step,
+  TConfig extends object = object,
+  TParamConfigurators extends ParamConfiguratorDict = ParamConfiguratorDict,
 > = {
+  title: string;
+  description: React.ReactNode;
   paramConfigurators: TParamConfigurators;
   getConfig: (params: Params<TParamConfigurators>) => TConfig;
   getInitialStep: (config: TConfig) => TStep;
   getSteps: (config: TConfig, initialStep: TStep) => TStep[];
-  render: (
-    state: TStep["state"],
-    config: TConfig,
-  ) => {
-    objects: Renderable[];
-    sceneSetup?: SceneSetup;
-  };
+  getSceneSetup: (config: TConfig) => SceneSetup;
+  render: RenderFunction<TStep, TConfig>;
 };

@@ -1,11 +1,11 @@
 import type { Group } from "../types";
 import { calculateDistance } from "../utils";
-import type { DataPoint, KNNDefinition, KNNStep } from "./types";
+import type { DataPoint, KNNDefinition } from "./types";
 
 export const getKNNSteps: KNNDefinition["getSteps"] = (config, initialStep) => {
-  const steps: KNNStep[] = [initialStep];
+  const steps = [initialStep];
   const { points, k, groups } = config;
-  const queryPoint = points[points.length - 1]!;
+  const queryPoint = initialStep.state.queryPoint;
   let distances: { point: DataPoint; distance: number }[] = [];
 
   // Calculate distances and update nearest neighbors
@@ -17,7 +17,6 @@ export const getKNNSteps: KNNDefinition["getSteps"] = (config, initialStep) => {
     steps.push({
       type: "calculateDistance",
       title: "Calculate Distance",
-      index: steps.length,
       state: {
         currentIndex: i,
         distances: [...distances],
@@ -41,7 +40,6 @@ export const getKNNSteps: KNNDefinition["getSteps"] = (config, initialStep) => {
     steps.push({
       type: "updateNearestNeighbors",
       title: "Update Nearest Neighbors",
-      index: steps.length,
       state: {
         currentIndex: i,
         distances: [...distances],
@@ -116,7 +114,6 @@ export const getKNNSteps: KNNDefinition["getSteps"] = (config, initialStep) => {
   steps.push({
     type: "updateQueryPoint",
     title: "Update Query Point",
-    index: steps.length,
     state: {
       currentIndex: points.length - 1,
       distances,

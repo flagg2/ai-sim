@@ -1,38 +1,33 @@
 import { useCallback, useMemo, useState, useTransition } from "react";
-import type { Algorithm, Config, Step } from "../algos/types";
+import type { AlgorithmDefinition, Step } from "../algos/types";
 import { useInterval } from "usehooks-ts";
 import type { UseAlgorithmReturn } from "./useAlgorithmState";
 
-export function useRunner<
-  TAlgorithm extends Algorithm<Step<any, any>, Config>,
->({
+export function useRunner<TStep extends Step, TConfig extends object>({
   state: { config, algorithmState, setSteps, initialStep },
-  simulateSteps,
+  getSteps,
 }: {
-  state: UseAlgorithmReturn<TAlgorithm>;
-  simulateSteps: (
-    config: TAlgorithm["config"],
-    initialStep: TAlgorithm["steps"][number],
-  ) => TAlgorithm["steps"][number][];
+  state: UseAlgorithmReturn<TStep, TConfig>;
+  getSteps: AlgorithmDefinition<TStep, TConfig>["getSteps"];
 }):
   | {
-      currentStep: TAlgorithm["steps"][number];
+      currentStep: TStep;
       currentStepIndex: number;
-      config: TAlgorithm["config"];
+      config: TConfig;
       start: () => void;
       status: "configuring";
     }
   | {
       status: "loading";
-      currentStep: TAlgorithm["steps"][number];
+      currentStep: TStep;
       currentStepIndex: number;
-      config: TAlgorithm["config"];
+      config: TConfig;
     }
   | {
       totalStepCount: number;
-      currentStep: TAlgorithm["steps"][number];
+      currentStep: TStep;
       currentStepIndex: number;
-      config: TAlgorithm["config"];
+      config: TConfig;
       isPlaying: boolean;
       play: () => void;
       pause: () => void;
@@ -99,11 +94,11 @@ export function useRunner<
   const start = useCallback(() => {
     setIsStarted(true);
     startTransition(() => {
-      const steps = simulateSteps(config, initialStep);
+      const steps = getSteps(config, initialStep);
       console.log(steps);
       setSteps(steps);
     });
-  }, [algorithmState.steps, simulateSteps, setSteps, startTransition]);
+  }, [algorithmState.steps, getSteps, setSteps, startTransition]);
 
   const stop = useCallback(() => {
     setIsStarted(false);
@@ -133,7 +128,7 @@ export function useRunner<
 
   return {
     totalStepCount: algorithmState.steps.length,
-    currentStep: currentStep as TAlgorithm["steps"][number],
+    currentStep,
     currentStepIndex,
     config,
     isPlaying,
@@ -151,5 +146,7 @@ export function useRunner<
   };
 }
 
-export type UseRunnerReturn<TAlgorithm extends Algorithm<any, any>> =
-  ReturnType<typeof useRunner<TAlgorithm>>;
+export type UseRunnerReturn<
+  TStep extends Step,
+  TConfig extends object,
+> = ReturnType<typeof useRunner<TStep, TConfig>>;

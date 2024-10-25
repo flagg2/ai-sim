@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
-import type { Algorithm, Step } from "../algos/types";
+import type { Step } from "../algos/types";
 
-export function useAlgorithmState<
-  TAlgorithm extends Algorithm<Step<any, any>, object>,
->({
+export function useAlgorithmState<TStep extends Step, TConfig extends object>({
   initialConfig,
   initialStep,
 }: {
-  initialConfig: TAlgorithm["config"];
-  initialStep: TAlgorithm["steps"][number];
+  initialConfig: TConfig;
+  initialStep: TStep;
 }) {
-  const [steps, setSteps] = useState<TAlgorithm["steps"]>([initialStep]);
-  const [config, setConfig] = useState<TAlgorithm["config"]>(initialConfig);
-  const [algorithmState, setAlgorithm] = useState<TAlgorithm>(
+  const [steps, setSteps] = useState<TStep[]>([initialStep]);
+  const [config, setConfig] = useState<TConfig>(initialConfig);
+  const [algorithmState, setAlgorithm] = useState<{
+    steps: TStep[];
+    config: TConfig;
+  }>(
     () =>
       ({
         steps,
         config,
-      }) as TAlgorithm,
+      }) as { steps: TStep[]; config: TConfig },
   );
 
   useEffect(() => {
@@ -43,5 +44,7 @@ export function useAlgorithmState<
   };
 }
 
-export type UseAlgorithmReturn<TAlgorithm extends Algorithm<any, any>> =
-  ReturnType<typeof useAlgorithmState<TAlgorithm>>;
+export type UseAlgorithmReturn<
+  TStep extends Step,
+  TConfig extends object,
+> = ReturnType<typeof useAlgorithmState<TStep, TConfig>>;

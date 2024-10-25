@@ -1,38 +1,39 @@
 "use client";
 
-import { Param } from "@repo/simulations/algos/params/param";
-import { SliderParam } from "@repo/simulations/algos/params/slider";
-import { SwitchParam } from "@repo/simulations/algos/params/switch";
 import { useCallback, useState } from "react";
 import { Label } from "./Label";
 import { Slider } from "../shadcn/slider";
 import { Switch } from "../ui/switch";
+import {
+  ParamConfigurator,
+  ParamConfiguratorDict,
+} from "@repo/simulations/algos/paramConfigurators/param";
+import { SliderParamConfigurator } from "@repo/simulations/algos/paramConfigurators/slider";
+import { SwitchParamConfigurator } from "@repo/simulations/algos/paramConfigurators/switch";
 
-type ParamConfiguratorProps<TParam extends Param<any>> = {
-  params: {
-    [key: string]: TParam;
-  };
+type ParamConfiguratorProps<TParams extends ParamConfiguratorDict> = {
+  params: TParams;
 };
 
-type ParamConfiguratorState<TParam extends Param<any>> = {
-  [key: string]: TParam["defaultValue"];
+type ParamConfiguratorState<TParams extends ParamConfiguratorDict> = {
+  [key: string]: TParams[keyof TParams]["defaultValue"];
 };
 
-export function ParamConfigurator<TParam extends Param<any>>({
-  params,
-}: ParamConfiguratorProps<TParam>) {
-  const [state, setState] = useState<ParamConfiguratorState<TParam>>(
+export function ParamConfiguratorComponent<
+  TParams extends ParamConfiguratorDict,
+>({ params }: ParamConfiguratorProps<TParams>) {
+  const [state, setState] = useState<ParamConfiguratorState<TParams>>(
     Object.fromEntries(
       Object.entries(params).map(([key, param]) => [key, param.defaultValue]),
     ),
   );
 
   const getParamComponent = useCallback(
-    (param: TParam, key: string) => {
-      if (param instanceof SliderParam) {
+    (param: ParamConfigurator<any>, key: string) => {
+      if (param instanceof SliderParamConfigurator) {
         return (
           <Slider
-            value={[state[key]!]}
+            value={[state[key] as number]}
             onValueChange={(value) => setState({ ...state, [key]: value[0]! })}
             min={param.min}
             max={param.max}
@@ -40,10 +41,10 @@ export function ParamConfigurator<TParam extends Param<any>>({
           />
         );
       }
-      if (param instanceof SwitchParam) {
+      if (param instanceof SwitchParamConfigurator) {
         return (
           <Switch
-            checked={state[key]!}
+            checked={state[key] as boolean}
             onCheckedChange={(checked) =>
               setState({ ...state, [key]: checked })
             }

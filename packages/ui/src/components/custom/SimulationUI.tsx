@@ -1,35 +1,50 @@
 import { Button } from "../shadcn/button";
 import { FaBackward, FaForward, FaPlay, FaPause } from "react-icons/fa";
 import { VscSettings } from "react-icons/vsc";
-import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
-import { Step } from "@repo/simulations/algos/common";
+import {
+  useSimulation,
+  UseSimulationReturn,
+} from "@repo/simulations/hooks/useSimulation";
 import { Slider } from "../shadcn/slider";
 import { Drawer, DrawerContent, DrawerTrigger } from "../shadcn/drawer";
 import Loader from "./Loader";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Scene from "./Scene";
+import { AlgorithmDefinition, Step } from "@repo/simulations/algos/types";
+import { useParamConfigurator } from "./useParamConfigurator";
+import Renderer from "./Renderer";
 
 type SimulationUIProps = {
-  algorithmDescription: string;
-  simulation: UseSimulationReturn<any, any>;
-  sceneContent: React.ReactNode;
-  configComponent: React.ReactNode;
+  algorithm: AlgorithmDefinition;
 };
 
-export default function SimulationUI({
-  sceneContent,
-  ...props
-}: SimulationUIProps) {
-  const { simulation } = props;
+export default function SimulationUI({ ...props }: SimulationUIProps) {
+  const { algorithm } = props;
+  const { params, Configurator } = useParamConfigurator(
+    algorithm.paramConfigurators,
+  );
+  const simulation = useSimulation(algorithm, params);
+
   const [isOpen, setIsOpen] = useState(false);
+
+  const memoizedRenderer = useMemo(
+    () => <Renderer simulation={simulation} renderFn={algorithm.render} />,
+    [simulation, algorithm.render],
+  );
+
+  const sceneSetup = useMemo(
+    () => algorithm.getSceneSetup(params),
+    [params, algorithm.getSceneSetup],
+  );
+
   return (
     <div className="flex flex-col w-full  h-[calc(100vh-68px)]">
       {/* Mobile layout */}
       <div className="xl:hidden flex-1 relative">
         <div className="w-full h-full flex items-center justify-center">
-          <Scene simulation={simulation}>{sceneContent}</Scene>
+          <Scene sceneSetup={sceneSetup}>{memoizedRenderer}</Scene>
         </div>
         {simulation.tooltip && (
           <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px] z-10">
@@ -37,15 +52,15 @@ export default function SimulationUI({
           </div>
         )}
         <Drawer onOpenChange={setIsOpen}>
-          <MobileControls
-            {...props}
-            sceneContent={sceneContent}
-            isDrawerOpen={isOpen}
-          />
+          <MobileControls simulation={simulation} isDrawerOpen={isOpen} />
 
           <DrawerContent className="h-full max-h-[80vh]">
             <div className="p-4 flex flex-col h-full">
-              <SimulationControls {...props} />
+              <SimulationControls
+                simulation={simulation}
+                configComponent={Configurator}
+                algorithmDescription={algorithm.description}
+              />
             </div>
           </DrawerContent>
         </Drawer>
@@ -56,7 +71,7 @@ export default function SimulationUI({
         <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
           <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
             <div className="w-full h-full flex items-center justify-center">
-              <Scene simulation={simulation}>{sceneContent}</Scene>
+              <Scene sceneSetup={sceneSetup}>{memoizedRenderer}</Scene>
             </div>
             {simulation.tooltip && (
               <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4 max-w-[300px]">
@@ -65,7 +80,11 @@ export default function SimulationUI({
             )}
           </div>
           <div className="bg-background rounded-lg border p-6 flex flex-col gap-6">
-            <SimulationControls {...props} />
+            <SimulationControls
+              simulation={simulation}
+              configComponent={Configurator}
+              algorithmDescription={algorithm.description}
+            />
           </div>
         </main>
       </div>
@@ -76,8 +95,9 @@ export default function SimulationUI({
 function MobileControls({
   simulation: { runner },
   isDrawerOpen,
-}: SimulationUIProps & {
+}: {
   isDrawerOpen: boolean;
+  simulation: UseSimulationReturn;
 }) {
   if (runner.status === "configuring") {
     return (
@@ -148,13 +168,13 @@ function MobileControls({
 }
 
 function SimulationControls({
-  simulation: { runner, tooltip },
+  simulation: { runner },
   configComponent,
   algorithmDescription,
 }: {
-  simulation: UseSimulationReturn<Step<any, any>, any>;
+  simulation: UseSimulationReturn;
   configComponent: React.ReactNode;
-  algorithmDescription: string;
+  algorithmDescription: React.ReactNode;
 }) {
   const { status } = runner;
 
@@ -215,7 +235,7 @@ function SimulationControls({
             <div className="text-md font-bold flex justify-between">
               <span>{currentStep.title}</span>
               <span className="text-muted-foreground">
-                {currentStep.index} / {totalStepCount}
+                {currentStepIndex + 1} / {totalStepCount}
               </span>
             </div>
             <div className="prose text-muted-foreground max-h-[44vh] xl:max-h-[60vh] overflow-scroll">
@@ -234,7 +254,7 @@ function RunningButtons({
   extraButtons,
   showReset = true,
 }: {
-  runner: UseSimulationReturn<any, any>["runner"];
+  runner: UseSimulationReturn["runner"];
   variant?: "ghost" | "outline";
   extraButtons?: React.ReactNode;
   showReset?: boolean;

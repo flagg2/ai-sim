@@ -95,10 +95,5 @@ export const renderKNN: KNNDefinition["render"] = (state, config) => {
     }
   }
 
-  return {
-    objects: renderables,
-    sceneSetup: {
-      dimension: "3D",
-    },
-  };
+  return renderables;
 };

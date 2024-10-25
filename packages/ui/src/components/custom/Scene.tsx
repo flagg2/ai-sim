@@ -2,15 +2,15 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useRef } from "react";
-import { SceneSetup } from "./SceneSetup";
-import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
+import { SceneSetupComponent } from "./SceneSetup";
+import { SceneSetup } from "@repo/simulations/algos/types";
 
 export default function Scene({
   children,
-  simulation,
+  sceneSetup,
 }: {
   children: React.ReactNode;
-  simulation: UseSimulationReturn<any, any>;
+  sceneSetup: SceneSetup;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -24,7 +24,9 @@ export default function Scene({
           dpr={[1, 1.5]}
           gl={{ antialias: true }}
         >
-          <SceneSetup simulation={simulation}>{children}</SceneSetup>
+          <SceneSetupComponent sceneSetup={sceneSetup}>
+            {children}
+          </SceneSetupComponent>
         </Canvas>
       </div>
     </>

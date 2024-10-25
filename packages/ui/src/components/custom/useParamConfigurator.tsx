@@ -1,6 +1,9 @@
 "use client";
 
-import { ParamConfigurator } from "@repo/simulations/algos/paramConfigurators/param";
+import {
+  ParamConfigurator,
+  ParamConfiguratorDict,
+} from "@repo/simulations/algos/paramConfigurators/param";
 import { SliderParamConfigurator } from "@repo/simulations/algos/paramConfigurators/slider";
 import { SwitchParamConfigurator } from "@repo/simulations/algos/paramConfigurators/switch";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
@@ -8,52 +11,56 @@ import { Label } from "../../components/custom/Label";
 import { Slider } from "../../components/shadcn/slider";
 import { Switch } from "../../components/ui/switch";
 
-type ParamConfiguratorProps<
-  TParams extends Record<string, ParamConfigurator<any>>,
-> = {
-  params: TParams;
+type ParamConfiguratorProps<T extends ParamConfiguratorDict> = {
+  configurators: T;
 };
 
-type ParamConfiguratorState<
-  TParams extends Record<string, ParamConfigurator<any>>,
-> = {
-  [key in keyof TParams]: TParams[key]["defaultValue"];
+type ParamConfiguratorState<T extends ParamConfiguratorDict> = {
+  [key in keyof T]: T[key]["defaultValue"];
 };
 
-export function useParamConfigurator<
-  TParams extends Record<string, ParamConfigurator<any>>,
->(params: ParamConfiguratorProps<TParams>["params"]) {
-  const [state, setState] = useState<ParamConfiguratorState<TParams>>(
+export function useParamConfigurator<T extends ParamConfiguratorDict>(
+  configurators: T,
+) {
+  const [params, setState] = useState<ParamConfiguratorState<T>>(
     Object.fromEntries(
-      Object.entries(params).map(([key, param]) => [key, param.defaultValue]),
-    ) as ParamConfiguratorState<TParams>,
+      Object.entries(configurators).map(([key, param]) => [
+        key,
+        param.defaultValue,
+      ]),
+    ) as ParamConfiguratorState<T>,
   );
 
   return {
-    state,
+    params,
     Configurator: (
-      <Configurator params={params} state={state} setState={setState} />
+      <Configurator
+        configurators={configurators}
+        params={params}
+        setParams={setState}
+      />
     ),
   };
 }
 
-function Configurator<TParams extends Record<string, ParamConfigurator<any>>>({
+function Configurator<T extends ParamConfiguratorDict>({
+  configurators,
   params,
-  state,
-  setState,
-}: ParamConfiguratorProps<TParams> & {
-  state: ParamConfiguratorState<TParams>;
-  setState: Dispatch<SetStateAction<ParamConfiguratorState<TParams>>>;
+  setParams,
+}: ParamConfiguratorProps<T> & {
+  params: ParamConfiguratorState<T>;
+  setParams: Dispatch<SetStateAction<ParamConfiguratorState<T>>>;
 }) {
   const getParamComponent = useCallback(
-    (param: ParamConfigurator<any>, key: keyof TParams) => {
+    (param: ParamConfigurator<any>, key: keyof T) => {
       if (param instanceof SliderParamConfigurator) {
+        const value = params[key]! as number;
         return (
           <>
             <Slider
-              value={[state[key]!]}
+              value={[value]}
               onValueChange={(value) =>
-                setState({ ...state, [key]: value[0]! })
+                setParams({ ...params, [key]: value[0]! })
               }
               min={param.min}
               max={param.max}
@@ -63,11 +70,12 @@ function Configurator<TParams extends Record<string, ParamConfigurator<any>>>({
         );
       }
       if (param instanceof SwitchParamConfigurator) {
+        const value = params[key]! as boolean;
         return (
           <Switch
-            checked={state[key]!}
+            checked={value}
             onCheckedChange={(checked) =>
-              setState({ ...state, [key]: checked })
+              setParams({ ...params, [key]: checked })
             }
           />
         );
@@ -75,15 +83,18 @@ function Configurator<TParams extends Record<string, ParamConfigurator<any>>>({
 
       return null;
     },
-    [state],
+    [params],
   );
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      {Object.entries(params).map(([key, param]) => (
+      {Object.entries(configurators).map(([key, param]) => (
         <Label key={key} label={param.label} info={param.description}>
           {getParamComponent(param, key)}
-          <div className="text-xs text-darkish-text">{state[key]}</div>
+          <div className="text-xs text-darkish-text">
+            {/* TODO: better typing to avoid these casts */}
+            {params[key] as string}
+          </div>
         </Label>
       ))}
     </div>

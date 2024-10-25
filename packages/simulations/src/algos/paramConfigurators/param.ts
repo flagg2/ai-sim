@@ -4,7 +4,11 @@ type ParamConfiguratorProps<TDefaultValue> = {
   defaultValue: TDefaultValue;
 };
 
-export class ParamConfigurator<TDefaultValue> {
+export type ParamConfiguratorDict = {
+  [key: string]: ParamConfigurator;
+};
+
+export class ParamConfigurator<TDefaultValue = unknown> {
   public label: string;
   public description?: string;
   public defaultValue: TDefaultValue;

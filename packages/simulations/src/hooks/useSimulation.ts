@@ -1,29 +1,31 @@
 import { useAlgorithmState } from "./useAlgorithmState";
 import { useRunner } from "./useRunner";
 import { useTooltip } from "./useTooltip";
-import type { Config, Step } from "../algos/types";
+import type { AlgorithmDefinition, Params } from "../algos/types";
+import { useMemo } from "react";
 
-export function useSimulation<
-  TStep extends Step<any, any>,
-  TConfig extends Config,
->({
-  initial,
-  simulateSteps,
-}: {
-  initial: {
-    step: TStep;
-    config: TConfig;
-  };
-  simulateSteps: (config: TConfig, initialStep: TStep) => TStep[];
-}) {
+export function useSimulation<TDefinition extends AlgorithmDefinition>(
+  definition: TDefinition,
+  params: Params,
+) {
+  const config = useMemo(
+    () => definition.getConfig(params),
+    [definition, params],
+  );
+
+  const initialStep = useMemo(
+    () => definition.getInitialStep(config),
+    [definition, config],
+  );
+
   const interactiveRunnerState = useAlgorithmState({
-    initialConfig: initial.config,
-    initialStep: initial.step,
+    initialConfig: config,
+    initialStep,
   });
 
   const interactiveRunner = useRunner({
     state: interactiveRunnerState as any,
-    simulateSteps: simulateSteps as any,
+    getSteps: definition.getSteps,
   });
 
   const { tooltip, tooltipHandlers } = useTooltip();
@@ -36,6 +38,5 @@ export function useSimulation<
 }
 
 export type UseSimulationReturn<
-  TStep extends Step<any, any>,
-  TConfig extends Config,
-> = ReturnType<typeof useSimulation<TStep, TConfig>>;
+  TDefinition extends AlgorithmDefinition = AlgorithmDefinition,
+> = ReturnType<typeof useSimulation<TDefinition>>;
