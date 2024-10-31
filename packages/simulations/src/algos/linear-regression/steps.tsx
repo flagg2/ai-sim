@@ -143,5 +143,39 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
       ),
     });
 
+    // we can calculate how good the line is by calculating the sum of squared errors
+
+    const sumOfSquaredErrors = points.reduce((sum, point) => {
+      const predictedY =
+        coefficients.slopeXY * point.coords.x + coefficients.interceptY;
+      const predictedZ =
+        coefficients.slopeXZ * point.coords.x + coefficients.interceptZ;
+      return (
+        sum +
+        Math.pow(point.coords.y - predictedY, 2) +
+        Math.pow(point.coords.z - predictedZ, 2)
+      );
+    }, 0);
+
+    steps.push({
+      type: "calculateSumOfSquaredErrors",
+      title: "Calculate Sum of Squared Errors",
+      state: {
+        sumOfSquaredErrors,
+        coefficients,
+        means,
+        predictionLine,
+      },
+      description: (
+        <div>
+          <p>
+            We can calculate how good the line is by calculating the sum of
+            squared errors.
+          </p>
+          <p>The sum of squared errors is {sumOfSquaredErrors.toFixed(2)}.</p>
+        </div>
+      ),
+    });
+
     return steps;
   };

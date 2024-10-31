@@ -10,7 +10,8 @@ export type DataPoint = {
 type LinearRegressionStepType =
   | "calculateMeans"
   | "calculateCoefficients"
-  | "updateLine";
+  | "updateLine"
+  | "calculateSumOfSquaredErrors";
 
 type LinearRegressionStepState = {
   means?: { x: number; y: number; z: number };
@@ -21,6 +22,7 @@ type LinearRegressionStepState = {
     interceptZ: number;
   };
   predictionLine?: { start: Coords3D; end: Coords3D };
+  sumOfSquaredErrors?: number;
 };
 
 export type LinearRegressionStep = Step<

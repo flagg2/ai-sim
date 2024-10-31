@@ -36,7 +36,7 @@ export const renderLinearRegression: LinearRegressionDefinition["render"] = (
     const { start, end } = state.predictionLine;
 
     // Extend the line by adding padding to x coordinates
-    const padding = Math.abs(end.x - start.x) * 0.2; // 20% padding
+    const padding = Math.abs(end.x - start.x) * 2; // 20% padding
     const extendedStart = { ...start, x: start.x - padding };
     const extendedEnd = { ...end, x: end.x + padding };
 

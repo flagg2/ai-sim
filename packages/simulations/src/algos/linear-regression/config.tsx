@@ -32,9 +32,15 @@ function generateRandomPoints(
     // Generate more controlled coordinates along a path
     const t = i / (numberOfPoints - 1); // Parameter between 0 and 1
     const coords = {
-      x: Math.floor(t * 100 + Math.random() * 60 * noise),
-      y: Math.floor(t * heightScale + Math.random() * 60 * noise),
-      z: Math.floor(t * 60 + Math.random() * 60 * noise),
+      x:
+        noise === 0
+          ? t * 100
+          : Math.floor(t * 100 + Math.random() * 60 * noise),
+      y:
+        noise === 0
+          ? t * heightScale
+          : Math.floor(t * heightScale + Math.random() * 60 * noise),
+      z: noise === 0 ? t * 60 : Math.floor(t * 60 + Math.random() * 60 * noise),
     };
 
     points.push({
