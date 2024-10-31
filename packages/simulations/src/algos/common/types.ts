@@ -1,9 +1,9 @@
 import type { MeshStandardMaterial } from "three";
-import type { Renderable } from "./objects/renderable";
 import type {
   ParamConfigurator,
   ParamConfiguratorDict,
 } from "./paramConfigurators/param";
+import type { Renderable } from "./objects/renderable";
 
 export type Coords3D = {
   x: number;

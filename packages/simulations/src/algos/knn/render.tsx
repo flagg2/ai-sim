@@ -2,9 +2,9 @@ import {
   getPinkMaterial,
   getWhiteMaterial,
 } from "@repo/simulations/utils/materials";
-import { Point3D } from "../objects/point";
-import type { Renderable } from "../objects/renderable";
-import { Tube } from "../objects/tube";
+import { Point3D } from "../common/objects/point";
+import type { Renderable } from "../common/objects/renderable";
+import { Tube } from "../common/objects/tube";
 import type { KNNDefinition } from "./types";
 
 export const renderKNN: KNNDefinition["render"] = (state, config) => {
@@ -33,6 +33,7 @@ export const renderKNN: KNNDefinition["render"] = (state, config) => {
         </div>
       ),
       name: "Query Point",
+      scale: 5,
     }),
   );
 

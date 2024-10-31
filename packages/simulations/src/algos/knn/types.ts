@@ -1,8 +1,13 @@
 // TODO: one point gets skipped - evident with few points
 
-import type { SliderParamConfigurator } from "../paramConfigurators/slider";
-import type { ParamConfiguratorDict } from "../paramConfigurators/param";
-import type { AlgorithmDefinition, Coords3D, Group, Step } from "../types";
+import type { SliderParamConfigurator } from "../common/paramConfigurators/slider";
+import type { ParamConfiguratorDict } from "../common/paramConfigurators/param";
+import type {
+  AlgorithmDefinition,
+  Coords3D,
+  Group,
+  Step,
+} from "../common/types";
 
 export type DataPoint = {
   id: string;

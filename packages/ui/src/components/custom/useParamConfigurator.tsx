@@ -1,15 +1,15 @@
 "use client";
 
-import {
-  ParamConfigurator,
-  ParamConfiguratorDict,
-} from "@repo/simulations/algos/paramConfigurators/param";
-import { SliderParamConfigurator } from "@repo/simulations/algos/paramConfigurators/slider";
-import { SwitchParamConfigurator } from "@repo/simulations/algos/paramConfigurators/switch";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { Label } from "../../components/custom/Label";
 import { Slider } from "../../components/shadcn/slider";
 import { Switch } from "../../components/ui/switch";
+import type {
+  ParamConfigurator,
+  ParamConfiguratorDict,
+} from "@repo/simulations/algos/common/paramConfigurators/param";
+import { SliderParamConfigurator } from "@repo/simulations/algos/common/paramConfigurators/slider";
+import { SwitchParamConfigurator } from "@repo/simulations/algos/common/paramConfigurators/switch";
 
 type ParamConfiguratorProps<T extends ParamConfiguratorDict> = {
   configurators: T;

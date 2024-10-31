@@ -1,6 +1,6 @@
-import { Point3D } from "../objects/point";
-import { Tube } from "../objects/tube";
-import type { Renderable } from "../objects/renderable";
+import { Point3D } from "../common/objects/point";
+import type { Renderable } from "../common/objects/renderable";
+import { Tube } from "../common/objects/tube";
 import type { KMeansDefinition } from "./types";
 
 export const renderKMeans: KMeansDefinition["render"] = (state, config) => {
@@ -28,7 +28,6 @@ export const renderKMeans: KMeansDefinition["render"] = (state, config) => {
           </div>
         ),
         name: `Point ${point.id}`,
-        scale: 4,
       }),
     );
   });
@@ -55,7 +54,7 @@ export const renderKMeans: KMeansDefinition["render"] = (state, config) => {
           </div>
         ),
         name: `Centroid ${centroid.id}`,
-        scale: 6,
+        scale: 5,
       }),
     );
 

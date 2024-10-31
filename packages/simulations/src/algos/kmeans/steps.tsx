@@ -1,7 +1,7 @@
 import type { KMeansDefinition, Point } from "./types";
-import { calculateDistance } from "../utils";
+import { calculateDistance } from "../common/utils";
 import { getMaterial } from "@repo/simulations/utils/materials";
-import type { Group } from "../types";
+import type { Group } from "../common/types";
 
 export const getKMeansSteps: KMeansDefinition["getSteps"] = (
   config,

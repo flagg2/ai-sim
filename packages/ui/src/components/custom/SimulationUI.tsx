@@ -12,9 +12,9 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
 import Scene from "./Scene";
-import { AlgorithmDefinition, Step } from "@repo/simulations/algos/types";
 import { useParamConfigurator } from "./useParamConfigurator";
 import Renderer from "./Renderer";
+import { AlgorithmDefinition } from "@repo/simulations/algos/common/types";
 
 type SimulationUIProps = {
   algorithm: AlgorithmDefinition<any, any, any>;

@@ -8,7 +8,6 @@ export const getKNNInitialStep: KNNDefinition["getInitialStep"] = (config) => {
     description: (
       <div>We want to determine which group the query point belongs to.</div>
     ),
-    index: 1,
     state: {
       currentIndex: 0,
       queryPoint: {

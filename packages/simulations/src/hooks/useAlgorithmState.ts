@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Step } from "../algos/types";
+import type { Step } from "../algos/common/types";
 
 export function useAlgorithmState<TStep extends Step, TConfig extends object>({
   initialConfig,

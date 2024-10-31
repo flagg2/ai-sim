@@ -17,11 +17,11 @@ const visualizations = [
     description: "Visualize the K-Means Clustering algorithm in 3D.",
   },
   {
-    href: "#",
+    href: "/linear-regression",
     src: "/placeholder.svg",
-    alt: "t-SNE Visualization",
-    title: "t-SNE Visualization",
-    description: "Discover the power of t-SNE for dimensionality reduction.",
+    alt: "Linear Regression",
+    title: "Linear Regression",
+    description: "Visualize the Linear Regression algorithm in 3D.",
   },
   {
     href: "#",

@@ -1,4 +1,4 @@
-import { SliderParamConfigurator } from "../paramConfigurators/slider";
+import { SliderParamConfigurator } from "../common/paramConfigurators/slider";
 import type { KMeansDefinition } from "./types";
 
 export const paramConfigurators: KMeansDefinition["paramConfigurators"] = {

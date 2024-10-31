@@ -1,6 +1,6 @@
 import { getMaterial } from "@repo/simulations/utils/materials";
-import type { Group } from "../types";
-import { calculateDistance } from "../utils";
+import type { Group } from "../common/types";
+import { calculateDistance } from "../common/utils";
 import type { DataPoint, KNNDefinition } from "./types";
 
 export const getKNNConfig: KNNDefinition["getConfig"] = (params) => {

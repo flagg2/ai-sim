@@ -1,7 +1,7 @@
 import { useAlgorithmState } from "./useAlgorithmState";
 import { useRunner } from "./useRunner";
 import { useTooltip } from "./useTooltip";
-import type { AlgorithmDefinition, Params } from "../algos/types";
+import type { AlgorithmDefinition, Params } from "../algos/common/types";
 import { useMemo } from "react";
 
 export function useSimulation<TDefinition extends AlgorithmDefinition>(

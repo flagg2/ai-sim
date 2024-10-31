@@ -1,4 +1,4 @@
-import type { DataPoint } from "./knn/types";
+import type { DataPoint } from "../knn/types";
 
 export function calculateDistance(
   a: DataPoint["coords"],
