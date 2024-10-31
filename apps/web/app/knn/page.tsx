@@ -11,7 +11,6 @@ export default function KNNPage() {
   return (
     <>
       <Header title={knn.title} />
-      {/* TODO: fix type error (even though it doesnt make much sense to me) */}
       <SimulationUI algorithm={knn} />
     </>
   );

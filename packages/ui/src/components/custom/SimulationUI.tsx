@@ -17,7 +17,7 @@ import { useParamConfigurator } from "./useParamConfigurator";
 import Renderer from "./Renderer";
 
 type SimulationUIProps = {
-  algorithm: AlgorithmDefinition;
+  algorithm: AlgorithmDefinition<any, any, any>;
 };
 
 export default function SimulationUI({ ...props }: SimulationUIProps) {

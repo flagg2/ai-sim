@@ -1,6 +1,7 @@
 // TODO: one point gets skipped - evident with few points
 
 import type { SliderParamConfigurator } from "../paramConfigurators/slider";
+import type { ParamConfiguratorDict } from "../paramConfigurators/param";
 import type { AlgorithmDefinition, Coords3D, Group, Step } from "../types";
 
 export type DataPoint = {
@@ -23,13 +24,13 @@ type KNNStepState = {
 
 export type KNNStep = Step<KNNStepState, KNNStepType>;
 
-type KNNParamConfigurators = {
+export type KNNParamConfiguratorDict = ParamConfiguratorDict<{
   points: SliderParamConfigurator;
   k: SliderParamConfigurator;
   groups: SliderParamConfigurator;
-};
+}>;
 
-type KNNConfig = {
+export type KNNConfig = {
   points: DataPoint[];
   k: number;
   groups: Group[];
@@ -38,5 +39,5 @@ type KNNConfig = {
 export type KNNDefinition = AlgorithmDefinition<
   KNNStep,
   KNNConfig,
-  KNNParamConfigurators
+  KNNParamConfiguratorDict
 >;

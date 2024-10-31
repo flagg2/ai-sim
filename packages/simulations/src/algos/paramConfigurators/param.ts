@@ -4,8 +4,8 @@ type ParamConfiguratorProps<TDefaultValue> = {
   defaultValue: TDefaultValue;
 };
 
-export type ParamConfiguratorDict = {
-  [key: string]: ParamConfigurator;
+export type ParamConfiguratorDict<T = Record<string, ParamConfigurator>> = {
+  [K in keyof T]: T[K] extends ParamConfigurator ? T[K] : never;
 };
 
 export class ParamConfigurator<TDefaultValue = unknown> {

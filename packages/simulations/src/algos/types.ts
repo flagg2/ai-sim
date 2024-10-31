@@ -47,12 +47,12 @@ export type Params<
 
 export type RenderFunction<
   TStep extends Step<any, any> = Step<object, string>,
-  TConfig extends object = object,
+  TConfig = unknown,
 > = (state: TStep["state"], config: TConfig) => Renderable[];
 
 export type AlgorithmDefinition<
   TStep extends Step = Step,
-  TConfig extends object = object,
+  TConfig = unknown,
   TParamConfigurators extends ParamConfiguratorDict = ParamConfiguratorDict,
 > = {
   title: string;
