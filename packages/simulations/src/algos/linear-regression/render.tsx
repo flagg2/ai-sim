@@ -68,7 +68,7 @@ export const renderLinearRegression: LinearRegressionDefinition["render"] = (
         to: endPoint,
         material: predictionLineMaterial,
         name: "Regression Line",
-        radius: 2,
+        radius: 1,
       }),
     );
   }

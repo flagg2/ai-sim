@@ -18,7 +18,7 @@ export class Point2D implements Renderable {
       three: {
         geometry: new SphereGeometry(1, 32, 32),
         material,
-        position: new Vector3(coords.x, 0, coords.y), // Y-axis locked to 0
+        position: new Vector3(coords.x, coords.y, 0),
         scale: 3,
       },
       getTooltip: () => tooltip,

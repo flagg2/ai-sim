@@ -21,12 +21,9 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
       },
       description: (
         <div>
-          <p>Calculate the mean values for x and y:</p>
-          <ul>
-            <li>Mean X: {means.x.toFixed(2)}</li>
-            <li>Mean Y: {means.y.toFixed(2)}</li>
-            <li>Mean Z: {means.z.toFixed(2)}</li>
-          </ul>
+          <p>
+            Start by calculating the mean values for x, y, and z for the data.
+          </p>
         </div>
       ),
     });

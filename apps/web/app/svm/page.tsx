@@ -1,4 +1,8 @@
-// "use client";
+"use client";
+
+import Header from "@repo/ui/components/custom/Header";
+import SimulationUI from "@repo/ui/components/custom/SimulationUI";
+import { svm } from "@repo/simulations/algos/svm/svm";
 
 // import { useState } from "react";
 // import { useSVM } from "@repo/simulations/hooks/useSVM";
@@ -105,5 +109,10 @@
 // }
 
 export default function SVMPage() {
-  return <div>SVM</div>;
+  return (
+    <>
+      <Header title={svm.title} />
+      <SimulationUI algorithm={svm} />
+    </>
+  );
 }

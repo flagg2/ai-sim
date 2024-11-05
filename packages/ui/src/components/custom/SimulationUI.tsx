@@ -35,8 +35,16 @@ export default function SimulationUI({ ...props }: SimulationUIProps) {
   );
 
   const sceneSetup = useMemo(
-    () => algorithm.getSceneSetup(params),
-    [params, algorithm.getSceneSetup],
+    () =>
+      algorithm.getSceneSetup(
+        simulation.runner.currentStep,
+        simulation.runner.config,
+      ),
+    [
+      simulation.runner.currentStep,
+      simulation.runner.config,
+      algorithm.getSceneSetup,
+    ],
   );
 
   return (

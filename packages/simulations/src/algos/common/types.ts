@@ -61,6 +61,6 @@ export type AlgorithmDefinition<
   getConfig: (params: Params<TParamConfigurators>) => TConfig;
   getInitialStep: (config: TConfig) => TStep;
   getSteps: (config: TConfig, initialStep: TStep) => TStep[];
-  getSceneSetup: (config: TConfig) => SceneSetup;
+  getSceneSetup: (currentStep?: TStep, config?: TConfig) => SceneSetup;
   render: RenderFunction<TStep, TConfig>;
 };
