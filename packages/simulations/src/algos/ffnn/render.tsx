@@ -10,8 +10,12 @@ import { Point2D } from "../common/objects/point2d";
 
 export const renderFFNN: FFNNDefinition["render"] = (state, config) => {
   const renderables: Renderable[] = [];
-  const { neurons, connections, activeNeuronIds, highlightedConnectionIds } =
-    state;
+  const {
+    neurons,
+    connections,
+    highlightedNeuronIds,
+    highlightedConnectionIds,
+  } = state;
 
   // Calculate layout dimensions
   const layerCount = config.layers + 2; // input + hidden + output
@@ -86,6 +90,7 @@ export const renderFFNN: FFNNDefinition["render"] = (state, config) => {
           </div>
         ),
         name: `Neuron ${neuron.id}`,
+        scale: highlightedNeuronIds?.includes(neuron.id) ? 5 : 3,
       }),
     );
   });

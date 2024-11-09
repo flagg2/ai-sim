@@ -30,7 +30,7 @@ export function Label({ label, info, required, children }: LabelProps) {
               </TooltipTrigger>
               <TooltipContent
                 side="right"
-                className="bg-background-light max-w-[300px] relative z-[3]"
+                className="max-w-[300px] relative z-[3]"
               >
                 <p>{info}</p>
               </TooltipContent>

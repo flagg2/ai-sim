@@ -36,7 +36,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
           (n) => n.id === conn.fromNeuron.id,
         );
         return sum + (fromNeuron ? fromNeuron.activation * conn.weight : 0);
-      }, 0);
+      }, currentNeuron.bias || 0);
 
       // Step for calculating weighted sum
       steps.push({
@@ -61,7 +61,8 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
                   </span>
                 );
               })}{" "}
-              = {weightedSum.toFixed(3)}
+              + {currentNeuron.bias?.toFixed(3) || "0"}={" "}
+              {weightedSum.toFixed(3)}
             </p>
           </div>
         ),
@@ -73,7 +74,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
           ),
           connections: config.connections,
           highlightedConnectionIds,
-          activeNeuronIds: [currentNeuron.id],
+          highlightedNeuronIds: [currentNeuron.id],
         },
       });
 
@@ -109,7 +110,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
           neurons: currentNeurons,
           connections: config.connections,
           highlightedConnectionIds,
-          activeNeuronIds: [currentNeuron.id],
+          highlightedNeuronIds: [currentNeuron.id],
         },
       });
     }
@@ -132,7 +133,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
         neurons: currentNeurons,
         connections: config.connections,
         highlightedConnectionIds: [],
-        activeNeuronIds: currentNeurons
+        highlightedNeuronIds: currentNeurons
           .filter((n) => n.layer === layer)
           .map((n) => n.id),
       },
@@ -180,7 +181,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
         neurons: currentNeurons,
         connections: config.connections,
         highlightedConnectionIds: [],
-        activeNeuronIds: outputNeurons.map((n) => n.id),
+        highlightedNeuronIds: outputNeurons.map((n) => n.id),
         loss,
         targetValues: config.targetValues,
       },
@@ -236,17 +237,25 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
 
           delta = (activation - targetValue) * activationDerivative;
 
-          // Add gradient calculation step for output neuron
+          // Update bias
+          const biasGradient = delta;
+          const newBias = (neuron.bias || 0) - learningRate * biasGradient;
+
+          currentNeurons = currentNeurons.map((n) =>
+            n.id === neuron.id ? { ...n, bias: newBias } : n,
+          );
+
+          // Add bias update step
           steps.push({
-            type: "gradientCalculation",
-            title: `Calculate Gradient (Output Neuron ${neuron.id})`,
+            type: "biasUpdate",
+            title: `Calculated gradient and update Bias (Output Neuron ${neuron.id})`,
             description: (
               <div>
-                <p>Calculating gradient for output neuron {neuron.id}:</p>
-                <p>δ = (activation - target) × activation derivative</p>
+                <p>Updating bias for neuron {neuron.id}:</p>
+                <p>Bias gradient = δ = {biasGradient.toFixed(3)}</p>
                 <p>
-                  δ = ({activation.toFixed(3)} - {targetValue.toFixed(3)}) ×{" "}
-                  {activationDerivative.toFixed(3)} = {delta.toFixed(3)}
+                  New bias = {(neuron.bias || 0).toFixed(3)} - {learningRate} ×{" "}
+                  {biasGradient.toFixed(3)} = {newBias.toFixed(3)}
                 </p>
               </div>
             ),
@@ -259,7 +268,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
                 ...neuronGradients,
                 [neuron.id]: delta,
               },
-              activeNeuronIds: [neuron.id],
+              highlightedNeuronIds: [neuron.id],
             },
           });
         } else {
@@ -279,10 +288,18 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
 
           delta = sumDeltaWeights * activationDerivative;
 
-          // Add gradient calculation step for hidden neuron
+          // Update bias for hidden neuron
+          const biasGradient = delta;
+          const newBias = (neuron.bias || 0) - learningRate * biasGradient;
+
+          currentNeurons = currentNeurons.map((n) =>
+            n.id === neuron.id ? { ...n, bias: newBias } : n,
+          );
+
+          // Add gradient calculation and bias update step for hidden neuron
           steps.push({
-            type: "gradientCalculation",
-            title: `Calculate Gradient (Hidden Neuron ${neuron.id})`,
+            type: "biasUpdate",
+            title: `Calculate Gradient and Update Bias (Hidden Neuron ${neuron.id})`,
             description: (
               <div>
                 <p>Calculating gradient for hidden neuron {neuron.id}:</p>
@@ -292,6 +309,11 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
                 <p>
                   δ = ({sumDeltaWeights.toFixed(3)}) ×{" "}
                   {activationDerivative.toFixed(3)} = {delta.toFixed(3)}
+                </p>
+                <p>Updating bias:</p>
+                <p>
+                  New bias = {(neuron.bias || 0).toFixed(3)} - {learningRate} ×{" "}
+                  {biasGradient.toFixed(3)} = {newBias.toFixed(3)}
                 </p>
               </div>
             ),
@@ -304,7 +326,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
                 ...neuronGradients,
                 [neuron.id]: delta,
               },
-              activeNeuronIds: [neuron.id],
+              highlightedNeuronIds: [neuron.id],
             },
           });
         }
@@ -377,7 +399,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
               [conn.id]: weightGradient,
             },
             highlightedConnectionIds: [conn.id],
-            activeNeuronIds: [conn.fromNeuron.id, conn.toNeuron.id],
+            highlightedNeuronIds: [conn.fromNeuron.id, conn.toNeuron.id],
           },
         });
       }
@@ -400,7 +422,7 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
         gradients: neuronGradients,
         weightGradients: weightGradients,
         highlightedConnectionIds: [],
-        activeNeuronIds: [],
+        highlightedNeuronIds: [],
       },
     });
   }

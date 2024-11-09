@@ -1,5 +1,6 @@
 import { getFFNNConfig } from "./config";
 import { getFFNNInitialStep } from "./initialStep";
+import { ffnnParamConfigurators } from "./paramConfigurators";
 import { renderFFNN } from "./render";
 import { getFFNNSteps } from "./steps";
 import type { FFNNDefinition } from "./types";
@@ -12,5 +13,5 @@ export const ffnn: FFNNDefinition = {
   description: "a neural network",
   getConfig: getFFNNConfig,
   getSteps: getFFNNSteps,
-  paramConfigurators: {},
+  paramConfigurators: ffnnParamConfigurators,
 };

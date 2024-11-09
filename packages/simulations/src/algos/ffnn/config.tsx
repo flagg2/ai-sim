@@ -1,26 +1,23 @@
 import type { FFNNDefinition, Neuron, Connection } from "./types";
 
 export const getFFNNConfig: FFNNDefinition["getConfig"] = (params) => {
-  const {
-    layers,
-    neuronsPerLayer,
-    inputSize,
-    outputSize,
-    learningRate,
-    targetValues,
-  } = {
+  const { firstInputValue, learningRate, secondInputValue } = params;
+  const { layers, neuronsPerLayer, inputSize, outputSize, targetValues } = {
     layers: 1,
     neuronsPerLayer: 5,
     inputSize: 2,
     outputSize: 1,
-    learningRate: 50,
     targetValues: [0.8],
   };
+
+  const activations = [firstInputValue, secondInputValue];
+
   const neurons = generateNeurons(
     layers,
     neuronsPerLayer,
     inputSize,
     outputSize,
+    activations,
   );
   const connections = generateConnections(neurons);
 
@@ -46,11 +43,9 @@ function generateNeurons(
   neuronsPerLayer: number,
   inputSize: number,
   outputSize: number,
+  activations: number[],
 ): Neuron[] {
   const neurons: Neuron[] = [];
-
-  const activations = [0.8, 0.5, 0.7, 0.4, 0.5];
-
   // Input layer
   for (let i = 0; i < inputSize; i++) {
     const activation = activations[i];
@@ -60,6 +55,7 @@ function generateNeurons(
       index: i,
       value: activation, // Random initial input
       activation: activation, // For input layer, value = activation
+      bias: 0,
     });
   }
 
@@ -72,6 +68,7 @@ function generateNeurons(
         index: i,
         value: 0,
         activation: 0,
+        bias: 0,
       });
     }
   }
@@ -84,6 +81,7 @@ function generateNeurons(
       index: i,
       value: 0,
       activation: 0,
+      bias: 0,
     });
   }
 

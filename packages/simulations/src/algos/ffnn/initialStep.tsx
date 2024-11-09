@@ -18,7 +18,7 @@ export const getFFNNInitialStep: FFNNDefinition["getInitialStep"] = (
       neurons: config.neurons,
       connections: config.connections,
       highlightedConnectionIds: [],
-      activeNeuronIds: config.neurons
+      highlightedNeuronIds: config.neurons
         .filter((n) => n.layer === 0)
         .map((n) => n.id), // Initially highlight input layer neurons
     },

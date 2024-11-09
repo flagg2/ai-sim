@@ -1,4 +1,5 @@
 import type { ParamConfiguratorDict } from "../common/paramConfigurators/param";
+import type { SliderParamConfigurator } from "../common/paramConfigurators/slider";
 import type { AlgorithmDefinition, Step } from "../common/types";
 
 // Define a neuron structure
@@ -8,6 +9,7 @@ export type Neuron = {
   index: number;
   value: number;
   activation: number;
+  bias?: number;
 };
 
 // Define a connection between neurons
@@ -26,7 +28,7 @@ type FFNNStepType =
   | "layerComplete"
   | "lossCalculation"
   | "backpropStart"
-  | "gradientCalculation"
+  | "biasUpdate"
   | "weightUpdate"
   | "backpropComplete";
 
@@ -37,7 +39,7 @@ type FFNNStepState = {
   neurons: Neuron[];
   connections: Connection[];
   highlightedConnectionIds?: string[];
-  activeNeuronIds?: string[];
+  highlightedNeuronIds?: string[];
   loss?: number;
   targetValues?: number[];
   gradients?: {
@@ -51,7 +53,11 @@ type FFNNStepState = {
 export type FFNNStep = Step<FFNNStepState, FFNNStepType>;
 
 // Parameter configurators for the network
-export type FFNNParamConfiguratorDict = ParamConfiguratorDict<{}>;
+export type FFNNParamConfiguratorDict = ParamConfiguratorDict<{
+  firstInputValue: SliderParamConfigurator;
+  secondInputValue: SliderParamConfigurator;
+  learningRate: SliderParamConfigurator;
+}>;
 
 // Configuration for the network
 export type FFNNConfig = {

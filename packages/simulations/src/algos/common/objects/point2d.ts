@@ -7,19 +7,20 @@ type Point2DProps = {
   material: MeshStandardMaterial;
   tooltip?: React.ReactNode;
   name?: string;
+  scale?: number;
 };
 
 export class Point2D implements Renderable {
   public object: RenderableObject;
 
   constructor(props: Point2DProps) {
-    const { coords, material, tooltip, name } = props;
+    const { coords, material, tooltip, name, scale = 3 } = props;
     this.object = new RenderableObject({
       three: {
         geometry: new SphereGeometry(1, 32, 32),
         material,
         position: new Vector3(coords.x, coords.y, 0),
-        scale: 3,
+        scale,
       },
       getTooltip: () => tooltip,
       name: name ?? "Point2D",
