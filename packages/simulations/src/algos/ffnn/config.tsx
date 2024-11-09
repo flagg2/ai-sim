@@ -1,11 +1,20 @@
 import type { FFNNDefinition, Neuron, Connection } from "./types";
 
 export const getFFNNConfig: FFNNDefinition["getConfig"] = (params) => {
-  const { layers, neuronsPerLayer, inputSize, outputSize } = {
+  const {
+    layers,
+    neuronsPerLayer,
+    inputSize,
+    outputSize,
+    learningRate,
+    targetValues,
+  } = {
     layers: 1,
     neuronsPerLayer: 5,
     inputSize: 2,
     outputSize: 1,
+    learningRate: 50,
+    targetValues: [0.8],
   };
   const neurons = generateNeurons(
     layers,
@@ -22,6 +31,8 @@ export const getFFNNConfig: FFNNDefinition["getConfig"] = (params) => {
     outputSize,
     neurons,
     connections,
+    learningRate,
+    targetValues,
   };
 };
 

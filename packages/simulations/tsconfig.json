@@ -28,6 +28,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-    "noUncheckedIndexedAccess": false
+    "noUncheckedIndexedAccess": false,
+    "typeRoots": ["./node_modules/@types", "./src/lib.d.ts"]
   }
 }

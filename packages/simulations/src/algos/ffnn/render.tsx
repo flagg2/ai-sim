@@ -59,7 +59,7 @@ export const renderFFNN: FFNNDefinition["render"] = (state, config) => {
         to: { x: toX, y: toY },
         material: getWeightMaterial(connection.weight),
         name: `Connection ${connection.id}`,
-        radius: highlightedConnectionIds?.includes(connection.id) ? 0.3 : 0.125,
+        radius: highlightedConnectionIds?.includes(connection.id) ? 0.5 : 0.25,
       }),
     );
   });

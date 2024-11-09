@@ -19,7 +19,16 @@ export type Connection = {
 };
 
 // Define possible step types in the feed-forward process
-type FFNNStepType = "initial" | "weightedSum" | "activation" | "layerComplete";
+type FFNNStepType =
+  | "initial"
+  | "weightedSum"
+  | "activation"
+  | "layerComplete"
+  | "lossCalculation"
+  | "backpropStart"
+  | "gradientCalculation"
+  | "weightUpdate"
+  | "backpropComplete";
 
 // State maintained during the visualization
 type FFNNStepState = {
@@ -27,8 +36,16 @@ type FFNNStepState = {
   currentNeuron: number;
   neurons: Neuron[];
   connections: Connection[];
-  highlightedConnectionIds?: string[]; // IDs of connections being highlighted
-  activeNeuronIds?: string[]; // IDs of neurons being processed
+  highlightedConnectionIds?: string[];
+  activeNeuronIds?: string[];
+  loss?: number;
+  targetValues?: number[];
+  gradients?: {
+    [neuronId: string]: number;
+  };
+  weightGradients?: {
+    [connectionId: string]: number;
+  };
 };
 
 export type FFNNStep = Step<FFNNStepState, FFNNStepType>;
@@ -44,6 +61,8 @@ export type FFNNConfig = {
   outputSize: number;
   neurons: Neuron[];
   connections: Connection[];
+  learningRate: number;
+  targetValues?: number[];
 };
 
 // Complete algorithm definition type
