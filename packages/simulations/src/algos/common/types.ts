@@ -23,6 +23,8 @@ export type Group = {
 
 export type SceneSetup = {
   dimension?: "2D" | "3D";
+  renderGrid?: boolean;
+  renderAxes?: boolean;
 };
 
 export type Step<
@@ -60,7 +62,7 @@ export type AlgorithmDefinition<
   paramConfigurators: TParamConfigurators;
   getConfig: (params: Params<TParamConfigurators>) => TConfig;
   getInitialStep: (config: TConfig) => TStep;
-  getSteps: (config: TConfig, initialStep: TStep) => TStep[];
+  getSteps: (config: TConfig, initialStep: TStep) => Promise<TStep[]>;
   getSceneSetup: (currentStep?: TStep, config?: TConfig) => SceneSetup;
   render: RenderFunction<TStep, TConfig>;
 };

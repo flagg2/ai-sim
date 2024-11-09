@@ -47,6 +47,8 @@ export default function SimulationUI({ ...props }: SimulationUIProps) {
     ],
   );
 
+  console.log({ params });
+
   return (
     <div className="flex flex-col w-full  h-[calc(100vh-68px)]">
       {/* Mobile layout */}
@@ -68,6 +70,7 @@ export default function SimulationUI({ ...props }: SimulationUIProps) {
                 simulation={simulation}
                 configComponent={Configurator}
                 algorithmDescription={algorithm.description}
+                showConfig={Object.keys(params).length > 0}
               />
             </div>
           </DrawerContent>
@@ -92,6 +95,7 @@ export default function SimulationUI({ ...props }: SimulationUIProps) {
               simulation={simulation}
               configComponent={Configurator}
               algorithmDescription={algorithm.description}
+              showConfig={Object.keys(params).length > 0}
             />
           </div>
         </main>
@@ -179,10 +183,12 @@ function SimulationControls({
   simulation: { runner },
   configComponent,
   algorithmDescription,
+  showConfig = true,
 }: {
   simulation: UseSimulationReturn;
   configComponent: React.ReactNode;
   algorithmDescription: React.ReactNode;
+  showConfig?: boolean;
 }) {
   const { status } = runner;
 
@@ -191,8 +197,14 @@ function SimulationControls({
     return (
       <div className="bg-background rounded-lg border p-6 flex flex-col-reverse xl:flex-col gap-6">
         <div className="grid gap-4">
-          <h3 className="hidden xl:block text-xl font-bold">Configuration</h3>
-          {configComponent}
+          {showConfig && (
+            <>
+              <h3 className="hidden xl:block text-xl font-bold">
+                Configuration
+              </h3>
+              {configComponent}
+            </>
+          )}
           <Button onClick={start}>Run</Button>
         </div>
         <div className="grid gap-2">

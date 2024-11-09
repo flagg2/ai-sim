@@ -94,11 +94,12 @@ export function useRunner<TStep extends Step, TConfig extends object>({
   const start = useCallback(() => {
     setIsStarted(true);
     startTransition(() => {
-      const steps = getSteps(config, initialStep);
-      console.log(steps);
-      setSteps(steps);
+      void getSteps(config, initialStep).then((steps) => {
+        console.log(steps);
+        setSteps(steps);
+      });
     });
-  }, [algorithmState.steps, getSteps, setSteps, startTransition]);
+  }, [config, initialStep, getSteps, setSteps]);
 
   const stop = useCallback(() => {
     setIsStarted(false);

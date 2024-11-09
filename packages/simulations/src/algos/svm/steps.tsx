@@ -1,7 +1,10 @@
 import type { DataPoint, SVMDefinition } from "./types";
 import type { Coords3D } from "../common/types";
 
-export const getSVMSteps: SVMDefinition["getSteps"] = (config, initialStep) => {
+export const getSVMSteps: SVMDefinition["getSteps"] = async (
+  config,
+  initialStep,
+) => {
   const steps = [initialStep];
   const { points } = config;
 
@@ -15,6 +18,8 @@ export const getSVMSteps: SVMDefinition["getSteps"] = (config, initialStep) => {
     } as Coords3D,
   }));
 
+  console.log(transformedPoints);
+
   steps.push({
     type: "transformToHigherDimension",
     title: "Transform to Higher Dimension",
@@ -25,8 +30,8 @@ export const getSVMSteps: SVMDefinition["getSteps"] = (config, initialStep) => {
       <div>
         <p>
           Transform the data points to a higher dimension using a kernel
-          function. There are many different types of kernel functions, but in
-          this case, we will use a polynomial kernel (with added division)
+          function. In this case, we use a polynomial kernel (with added
+          division).
         </p>
         <p>
           This transformation allows us to find a linear separator in 3D that
@@ -36,105 +41,97 @@ export const getSVMSteps: SVMDefinition["getSteps"] = (config, initialStep) => {
     ),
   });
 
-  // Step 2: Prepare data for perceptron training
-  const labels = new Set(points.map((p) => p.label));
-  const labelArray = Array.from(labels);
-  if (labelArray.length !== 2) {
-    throw new Error("Perceptron requires exactly two classes.");
-  }
-  const labelToNumber = new Map<string, number>();
-  labelToNumber.set(labelArray[0]!.toString(), 1);
-  labelToNumber.set(labelArray[1]!.toString(), -1);
-
-  const X = transformedPoints.map((point) => [
-    point.transformedCoords!.x,
-    point.transformedCoords!.y,
-    point.transformedCoords!.z,
-  ]);
-  const y = transformedPoints.map(
-    (point) => labelToNumber.get(point.label!.toString())!,
+  // Group points by label
+  const pointsByLabel = transformedPoints.reduce(
+    (acc, point) => {
+      const label = point.label!.toString();
+      console.log(label);
+      if (!acc[label]) acc[label] = [];
+      acc[label].push(point);
+      return acc;
+    },
+    {} as Record<string, DataPoint[]>,
   );
 
-  // Step 3: Implement the perceptron algorithm
-  const learningRate = 0.1;
-  const maxIterations = 1000;
-  const nFeatures = 3;
-  let w = new Array(nFeatures).fill(0);
-  let b = 0;
+  if (!pointsByLabel["-1"] || !pointsByLabel["1"]) {
+    console.error("Missing one or both class labels in pointsByLabel.");
+    return steps; // Return steps early if classes are missing
+  }
 
-  for (let iter = 0; iter < maxIterations; iter++) {
-    let errors = 0;
-    for (let i = 0; i < X.length; i++) {
-      const xi = X[i]!;
-      const yi = y[i]!;
-      const activation = w[0] * xi[0]! + w[1] * xi[1]! + w[2] * xi[2]! + b;
-      if (yi * activation <= 0) {
-        // Misclassified point, update weights and bias
-        for (let j = 0; j < nFeatures; j++) {
-          w[j] += learningRate * yi * xi[j]!;
-        }
-        b += learningRate * yi;
-        errors++;
+  // Step 2: Find the two closest points between opposite classes
+  let minDistance = Infinity;
+  let closestPair: [DataPoint, DataPoint] | null = null;
+
+  for (const pointA of pointsByLabel["-1"]) {
+    for (const pointB of pointsByLabel["1"]) {
+      const distance = Math.sqrt(
+        Math.pow(pointA.transformedCoords!.x - pointB.transformedCoords!.x, 2) +
+          Math.pow(
+            pointA.transformedCoords!.y - pointB.transformedCoords!.y,
+            2,
+          ) +
+          Math.pow(
+            pointA.transformedCoords!.z - pointB.transformedCoords!.z,
+            2,
+          ),
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestPair = [pointA, pointB];
       }
-    }
-    if (errors === 0) {
-      // Converged
-      break;
     }
   }
 
-  // Step 4: Identify support vectors
-  const distances = transformedPoints.map((point, index) => {
-    const xi = X[index]!;
-    const distance =
-      Math.abs(w[0] * xi[0]! + w[1] * xi[1]! + w[2] * xi[2]! + b) /
-      Math.sqrt(w[0] ** 2 + w[1] ** 2 + w[2] ** 2);
-    return { point, distance };
-  });
+  if (closestPair) {
+    const [pointA, pointB] = closestPair;
 
-  // Sort the distances to find the closest points to the hyperplane
-  distances.sort((a, b) => a.distance - b.distance);
+    // Calculate the normal vector (w) as the vector from one support vector to the other
+    const w = {
+      x: pointB.transformedCoords!.x - pointA.transformedCoords!.x,
+      y: pointB.transformedCoords!.y - pointA.transformedCoords!.y,
+      z: pointB.transformedCoords!.z - pointA.transformedCoords!.z,
+    };
 
-  const supportVectors = distances.map((d) => d.point).slice(0, 6);
+    // Calculate the bias (b) as the midpoint of the closest pair projected onto w
+    const bias = -(
+      (w.x * (pointA.transformedCoords!.x + pointB.transformedCoords!.x)) / 2 +
+      (w.y * (pointA.transformedCoords!.y + pointB.transformedCoords!.y)) / 2 +
+      (w.z * (pointA.transformedCoords!.z + pointB.transformedCoords!.z)) / 2
+    );
 
-  steps.push({
-    type: "findSupportVectors",
-    title: "Identify Support Vectors",
-    state: { supportVectors, transformedPoints },
-    description: (
-      <p>
-        Identify the support vectors as the points closest to the hyperplane. To
-        do this, you would use a quadratic programming technique.
-      </p>
-    ),
-  });
-
-  // Step 5: Calculate margin
-  const wNorm = Math.sqrt(w[0] ** 2 + w[1] ** 2 + w[2] ** 2);
-  const margin = 2 / wNorm; // For perceptron, this is a rough estimation
-
-  steps.push({
-    type: "calculateHyperplane",
-    title: "Calculate Separating Hyperplane",
-    state: {
-      transformedPoints,
-      supportVectors,
-      hyperplane: {
-        normal: { x: w[0], y: w[1], z: w[2] },
-        bias: b,
-      },
-      margin,
-    },
-    description: (
-      <div>
+    steps.push({
+      type: "findSupportVectors",
+      title: "Identify Support Vectors",
+      state: { supportVectors: closestPair, transformedPoints },
+      description: (
         <p>
-          Use the perceptron algorithm to find a hyperplane that separates the
-          data in the transformed space.
+          Select support vectors by finding the two closest points between
+          opposite classes.
         </p>
-        <p>The margin width is approximately: {margin.toFixed(2)}</p>
-      </div>
-    ),
-  });
+      ),
+    });
+
+    steps.push({
+      type: "calculateHyperplane",
+      title: "Calculate Separating Hyperplane",
+      state: {
+        transformedPoints,
+        supportVectors: closestPair,
+        hyperplane: {
+          normal: w,
+          bias: bias,
+        },
+      },
+      description: (
+        <div>
+          <p>
+            Calculate a separating hyperplane directly between the support
+            vectors.
+          </p>
+        </div>
+      ),
+    });
+  }
 
   return steps;
 };

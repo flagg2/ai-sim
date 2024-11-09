@@ -37,3 +37,34 @@ export function getWhiteMaterial(): MeshStandardMaterial {
 export function getPinkMaterial(): MeshStandardMaterial {
   return new MeshStandardMaterial({ color: "pink" });
 }
+
+export function getInactiveMaterial(): MeshStandardMaterial {
+  return new MeshStandardMaterial({ color: "gray" });
+}
+
+export function getActiveMaterial(
+  activation: number,
+  hue: number = 240, // Fixed hue for red
+): MeshStandardMaterial {
+  // Transition from gray (saturation 0%) to bright red (saturation 100%)
+  const saturation = activation * 100; // Varies from 0% (gray) to 100% (red)
+  const lightness = 50; // Fixed at 50% for brightness consistency
+
+  return new MeshStandardMaterial({
+    color: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+  });
+}
+
+export function getWeightMaterial(activation: number): MeshStandardMaterial {
+  // Determine hue (0 for red, 120 for green)
+  const hue = activation >= 0 ? 120 : 0; // 0 (red) on the left, 120 (green) on the right
+
+  // Calculate saturation from activation, going from 100% at |activation| = 1 to 0% at activation = 0
+  const saturation = 100 * Math.abs(activation); // Full saturation at |activation| = 1, grey (0%) at 0
+
+  const lightness = 50; // Constant lightness for consistency
+
+  return new MeshStandardMaterial({
+    color: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+  });
+}

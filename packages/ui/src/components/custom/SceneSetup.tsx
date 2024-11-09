@@ -10,7 +10,7 @@ import {
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import AxesHelper from "./AxesHelper";
-import { SceneSetup } from "@repo/simulations/algos/types";
+import { SceneSetup } from "@repo/simulations/algos/common/types";
 
 interface SceneSetupProps {
   children: React.ReactNode;
@@ -82,17 +82,27 @@ export const SceneSetupComponent: React.FC<SceneSetupProps> = ({
   return (
     <>
       {is3d ? only3d : only2d}
-      <AxesHelper is3D={is3d} />
+      {sceneSetup.renderAxes !== false && <AxesHelper is3D={is3d} />}
       <color attach="background" args={["#050505"]} />
       <ambientLight intensity={is3d ? 0.5 : 1} />
       <group
         position={[0, is3d ? -0.01 : 0, 0]}
         rotation={[is3d ? 0 : -Math.PI / 2, 0, 0]}
       >
-        {/* Larger, more visible grid */}
-        <gridHelper args={[1000, 32, "#2f2f2f", "#2f2f2f"]} renderOrder={0} />
-        {/* Thicker lines for larger areas */}
-        <gridHelper args={[1000, 4, "#3a3a3a", "#3a3a3a"]} renderOrder={0} />
+        {sceneSetup.renderGrid !== false && (
+          <>
+            {/* Larger, more visible grid */}
+            <gridHelper
+              args={[1000, 32, "#2f2f2f", "#2f2f2f"]}
+              renderOrder={0}
+            />
+            {/* Thicker lines for larger areas */}
+            <gridHelper
+              args={[1000, 4, "#3a3a3a", "#3a3a3a"]}
+              renderOrder={0}
+            />
+          </>
+        )}
       </group>
       {children}
     </>

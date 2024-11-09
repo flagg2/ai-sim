@@ -31,7 +31,7 @@ const visualizations = [
     description: "Understand the inner workings of decision trees.",
   },
   {
-    href: "#",
+    href: "/ffnn",
     src: "/placeholder.svg",
     alt: "Neural Network Visualization",
     title: "Neural Network Visualization",
