@@ -11,10 +11,12 @@ export type ThreeProps = {
   scale?: number;
 };
 
+export type PrimitiveType = "mesh" | "points";
 export interface Renderable {
   getKey: () => string;
-  getRenderProps: () => ThreeProps;
-  getTooltip: () => React.ReactNode;
+  getRenderProps: () => ThreeProps | ThreeProps[];
+  getTooltip: () => React.ReactNode | null;
+  getPrimitiveType?(): PrimitiveType;
 }
 
 export type RenderFn<TState, TConfig> = (

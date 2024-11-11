@@ -10,7 +10,7 @@ export const paramConfigurators: SVMDefinition["paramConfigurators"] = {
     min: 5,
     max: 50,
   }),
-  showcaseKernel: new SwitchParamConfigurator({
+  useRadialData: new SwitchParamConfigurator({
     label: "Showcase Kernel Trick",
     description:
       "Generate data that demonstrates the power of the kernel trick.",

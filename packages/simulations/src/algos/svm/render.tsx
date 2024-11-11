@@ -1,93 +1,64 @@
-import { Point3D } from "../common/objects/point";
-import { Plane } from "../common/objects/plane";
-import type { Renderable } from "../common/objects/renderable";
-import type { SVMDefinition } from "./types";
-import { getMaterial } from "@repo/simulations/utils/materials";
+import { type Renderable } from "../common/objects/renderable";
 import { Point2D } from "../common/objects/point2d";
+import type { SVMDefinition } from "./types";
+import { Line } from "../common/objects/line";
+import { MeshStandardMaterial } from "three";
 
-export const renderSVM: SVMDefinition["render"] = (state, config) => {
-  const renderables: Renderable[] = [];
-  const defaultMaterial = getMaterial(0);
-  const positiveMaterial = getMaterial(1);
-  const negativeMaterial = getMaterial(2);
-  const supportVectorMaterial = getMaterial(3);
+export const renderSVM2: SVMDefinition["render"] = (state, config) => {
+  const objects: Renderable[] = [];
+  const { points } = config;
+  const { supportVectors, separationLine } = state;
 
-  // Render points based on whether we're in 2D or 3D
-  if (!state.transformedPoints) {
-    // Initial 2D view
-    config.points.forEach((point) => {
-      renderables.push(
-        new Point2D({
-          coords: point.coords,
-          material: point.label === 1 ? positiveMaterial : negativeMaterial,
-          tooltip: (
-            <div>
-              Point {point.id}
-              <br />
-              Class: {point.label === 1 ? "Positive" : "Negative"}
-              <br />
-              Coords: ({point.coords.x.toFixed(2)}, {point.coords.y.toFixed(2)})
-            </div>
-          ),
-          name: `Point ${point.id}`,
-        }),
-      );
-    });
-  } else {
-    // 3D view with transformed points
-    state.transformedPoints.forEach((point) => {
-      const isSupport = state.supportVectors?.some((sv) => sv.id === point.id);
-      renderables.push(
-        new Point3D({
-          coords: point.transformedCoords!,
-          material: isSupport
-            ? supportVectorMaterial
-            : point.label === 1
-              ? positiveMaterial
-              : negativeMaterial,
-          tooltip: (
-            <div>
-              Point {point.id}
-              <br />
-              Class: {point.label === 1 ? "Positive" : "Negative"}
-              {isSupport && (
-                <>
-                  <br />
-                  Support Vector
-                </>
-              )}
-              <br />
-              Original: ({point.coords.x.toFixed(2)},{" "}
-              {point.coords.y.toFixed(2)})
-              <br />
-              Transformed: ({point.transformedCoords!.x.toFixed(2)},
-              {point.transformedCoords!.y.toFixed(2)},
-              {point.transformedCoords!.z.toFixed(2)})
-            </div>
-          ),
-          name: `Point ${point.id}`,
-        }),
-      );
-    });
+  if (separationLine) {
+    const slope = separationLine.slope;
+    const yIntercept = separationLine.yIntercept;
 
-    // Render hyperplane if available
-    if (state.hyperplane) {
-      renderables.push(
-        new Plane({
-          normal: state.hyperplane.normal,
-          bias: state.hyperplane.bias,
-          tooltip: (
-            <div>
-              Separating Hyperplane
-              <br />
-              Margin: {state.margin?.toFixed(2)}
-            </div>
-          ),
-          name: "Separating Hyperplane",
-        }),
-      );
-    }
+    // Create two points far apart to draw the line
+    const x1 = -200; // Left point
+    const x2 = 200; // Right point
+    const y1 = slope * x1 + yIntercept;
+    const y2 = slope * x2 + yIntercept;
+
+    objects.push(
+      new Line({
+        from: { x: x1, y: y1 },
+        to: { x: x2, y: y2 },
+        material: new MeshStandardMaterial({ color: "#2196F3" }),
+        name: "Separation Line",
+        radius: 0.2,
+      }),
+    );
   }
 
-  return renderables;
+  // Render all data points
+  points.forEach((point) => {
+    objects.push(
+      new Point2D({
+        coords: point.coords,
+        material: new MeshStandardMaterial({
+          color: point.label === 1 ? "#4CAF50" : "#F44336",
+        }),
+        name: `Point ${point.id}`,
+        scale: 3,
+        tooltip: `Point ${point.id}`,
+      }),
+    );
+  });
+
+  // Render support vectors
+  if (supportVectors) {
+    supportVectors.forEach((sv) => {
+      objects.push(
+        new Point2D({
+          coords: sv.coords,
+          material: new MeshStandardMaterial({ color: "#FFD700" }),
+          name: `SV ${sv.id}`,
+          scale: 5,
+          tooltip: `Support Vector ${sv.id}`,
+        }),
+      );
+    });
+  }
+
+  return objects;
 };

@@ -1,6 +1,6 @@
-import { RenderFunction } from "@repo/simulations/algos/types";
 import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
 import { useMemo } from "react";
+import { RenderFunction } from "@repo/simulations/algos/common/types";
 
 type Props = {
   simulation: UseSimulationReturn;
@@ -16,13 +16,30 @@ export default function Renderer({ simulation, renderFn }: Props) {
 
   return (
     <>
-      {renderables.map((renderable) => (
-        <mesh
-          key={renderable.getKey()}
-          {...renderable.getRenderProps()}
-          {...simulation.tooltipHandlers(renderable.getTooltip())}
-        />
-      ))}
+      {renderables.map((renderable) => {
+        const primitiveType = renderable.getPrimitiveType?.() ?? "mesh";
+        const Component = primitiveType === "points" ? "points" : "mesh";
+
+        const props = renderable.getRenderProps();
+
+        if (Array.isArray(props)) {
+          return props.map((prop) => (
+            <Component
+              key={renderable.getKey()}
+              {...prop}
+              {...simulation.tooltipHandlers(renderable.getTooltip())}
+            />
+          ));
+        }
+
+        return (
+          <Component
+            key={renderable.getKey()}
+            {...props}
+            {...simulation.tooltipHandlers(renderable.getTooltip())}
+          />
+        );
+      })}
     </>
   );
 }

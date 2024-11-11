@@ -12,7 +12,8 @@
     "quadprog": "1.6.1",
     "@tensorflow/tfjs": "4.22.0",
     "ml-matrix": "6.12.0",
-    "mathjs": "13.2.1"
+    "mathjs": "13.2.1",
+    "ml-svm": "2.1.2"
   },
   "devDependencies": {
     "@types/bun": "latest"

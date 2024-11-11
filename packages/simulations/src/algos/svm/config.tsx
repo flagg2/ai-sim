@@ -1,7 +1,7 @@
 import type { SVMDefinition, DataPoint } from "./types";
 
 export const getSVMConfig: SVMDefinition["getConfig"] = (params) => {
-  const points = generatePoints(params.points, params.showcaseKernel);
+  const points = generatePoints(params.points, params.useRadialData);
   return {
     points,
   };

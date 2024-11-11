@@ -40,19 +40,25 @@ export class Plane implements Renderable {
     } = props;
 
     // Normalize the normal vector
-    const planeNormal = new Vector3(normal.x, normal.y, normal.z).normalize();
-    const defaultNormal = new Vector3(0, 0, 1);
+    const normalLength = Math.sqrt(
+      normal.x * normal.x + normal.y * normal.y + normal.z * normal.z,
+    );
+    const planeNormal = new Vector3(
+      normal.x / normalLength,
+      normal.y / normalLength,
+      normal.z / normalLength,
+    );
 
-    // Create a quaternion to rotate the plane's default normal to the given normal
+    // Simpler rotation calculation
     const quaternion = new Quaternion().setFromUnitVectors(
-      defaultNormal,
+      new Vector3(0, 0, 1), // default plane normal
       planeNormal,
     );
 
-    // Calculate the position based on the bias (distance along the normal)
-    const position = planeNormal.clone().multiplyScalar(-bias);
+    // Adjust bias by the normal length to maintain the correct distance
+    const adjustedBias = bias / normalLength;
+    const position = planeNormal.clone().multiplyScalar(adjustedBias);
 
-    // Convert quaternion to Euler angles for the rotation property
     const rotation = new Euler().setFromQuaternion(quaternion);
 
     this.object = new RenderableObject({
