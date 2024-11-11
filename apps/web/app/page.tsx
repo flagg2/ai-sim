@@ -24,11 +24,11 @@ const visualizations = [
     description: "Visualize the Linear Regression algorithm in 3D.",
   },
   {
-    href: "#",
+    href: "/autoencoder",
     src: "/placeholder.svg",
-    alt: "Decision Tree Visualization",
-    title: "Decision Tree Visualization",
-    description: "Understand the inner workings of decision trees.",
+    alt: "Autoencoder",
+    title: "Autoencoder",
+    description: "Understand the inner workings of autoencoders.",
   },
   {
     href: "/ffnn",

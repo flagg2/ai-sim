@@ -1,17 +1,18 @@
 import { getFFNNConfig } from "./config";
-import { getFFNNInitialStep } from "./initialStep";
+import { getNNInitialStep } from "../initialStep";
 import { ffnnParamConfigurators } from "./paramConfigurators";
-import { renderFFNN } from "./render";
-import { getFFNNSteps } from "./steps";
+import { renderNN } from "../render";
+import { getNNSteps } from "../steps";
+import type { NNDefinition } from "../types";
 import type { FFNNDefinition } from "./types";
 
 export const ffnn: FFNNDefinition = {
   title: "Feedforward Neural Network",
   getSceneSetup: () => ({ dimension: "2D", renderAxes: false }),
-  getInitialStep: getFFNNInitialStep,
-  render: renderFFNN,
+  getInitialStep: getNNInitialStep,
+  render: renderNN,
   description: "a neural network",
   getConfig: getFFNNConfig,
-  getSteps: getFFNNSteps,
+  getSteps: (config, initialStep) => getNNSteps(config, initialStep, "ffnn"),
   paramConfigurators: ffnnParamConfigurators,
 };

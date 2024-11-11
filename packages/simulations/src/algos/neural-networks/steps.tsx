@@ -1,12 +1,15 @@
-import type { FFNNDefinition, Neuron } from "./types";
+import type { NNConfig, NNDefinition, NNStep, Neuron } from "./types";
 
 // Sigmoid activation function
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
 
-export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
-  config,
-  initialStep,
-) => {
+type NetworkType = "autoencoder" | "ffnn";
+
+export const getNNSteps: (
+  config: NNConfig,
+  initialStep: NNStep,
+  type: NetworkType,
+) => Promise<NNStep[]> = async (config, initialStep, type) => {
   const steps = [initialStep];
   let currentNeurons = [...initialStep.state.neurons];
 
@@ -118,12 +121,20 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
     // Step for completing the layer
     steps.push({
       type: "layerComplete",
-      title: `Layer ${layer} Complete`,
+      title: `${getLayerTitle(layer, type, config.layers)} Complete`,
       description: (
         <div>
-          <p>Completed processing all neurons in layer {layer}.</p>
+          <p>
+            {type === "autoencoder"
+              ? `Completed processing all neurons in ${getLayerDescription(layer, config.layers)}.`
+              : `Completed processing all neurons in layer ${layer}.`}
+          </p>
           {layer === config.layers + 1 && (
-            <p>Network processing complete! Final output values are ready.</p>
+            <p>
+              {type === "autoencoder"
+                ? "Autoencoder processing complete! Reconstruction values are ready."
+                : "Network processing complete! Final output values are ready."}
+            </p>
           )}
         </div>
       ),
@@ -429,3 +440,30 @@ export const getFFNNSteps: FFNNDefinition["getSteps"] = async (
 
   return steps;
 };
+
+// Helper functions
+function getLayerTitle(
+  layer: number,
+  type: NetworkType,
+  totalLayers: number,
+): string {
+  if (type !== "autoencoder") return `Layer ${layer}`;
+
+  if (layer === 0) return "Input Layer";
+  if (layer === totalLayers + 1) return "Reconstruction Layer";
+
+  const middleLayer = Math.floor(totalLayers / 2);
+  if (layer === middleLayer) return "Bottleneck Layer";
+  if (layer < middleLayer) return `Encoder Layer ${layer}`;
+  return `Decoder Layer ${layer}`;
+}
+
+function getLayerDescription(layer: number, totalLayers: number): string {
+  if (layer === 0) return "input layer";
+  if (layer === totalLayers + 1) return "reconstruction layer";
+
+  const middleLayer = Math.floor(totalLayers / 2);
+  if (layer === middleLayer) return "bottleneck layer";
+  if (layer < middleLayer) return `encoder layer ${layer}`;
+  return `decoder layer ${layer}`;
+}

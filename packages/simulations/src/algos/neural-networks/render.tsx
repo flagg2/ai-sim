@@ -5,10 +5,10 @@ import {
 } from "@repo/simulations/utils/materials";
 import type { Renderable } from "../common/objects/renderable";
 import { Line } from "../common/objects/line";
-import type { FFNNDefinition } from "./types";
+import type { NNDefinition } from "./types";
 import { Point2D } from "../common/objects/point2d";
 
-export const renderFFNN: FFNNDefinition["render"] = (state, config) => {
+export const renderNN: NNDefinition["render"] = (state, config) => {
   const renderables: Renderable[] = [];
   const {
     neurons,
@@ -25,11 +25,12 @@ export const renderFFNN: FFNNDefinition["render"] = (state, config) => {
     config.outputSize,
   );
 
-  // Calculate spacing
+  // Calculate spacing and offsets
   const spacing = {
     x: 100, // space between layers
     y: 50, // space between neurons in a layer
   };
+  const offsetY = 100; // Add this line to move everything up
 
   // Calculate canvas dimensions
   const width = spacing.x * (layerCount - 1);
@@ -46,16 +47,15 @@ export const renderFFNN: FFNNDefinition["render"] = (state, config) => {
     const fromNeuronsInLayer = getNeuronsInLayer(fromLayer, config);
     const toNeuronsInLayer = getNeuronsInLayer(toLayer, config);
 
-    const fromY = calculateNeuronY(
-      connection.fromNeuron.index,
-      fromNeuronsInLayer,
-      height,
-    );
-    const toY = calculateNeuronY(
-      connection.toNeuron.index,
-      toNeuronsInLayer,
-      height,
-    );
+    const fromY =
+      calculateNeuronY(
+        connection.fromNeuron.index,
+        fromNeuronsInLayer,
+        height,
+      ) + offsetY;
+    const toY =
+      calculateNeuronY(connection.toNeuron.index, toNeuronsInLayer, height) +
+      offsetY;
 
     renderables.push(
       new Line({
@@ -72,7 +72,7 @@ export const renderFFNN: FFNNDefinition["render"] = (state, config) => {
   neurons.forEach((neuron) => {
     const neuronsInLayer = getNeuronsInLayer(neuron.layer, config);
     const x = neuron.layer * spacing.x;
-    const y = calculateNeuronY(neuron.index, neuronsInLayer, height);
+    const y = calculateNeuronY(neuron.index, neuronsInLayer, height) + offsetY;
 
     renderables.push(
       new Point2D({

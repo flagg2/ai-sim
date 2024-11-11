@@ -1,4 +1,4 @@
-import { SliderParamConfigurator } from "../common/paramConfigurators/slider";
+import { SliderParamConfigurator } from "../../common/paramConfigurators/slider";
 import type { FFNNDefinition } from "./types";
 
 export const ffnnParamConfigurators: FFNNDefinition["paramConfigurators"] = {

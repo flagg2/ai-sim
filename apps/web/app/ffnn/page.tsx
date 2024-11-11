@@ -3,7 +3,7 @@
 import SimulationUI from "@repo/ui/components/custom/SimulationUI";
 import Header from "@repo/ui/components/custom/Header";
 
-import { ffnn } from "@repo/simulations/algos/ffnn/ffnn";
+import { ffnn } from "@repo/simulations/algos/neural-networks/ffnn/ffnn";
 
 export default function FFNNPage() {
   return (

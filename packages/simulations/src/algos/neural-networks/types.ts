@@ -21,7 +21,7 @@ export type Connection = {
 };
 
 // Define possible step types in the feed-forward process
-type FFNNStepType =
+type NNStepType =
   | "initial"
   | "weightedSum"
   | "activation"
@@ -33,7 +33,7 @@ type FFNNStepType =
   | "backpropComplete";
 
 // State maintained during the visualization
-type FFNNStepState = {
+type NNStepState = {
   currentLayer: number;
   currentNeuron: number;
   neurons: Neuron[];
@@ -50,17 +50,19 @@ type FFNNStepState = {
   };
 };
 
-export type FFNNStep = Step<FFNNStepState, FFNNStepType>;
+export type NNStep = Step<NNStepState, NNStepType>;
 
 // Parameter configurators for the network
-export type FFNNParamConfiguratorDict = ParamConfiguratorDict<{
-  firstInputValue: SliderParamConfigurator;
-  secondInputValue: SliderParamConfigurator;
-  learningRate: SliderParamConfigurator;
-}>;
+// export type FFNNParamConfiguratorDict = ParamConfiguratorDict<{
+//   firstInputValue: SliderParamConfigurator;
+//   secondInputValue: SliderParamConfigurator;
+//   learningRate: SliderParamConfigurator;
+// }>;
+
+type NNParamConfiguratorDict = ParamConfiguratorDict<{}>;
 
 // Configuration for the network
-export type FFNNConfig = {
+export type NNConfig = {
   layers: number;
   neuronsPerLayer: number;
   inputSize: number;
@@ -72,8 +74,8 @@ export type FFNNConfig = {
 };
 
 // Complete algorithm definition type
-export type FFNNDefinition = AlgorithmDefinition<
-  FFNNStep,
-  FFNNConfig,
-  FFNNParamConfiguratorDict
+export type NNDefinition = AlgorithmDefinition<
+  NNStep,
+  NNConfig,
+  NNParamConfiguratorDict
 >;

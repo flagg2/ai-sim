@@ -1,8 +1,6 @@
-import type { FFNNDefinition } from "./types";
+import type { NNDefinition } from "./types";
 
-export const getFFNNInitialStep: FFNNDefinition["getInitialStep"] = (
-  config,
-) => {
+export const getNNInitialStep: NNDefinition["getInitialStep"] = (config) => {
   return {
     type: "initial",
     title: "Initial State",
