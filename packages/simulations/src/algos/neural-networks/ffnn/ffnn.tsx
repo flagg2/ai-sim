@@ -1,9 +1,8 @@
 import { getFFNNConfig } from "./config";
-import { getNNInitialStep } from "../initialStep";
-import { ffnnParamConfigurators } from "./paramConfigurators";
+import { getNNInitialStep } from "../initial-step";
+import { ffnnParamConfigurators } from "./param-configurators";
 import { renderNN } from "../render";
 import { getNNSteps } from "../steps";
-import type { NNDefinition } from "../types";
 import type { FFNNDefinition } from "./types";
 
 export const ffnn: FFNNDefinition = {

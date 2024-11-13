@@ -27,13 +27,9 @@
       "./src/algos/*.tsx",
       "./src/algos/*.ts"
     ],
-    "./utils/*": [
-      "./src/utils/*.ts",
-      "./src/utils/*.tsx"
-    ],
-    "./hooks/*": [
-      "./src/hooks/*.ts",
-      "./src/hooks/*.tsx"
+    "./lib/*": [
+      "./src/lib/*.ts",
+      "./src/lib/*.tsx"
     ]
   }
 }

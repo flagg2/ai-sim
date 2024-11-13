@@ -1,4 +1,4 @@
-import type { NNDefinition, Neuron, Connection } from "../types";
+import type { Neuron, Connection } from "../types";
 import type { FFNNDefinition } from "./types";
 
 export const getFFNNConfig: FFNNDefinition["getConfig"] = (params) => {

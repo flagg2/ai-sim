@@ -1,12 +1,7 @@
-import type { SliderParamConfigurator } from "../common/paramConfigurators/slider";
-import type { SwitchParamConfigurator } from "../common/paramConfigurators/switch";
-import type { ParamConfiguratorDict } from "../common/paramConfigurators/param";
-import type {
-  AlgorithmDefinition,
-  Coords2D,
-  Coords3D,
-  Step,
-} from "../common/types";
+import type { ParamConfiguratorDict } from "@repo/simulations/lib/param-configurators/param";
+import type { SliderParamConfigurator } from "@repo/simulations/lib/param-configurators/slider";
+import type { AlgorithmDefinition, Step } from "@repo/simulations/lib/types";
+import type { Coords2D } from "@repo/simulations/lib/types";
 
 export type DataPoint = {
   id: string;
@@ -33,7 +28,6 @@ export type SVMStep = Step<SVMStepState, SVMStepType>;
 
 export type SVMParamConfiguratorDict = ParamConfiguratorDict<{
   points: SliderParamConfigurator;
-  useRadialData: SwitchParamConfigurator;
 }>;
 
 export type SVMConfig = {

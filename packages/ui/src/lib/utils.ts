@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function snakeToTitleCase(input: string): string {
   return input
     .split("_")
-    .map((word, index) => {
+    .map((word) => {
       if (word.toLowerCase() === "and") {
         return "and";
       }

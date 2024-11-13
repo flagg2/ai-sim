@@ -1,4 +1,4 @@
-import type { SVMDefinition, DataPoint } from "./types";
+import type { SVMDefinition } from "./types";
 import SVM from "ml-svm";
 
 export const getSVMSteps2: SVMDefinition["getSteps"] = async (
@@ -76,7 +76,6 @@ export const getSVMSteps2: SVMDefinition["getSteps"] = async (
     title: "Find Support Vectors",
     state: {
       supportVectors,
-      separationLine,
     },
     description: (
       <div>

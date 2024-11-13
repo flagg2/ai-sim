@@ -1,7 +1,6 @@
-import { getMaterial } from "@repo/simulations/utils/materials";
-import type { Group } from "../common/types";
-import { calculateDistance } from "../common/utils";
+import { getMaterial } from "@repo/simulations/lib/materials";
 import type { KMeansDefinition, Point } from "./types";
+import { calculateDistance } from "@repo/simulations/lib/utils";
 
 export const getKMeansConfig: KMeansDefinition["getConfig"] = (params) => {
   const points = generateRandomPoints({ points: [] }, params.points);

@@ -1,12 +1,11 @@
 import {
   getActiveMaterial,
-  getInactiveMaterial,
   getWeightMaterial,
-} from "@repo/simulations/utils/materials";
-import type { Renderable } from "../common/objects/renderable";
-import { Line } from "../common/objects/line";
+} from "@repo/simulations/lib/materials";
 import type { NNDefinition } from "./types";
-import { Point2D } from "../common/objects/point2d";
+import type { Renderable } from "@repo/simulations/lib/objects/renderable";
+import { Line } from "@repo/simulations/lib/objects/line";
+import { Point2D } from "@repo/simulations/lib/objects/point2d";
 
 export const renderNN: NNDefinition["render"] = (state, config) => {
   const renderables: Renderable[] = [];
@@ -18,7 +17,7 @@ export const renderNN: NNDefinition["render"] = (state, config) => {
   } = state;
 
   // Calculate layout dimensions
-  const layerCount = config.layers + 2; // input + hidden + output
+  //   const layerCount = config.layers + 2; // input + hidden + output
   const maxNeuronsInLayer = Math.max(
     config.inputSize,
     config.neuronsPerLayer,
@@ -33,7 +32,6 @@ export const renderNN: NNDefinition["render"] = (state, config) => {
   const offsetY = 100; // Add this line to move everything up
 
   // Calculate canvas dimensions
-  const width = spacing.x * (layerCount - 1);
   const height = spacing.y * (maxNeuronsInLayer - 1);
 
   // Render connections first (so they appear behind neurons)
@@ -99,8 +97,15 @@ export const renderNN: NNDefinition["render"] = (state, config) => {
 };
 
 // Helper function to get number of neurons in a specific layer
-// TODO: any
-function getNeuronsInLayer(layer: number, config: any) {
+function getNeuronsInLayer(
+  layer: number,
+  config: {
+    layers: number;
+    inputSize: number;
+    neuronsPerLayer: number;
+    outputSize: number;
+  },
+) {
   if (layer === 0) return config.inputSize;
   if (layer === config.layers + 1) return config.outputSize;
   return config.neuronsPerLayer;

@@ -1,11 +1,8 @@
-import type { SliderParamConfigurator } from "../common/paramConfigurators/slider";
-import type { ParamConfiguratorDict } from "../common/paramConfigurators/param";
-import type {
-  AlgorithmDefinition,
-  Coords3D,
-  Group,
-  Step,
-} from "../common/types";
+import type { ParamConfiguratorDict } from "@repo/simulations/lib/param-configurators/param";
+import type { SliderParamConfigurator } from "@repo/simulations/lib/param-configurators/slider";
+import type { AlgorithmDefinition, Step } from "@repo/simulations/lib/types";
+import type { Group } from "@repo/simulations/lib/types";
+import type { Coords3D } from "@repo/simulations/lib/types";
 
 export type Point = {
   id: string;

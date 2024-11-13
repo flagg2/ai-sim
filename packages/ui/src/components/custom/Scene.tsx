@@ -2,8 +2,8 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useRef } from "react";
-import { SceneSetupComponent } from "./SceneSetup";
-import { SceneSetup } from "@repo/simulations/algos/types";
+import { SceneSetupComponent } from "./scene-setup";
+import { SceneSetup } from "@repo/simulations/lib/types";
 
 export default function Scene({
   children,

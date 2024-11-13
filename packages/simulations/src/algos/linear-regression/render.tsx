@@ -1,8 +1,8 @@
-import { Point3D } from "../common/objects/point";
-import type { Renderable } from "../common/objects/renderable";
-import { Tube } from "../common/objects/tube";
+import type { Renderable } from "@repo/simulations/lib/objects/renderable";
 import type { LinearRegressionDefinition } from "./types";
-import { getMaterial } from "@repo/simulations/utils/materials";
+import { getMaterial } from "@repo/simulations/lib/materials";
+import { Point3D } from "@repo/simulations/lib/objects/point";
+import { Tube } from "@repo/simulations/lib/objects/tube";
 
 export const renderLinearRegression: LinearRegressionDefinition["render"] = (
   state,

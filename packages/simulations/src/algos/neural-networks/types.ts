@@ -1,6 +1,8 @@
-import type { ParamConfiguratorDict } from "../common/paramConfigurators/param";
-import type { SliderParamConfigurator } from "../common/paramConfigurators/slider";
-import type { AlgorithmDefinition, Step } from "../common/types";
+import type {
+  AlgorithmDefinition,
+  ParamConfiguratorDict,
+  Step,
+} from "@repo/simulations/lib/types";
 
 // Define a neuron structure
 export type Neuron = {
@@ -52,14 +54,7 @@ type NNStepState = {
 
 export type NNStep = Step<NNStepState, NNStepType>;
 
-// Parameter configurators for the network
-// export type FFNNParamConfiguratorDict = ParamConfiguratorDict<{
-//   firstInputValue: SliderParamConfigurator;
-//   secondInputValue: SliderParamConfigurator;
-//   learningRate: SliderParamConfigurator;
-// }>;
-
-type NNParamConfiguratorDict = ParamConfiguratorDict<{}>;
+type NNParamConfiguratorDict = ParamConfiguratorDict<unknown>;
 
 // Configuration for the network
 export type NNConfig = {

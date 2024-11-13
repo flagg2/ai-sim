@@ -1,8 +1,8 @@
-import { type Renderable } from "../common/objects/renderable";
-import { Point2D } from "../common/objects/point2d";
+import type { Renderable } from "@repo/simulations/lib/objects/renderable";
 import type { SVMDefinition } from "./types";
-import { Line } from "../common/objects/line";
 import { MeshStandardMaterial } from "three";
+import { Line } from "@repo/simulations/lib/objects/line";
+import { Point2D } from "@repo/simulations/lib/objects/point2d";
 
 export const renderSVM2: SVMDefinition["render"] = (state, config) => {
   const objects: Renderable[] = [];

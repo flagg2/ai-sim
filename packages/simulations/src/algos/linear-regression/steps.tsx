@@ -1,8 +1,8 @@
-import type { LinearRegressionDefinition, DataPoint } from "./types";
-import type { Coords3D } from "../common/types";
+import type { Coords3D } from "@repo/simulations/lib/types";
+import type { LinearRegressionDefinition } from "./types";
 
 export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
-  (config, initialStep) => {
+  async (config, initialStep) => {
     const steps = [initialStep];
     const { points } = config;
 

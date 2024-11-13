@@ -1,9 +1,9 @@
-import { Point3D } from "../common/objects/point";
-import type { Renderable } from "../common/objects/renderable";
-import { Tube } from "../common/objects/tube";
 import type { KMeansDefinition } from "./types";
+import { Point3D } from "@repo/simulations/lib/objects/point";
+import { Tube } from "@repo/simulations/lib/objects/tube";
+import type { Renderable } from "@repo/simulations/lib/objects/renderable";
 
-export const renderKMeans: KMeansDefinition["render"] = (state, config) => {
+export const renderKMeans: KMeansDefinition["render"] = (state) => {
   const renderables: Renderable[] = [];
 
   // Render all points

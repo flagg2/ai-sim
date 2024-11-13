@@ -1,6 +1,6 @@
 import { getSVMConfig } from "./config";
-import { getSVMInitialStep } from "./initialStep";
-import { paramConfigurators } from "./paramConfigurators";
+import { getSVMInitialStep } from "./initial-step";
+import { paramConfigurators } from "./param-configurators";
 import type { SVMDefinition } from "./types";
 import { renderSVM2 } from "./render";
 import { getSVMSteps2 } from "./steps";

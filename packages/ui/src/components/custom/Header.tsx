@@ -1,5 +1,5 @@
-import { ThemeToggle } from "./ThemeToggle";
-import { BackButton } from "./BackButton"; // Import the BackButton component
+import { ThemeToggle } from "./theme-toggle";
+import { BackButton } from "./back-button"; // Import the BackButton component
 
 type HeaderProps = {
   title: string;

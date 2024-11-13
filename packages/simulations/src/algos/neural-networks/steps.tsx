@@ -1,4 +1,4 @@
-import type { NNConfig, NNDefinition, NNStep, Neuron } from "./types";
+import type { NNConfig, NNStep } from "./types";
 
 // Sigmoid activation function
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));

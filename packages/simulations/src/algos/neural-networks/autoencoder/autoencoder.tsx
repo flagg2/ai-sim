@@ -1,9 +1,9 @@
 import { getAutoEncoderConfig } from "./config";
-import { autoEncoderParamConfigurators } from "./paramConfigurators";
+import { autoEncoderParamConfigurators } from "./param-configurators";
 import { renderNN } from "../render";
 import { getNNSteps } from "../steps";
 import type { AutoEncoderDefinition } from "./types";
-import { getNNInitialStep } from "../initialStep";
+import { getNNInitialStep } from "../initial-step";
 
 export const autoencoder: AutoEncoderDefinition = {
   title: "Autoencoder",

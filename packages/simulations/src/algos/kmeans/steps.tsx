@@ -1,9 +1,9 @@
+import { calculateDistance } from "@repo/simulations/lib/utils";
 import type { KMeansDefinition, Point } from "./types";
-import { calculateDistance } from "../common/utils";
-import { getMaterial } from "@repo/simulations/utils/materials";
-import type { Group } from "../common/types";
+import { getMaterial } from "@repo/simulations/lib/materials";
+import type { Group } from "@repo/simulations/lib/types";
 
-export const getKMeansSteps: KMeansDefinition["getSteps"] = (
+export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
   config,
   initialStep,
 ) => {

@@ -1,6 +1,6 @@
-import { UseSimulationReturn } from "@repo/simulations/hooks/useSimulation";
+import { RenderFunction } from "@repo/simulations/lib/types";
+import { UseSimulationReturn } from "@repo/ui/lib/hooks/use-simulation";
 import { useMemo } from "react";
-import { RenderFunction } from "@repo/simulations/algos/common/types";
 
 type Props = {
   simulation: UseSimulationReturn;
