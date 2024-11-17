@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Step } from "@repo/simulations/lib/types";
+import { Step } from "@repo/algorithms/lib";
 
 export function useAlgorithmState<TStep extends Step, TConfig>({
   initialConfig,

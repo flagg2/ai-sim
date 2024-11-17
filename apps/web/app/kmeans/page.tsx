@@ -1,15 +1,13 @@
 "use client";
 
-import SimulationUI from "@repo/ui/components/custom/SimulationUI";
-import Header from "@repo/ui/components/custom/Header";
-
-import { kmeans } from "@repo/simulations/algos/kmeans/kmeans";
+import { kmeans } from "@repo/algorithms/impl";
+import { Header, VisualisationUI } from "@repo/ui/components";
 
 export default function KMeansPage() {
   return (
     <>
       <Header title={kmeans.title} />
-      <SimulationUI algorithm={kmeans} />
+      <VisualisationUI algorithm={kmeans} />
     </>
   );
 }

@@ -8,13 +8,18 @@
     "incremental": false,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
-    "module": "NodeNext",
+    "module": "Preserve",
     "moduleDetection": "force",
-    "moduleResolution": "NodeNext",
-    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "Bundler",
+    "noUncheckedIndexedAccess": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2022"
+    "target": "ES2022",
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types",
+      "./lib.d.ts"
+    ]
   }
 }

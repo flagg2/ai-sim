@@ -15,7 +15,7 @@ COPY apps/web/package.json ./apps/web/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
 COPY packages/typescript-config/package.json ./packages/typescript-config/
 COPY packages/ui/package.json ./packages/ui/
-COPY packages/simulations/package.json ./packages/simulations/
+COPY packages/algorithms/package.json ./packages/algorithms/
 
 # Install dependencies
 # ideally would freeze but doesnt work now and dont have the nerve to debug

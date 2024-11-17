@@ -1,15 +1,13 @@
 "use client";
 
-import SimulationUI from "@repo/ui/components/custom/SimulationUI";
-import Header from "@repo/ui/components/custom/Header";
-
-import { linearRegression } from "@repo/simulations/algos/linear-regression/linear-regression";
+import { linearRegression } from "@repo/algorithms/impl";
+import { Header, VisualisationUI } from "@repo/ui/components";
 
 export default function LinearRegressionPage() {
   return (
     <>
       <Header title={linearRegression.title} />
-      <SimulationUI algorithm={linearRegression} />
+      <VisualisationUI algorithm={linearRegression} />
     </>
   );
 }

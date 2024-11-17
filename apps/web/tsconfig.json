@@ -9,7 +9,9 @@
       }
     ],
     "paths": {
-      "~/*": ["./*"]
+      "~/*": ["./*"],
+      "@repo/ui/*": ["../packages/ui/src/*"],
+      "@repo/algorithms/*": ["../packages/algorithms/src/*"]
     }
   },
   "include": [

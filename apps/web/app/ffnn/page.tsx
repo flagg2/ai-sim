@@ -1,15 +1,13 @@
 "use client";
 
-import SimulationUI from "@repo/ui/components/custom/SimulationUI";
-import Header from "@repo/ui/components/custom/Header";
-
-import { ffnn } from "@repo/simulations/algos/neural-networks/ffnn/ffnn";
+import { ffnn } from "@repo/algorithms/impl";
+import { Header, VisualisationUI } from "@repo/ui/components";
 
 export default function FFNNPage() {
   return (
     <>
       <Header title={ffnn.title} />
-      <SimulationUI algorithm={ffnn} />
+      <VisualisationUI algorithm={ffnn} />
     </>
   );
 }

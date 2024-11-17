@@ -1,15 +1,13 @@
 "use client";
 
-import SimulationUI from "@repo/ui/components/custom/SimulationUI";
-import Header from "@repo/ui/components/custom/Header";
-
-import { autoencoder } from "@repo/simulations/algos/neural-networks/autoencoder/autoencoder";
+import { autoencoder } from "@repo/algorithms/impl";
+import { Header, VisualisationUI } from "@repo/ui/components";
 
 export default function AutoencoderPage() {
   return (
     <>
       <Header title={autoencoder.title} />
-      <SimulationUI algorithm={autoencoder} />
+      <VisualisationUI algorithm={autoencoder} />
     </>
   );
 }

@@ -1,0 +1,29 @@
+{
+  "name": "@repo/algorithms",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "three": "0.168.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "usehooks-ts": "3.1.0",
+    "better-react-mathjax": "2.0.3",
+    "zustand": "5.0.0-rc.2",
+    "quadprog": "1.6.1",
+    "@tensorflow/tfjs": "4.22.0",
+    "ml-matrix": "6.12.0",
+    "mathjs": "13.2.1",
+    "ml-svm": "2.1.2"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {},
+  "exports": {
+    "./impl": "./src/impl/index.ts",
+    "./lib": "./src/lib/index.ts"
+  }
+}
