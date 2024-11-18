@@ -1,20 +1,17 @@
-import type { Neuron, Connection } from "../types";
-import type { AutoEncoderDefinition } from "./types";
+import type { Neuron, Connection } from "../neural-networks/types";
+import type { FFNNDefinition } from "./types";
 
-export const getAutoEncoderConfig: AutoEncoderDefinition["getConfig"] = (
-  params,
-) => {
-  const { learningRate } = params;
-  const { layers, neuronsPerLayer, inputSize, outputSize } = {
+export const getFFNNConfig: FFNNDefinition["getConfig"] = (params) => {
+  const { firstInputValue, learningRate, secondInputValue } = params;
+  const { layers, neuronsPerLayer, inputSize, outputSize, targetValues } = {
     layers: 1,
-    neuronsPerLayer: 2,
-    inputSize: 4,
-    outputSize: 4,
+    neuronsPerLayer: 5,
+    inputSize: 2,
+    outputSize: 1,
+    targetValues: [0.8],
   };
 
-  const activations = [0.2, 0.7, 1, 0.3];
-
-  const targetValues = [...activations];
+  const activations = [firstInputValue, secondInputValue];
 
   const neurons = generateNeurons(
     layers,

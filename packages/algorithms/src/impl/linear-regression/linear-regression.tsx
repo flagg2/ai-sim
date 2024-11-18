@@ -4,11 +4,10 @@ import { paramConfigurators } from "./param-configurators";
 import { renderLinearRegression } from "./render";
 import type { LinearRegressionDefinition } from "./types";
 import { getLinearRegressionSteps } from "./steps";
+import { linearRegressionMeta } from "./meta";
 
-export const linearRegression: LinearRegressionDefinition = {
-  title: "Linear Regression",
-  description:
-    "Linear regression is a supervised learning algorithm that finds the best-fitting line through a set of points. It works by minimizing the sum of squared distances between the predicted line and the actual data points.",
+const linearRegression: LinearRegressionDefinition = {
+  meta: linearRegressionMeta,
   paramConfigurators: paramConfigurators,
   getSceneSetup: () => ({
     dimension: "3D",
@@ -18,3 +17,5 @@ export const linearRegression: LinearRegressionDefinition = {
   getSteps: getLinearRegressionSteps,
   render: renderLinearRegression,
 };
+
+export default linearRegression;

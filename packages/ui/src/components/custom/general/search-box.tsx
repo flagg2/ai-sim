@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback } from "react";
 import Fuse from "fuse.js";
 import { Input } from "../../shadcn";

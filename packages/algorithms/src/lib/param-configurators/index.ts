@@ -1,3 +1,3 @@
-export * from "./param";
-export * from "./slider";
-export * from "./switch";
+export { ParamConfigurator } from "./param";
+export { SliderParamConfigurator } from "./slider";
+export { SwitchParamConfigurator } from "./switch";

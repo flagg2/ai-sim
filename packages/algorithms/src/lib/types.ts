@@ -53,13 +53,24 @@ export type RenderFunction<
   TConfig = object,
 > = (state: TStep["state"], config: TConfig) => Renderable[];
 
+export type AlgorithmMeta = {
+  slug: string;
+  image: {
+    path: string;
+    alt: string;
+  };
+  title: string;
+  description: string;
+  shortDescription: string;
+  synonyms: string[];
+};
+
 export type AlgorithmDefinition<
   TStep extends Step = Step,
   TConfig = object,
   TParamConfigurators extends ParamConfiguratorDict = ParamConfiguratorDict,
 > = {
-  title: string;
-  description: React.ReactNode;
+  meta: AlgorithmMeta;
   paramConfigurators: TParamConfigurators;
   getConfig: (params: Params<TParamConfigurators>) => TConfig;
   getInitialStep: (config: TConfig) => TStep;

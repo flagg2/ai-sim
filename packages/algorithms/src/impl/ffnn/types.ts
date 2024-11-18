@@ -1,10 +1,7 @@
-import type { NNConfig } from "../types";
-import type { NNStep } from "../types";
-import type { SliderParamConfigurator } from "@repo/algorithms/lib/param-configurators/slider";
-import type {
-  AlgorithmDefinition,
-  ParamConfiguratorDict,
-} from "@repo/algorithms/lib/types";
+import { AlgorithmDefinition, SliderParamConfigurator } from "../../lib";
+import { ParamConfiguratorDict } from "../../lib";
+import type { NNConfig } from "../neural-networks/types";
+import type { NNStep } from "../neural-networks/types";
 
 type FFNNParamConfiguratorDict = ParamConfiguratorDict<{
   firstInputValue: SliderParamConfigurator;

@@ -1,14 +1,14 @@
 "use client";
 
+import { meta } from "@repo/algorithms/impl";
 import { SearchBox, ThemeToggle } from "@repo/ui/components";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { links } from "~/const/links";
 // import xgboost from "@repo/ui/public/xgboost.png";
 
 export default function Page() {
-  const [hits, setHits] = useState<typeof links>(links);
+  const [hits, setHits] = useState<typeof meta>(meta);
 
   return (
     <div className="w-full">
@@ -23,7 +23,7 @@ export default function Page() {
               Select and algorithm to explore its visualization.
             </p>
             <SearchBox
-              items={links}
+              items={meta}
               keys={["title", "synonyms"]}
               onResults={setHits}
             />
@@ -35,14 +35,15 @@ export default function Page() {
           {hits.map((viz, index) => (
             <Link
               key={index}
-              href={viz.href}
+              href={viz.slug}
               className="relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-primary"
               prefetch={false}
             >
-              <div className="w-full h-56 bg-black">
+              <div className="w-full h-56 bg-black relative">
                 <Image
-                  src={viz.src}
-                  alt={viz.alt}
+                  layout="fill"
+                  src={viz.image.path}
+                  alt={viz.image.alt}
                   className="object-contain w-full h-56 group-hover:opacity-50 transition-opacity"
                 />
               </div>
@@ -50,7 +51,7 @@ export default function Page() {
                 <div className="text-center text-card-foreground">
                   <h3 className="text-xl font-bold">{viz.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {viz.description}
+                    {viz.shortDescription}
                   </p>
                 </div>
               </div>

@@ -4,11 +4,10 @@ import { paramConfigurators } from "./param-configurators";
 import { renderKMeans } from "./render";
 import type { KMeansDefinition } from "./types";
 import { getKMeansSteps } from "./steps";
+import { kmeansMeta } from "./meta";
 
-export const kmeans: KMeansDefinition = {
-  title: "K-Means Clustering",
-  description:
-    "K-means is an unsupervised learning algorithm that partitions a dataset into K clusters. It works by iteratively assigning points to the nearest centroid and then updating the centroids based on the mean of the assigned points.",
+const kmeans: KMeansDefinition = {
+  meta: kmeansMeta,
   paramConfigurators: paramConfigurators,
   getSceneSetup: () => ({
     dimension: "3D",
@@ -18,3 +17,5 @@ export const kmeans: KMeansDefinition = {
   getSteps: getKMeansSteps,
   render: renderKMeans,
 };
+
+export default kmeans;
