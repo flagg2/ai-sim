@@ -1,9 +1,9 @@
-import { RunningButtons } from "../running-buttons";
+import { ControlsButtons } from "./buttons";
 import { Loader } from "../../general/loader";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 import { Button, Slider } from "../../../shadcn";
 
-export function DetailedControls({
+export function BaseControls({
   simulation: { runner },
   configComponent,
   algorithmDescription,
@@ -59,7 +59,7 @@ export function DetailedControls({
             Simulation Controls
           </h3>
           <div className="flex items-center gap-2">
-            <RunningButtons runner={runner} />
+            <ControlsButtons runner={runner} />
           </div>
         </>
       </div>

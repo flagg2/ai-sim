@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { Slider } from "../../shadcn/slider";
 import { Switch } from "../../shadcn/switch";
 import {
@@ -11,39 +11,15 @@ import {
 } from "@repo/algorithms/lib";
 import { Label } from "../general/label";
 
-type ParamConfiguratorProps<T extends ParamConfiguratorDict> = {
+export type ParamConfiguratorProps<T extends ParamConfiguratorDict> = {
   configurators: T;
 };
 
-type ParamConfiguratorState<T extends ParamConfiguratorDict> = {
+export type ParamConfiguratorState<T extends ParamConfiguratorDict> = {
   [key in keyof T]: T[key]["defaultValue"];
 };
 
-export function useParamConfigurator<T extends ParamConfiguratorDict>(
-  configurators: T,
-) {
-  const [params, setState] = useState<ParamConfiguratorState<T>>(
-    Object.fromEntries(
-      Object.entries(configurators).map(([key, param]) => [
-        key,
-        param.defaultValue,
-      ]),
-    ) as ParamConfiguratorState<T>,
-  );
-
-  return {
-    params,
-    Configurator: (
-      <Configurator
-        configurators={configurators}
-        params={params}
-        setParams={setState}
-      />
-    ),
-  };
-}
-
-function Configurator<T extends ParamConfiguratorDict>({
+export function Configurator<T extends ParamConfiguratorDict>({
   configurators,
   params,
   setParams,

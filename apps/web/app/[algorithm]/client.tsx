@@ -3,8 +3,8 @@
 import dynamic from "next/dynamic";
 import {
   Header,
-  VisualisationUI,
-  VisualisationUISkeleton,
+  Visualisation,
+  VisualisationSkeleton,
 } from "@repo/ui/components";
 import { Suspense } from "react";
 
@@ -13,18 +13,16 @@ interface AlgorithmClientProps {
 }
 
 export default function AlgorithmClient({ params }: AlgorithmClientProps) {
-  const DynamicVisualisationUI = dynamic(
+  const DynamicVisualisation = dynamic(
     () =>
       import(
         `../../../../packages/algorithms/src/impl/${params.algorithm}/${params.algorithm}`
       ).then(async (algorithm) => {
-        return (props: any) => (
-          <VisualisationUI {...props} algorithm={algorithm.default} />
-        );
+        return () => <Visualisation algorithm={algorithm.default} />;
       }),
     {
       ssr: true,
-      loading: () => <VisualisationUISkeleton />,
+      loading: () => <VisualisationSkeleton />,
     },
   );
 
@@ -32,7 +30,7 @@ export default function AlgorithmClient({ params }: AlgorithmClientProps) {
     <>
       <Suspense fallback={<div>Loading...</div>}>
         <Header title="Algorithm Visualisation" />
-        <DynamicVisualisationUI params={params} />
+        <DynamicVisualisation />
       </Suspense>
     </>
   );

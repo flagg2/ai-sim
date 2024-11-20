@@ -2,7 +2,7 @@ import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 import { Button } from "../../../shadcn/button";
 import { DrawerTrigger } from "../../../shadcn/drawer";
 import { Slider } from "../../../shadcn/slider";
-import { RunningButtons } from "../running-buttons";
+import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
@@ -61,7 +61,7 @@ export function SimpleControls({
                 runner.goto(value[0]!);
               }}
             />
-            <RunningButtons
+            <ControlsButtons
               runner={runner}
               variant="outline"
               showReset={false}

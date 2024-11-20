@@ -1,10 +1,10 @@
 import { FaForward, FaPlay } from "react-icons/fa";
 import { FaBackward, FaPause } from "react-icons/fa";
-import { Button } from "../../shadcn/button";
+import { Button } from "../../../shadcn/button";
 import { VscSettings } from "react-icons/vsc";
-import { UseSimulationReturn } from "../../../lib/hooks/use-simulation";
+import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 
-export function RunningButtons({
+export function ControlsButtons({
   runner,
   variant = "ghost",
   extraButtons,
