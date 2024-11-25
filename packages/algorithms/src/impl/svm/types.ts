@@ -21,6 +21,11 @@ type SVMStepState = {
   supportVectors?: DataPoint[];
   alphas?: number[];
   bias?: number;
+  regionData?: {
+    x: number;
+    y: number;
+    prediction: 1 | -1;
+  }[];
   separationLine?: {
     slope: number;
     yIntercept: number;

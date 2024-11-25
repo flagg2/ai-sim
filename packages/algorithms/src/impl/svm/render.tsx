@@ -3,31 +3,16 @@ import { Point2D } from "../../lib/objects/point2d";
 import { Renderable } from "../../lib/objects/renderable";
 import type { SVMDefinition } from "./types";
 import { MeshStandardMaterial } from "three";
+import { DecisionBoundary } from "../../lib/objects/decision-boundary";
 
 export const renderSVM: SVMDefinition["render"] = (state, config) => {
   const objects: Renderable[] = [];
   const { points } = config;
-  const { supportVectors, separationLine } = state;
+  const { supportVectors, separationLine, regionData = [] } = state;
 
-  if (separationLine) {
-    const slope = separationLine.slope;
-    const yIntercept = separationLine.yIntercept;
-
-    // Create two points far apart to draw the line
-    const x1 = -200; // Left point
-    const x2 = 200; // Right point
-    const y1 = slope * x1 + yIntercept;
-    const y2 = slope * x2 + yIntercept;
-
-    objects.push(
-      new Line({
-        from: { x: x1, y: y1 },
-        to: { x: x2, y: y2 },
-        material: new MeshStandardMaterial({ color: "#2196F3" }),
-        name: "Separation Line",
-        radius: 0.2,
-      }),
-    );
+  // Add decision boundary visualization if we have the separation line
+  if (separationLine && regionData.length > 0) {
+    objects.push(new DecisionBoundary(regionData));
   }
 
   // Render all data points
@@ -51,9 +36,14 @@ export const renderSVM: SVMDefinition["render"] = (state, config) => {
       objects.push(
         new Point2D({
           coords: sv.coords,
-          material: new MeshStandardMaterial({ color: "#FFD700" }),
+          material: new MeshStandardMaterial({
+            color:
+              points.find((p) => p.id === sv.id)?.label === 1
+                ? "#B4FFB8"
+                : "#FFB3AE",
+          }),
           name: `SV ${sv.id}`,
-          scale: 5,
+          scale: 3,
           tooltip: `Support Vector ${sv.id}`,
         }),
       );

@@ -101,12 +101,21 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
     ),
   });
 
+  const regionData: { x: number; y: number; prediction: 1 | -1 }[] = [];
+  for (let x = 0; x <= 100; x++) {
+    for (let y = 0; y <= 100; y++) {
+      const prediction = svm.predict([x, y]) as 1 | -1;
+      regionData.push({ x, y, prediction });
+    }
+  }
+
   steps.push({
     type: "calculateDecisionBoundary",
     title: "Final Decision Boundary",
     state: {
       supportVectors,
       separationLine,
+      regionData,
     },
     description: (
       <Description>
