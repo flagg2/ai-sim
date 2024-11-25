@@ -6,10 +6,18 @@ import { Switch } from "../../shadcn/switch";
 import {
   ParamConfigurator,
   ParamConfiguratorDict,
+  SelectParamConfigurator,
   SliderParamConfigurator,
   SwitchParamConfigurator,
 } from "@repo/algorithms/lib";
 import { Label } from "../general/label";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Select,
+} from "../../shadcn/select";
 
 export type ParamConfiguratorProps<T extends ParamConfiguratorDict> = {
   configurators: T;
@@ -42,6 +50,9 @@ export function Configurator<T extends ParamConfiguratorDict>({
               max={param.max}
               step={param.step}
             />
+            <div className="text-xs text-darkish-text">
+              {params[key] as string}
+            </div>
           </>
         );
       }
@@ -56,6 +67,28 @@ export function Configurator<T extends ParamConfiguratorDict>({
           />
         );
       }
+      if (param instanceof SelectParamConfigurator) {
+        const value = params[key]! as string;
+        return (
+          <Select
+            value={value}
+            onValueChange={(value: string) =>
+              setParams({ ...params, [key]: value })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {param.options.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      }
 
       return null;
     },
@@ -67,10 +100,6 @@ export function Configurator<T extends ParamConfiguratorDict>({
       {Object.entries(configurators).map(([key, param]) => (
         <Label key={key} label={param.label} info={param.description}>
           {getParamComponent(param, key)}
-          <div className="text-xs text-darkish-text">
-            {/* TODO: better typing to avoid these casts */}
-            {params[key] as string}
-          </div>
         </Label>
       ))}
     </div>

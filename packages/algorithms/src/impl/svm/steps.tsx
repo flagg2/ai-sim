@@ -2,8 +2,8 @@ import type { SVMDefinition } from "./types";
 import SVM from "ml-svm";
 import Description from "../../lib/descriptions/description";
 import Paragraph from "../../lib/descriptions/paragraph";
-import List, { ListItem } from "../../lib/descriptions/list";
 import Note from "../../lib/descriptions/note";
+import { BOUNDARY_SCALE, GRID_SIZE } from "./const";
 
 export const getSVMSteps: SVMDefinition["getSteps"] = async (
   config,
@@ -18,11 +18,11 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
 
   // Configure and train SVM
   const svm = new SVM({
-    C: 1.0,
-    tol: 1e-4,
-    maxPasses: 10,
+    C: 10.0,
+    tol: 1e-6,
+    maxPasses: 100,
     maxIterations: 10000,
-    kernel: "linear",
+    kernel: config.kernelType,
   });
 
   svm.train(features, labels);
@@ -102,8 +102,10 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
   });
 
   const regionData: { x: number; y: number; prediction: 1 | -1 }[] = [];
-  for (let x = 0; x <= 100; x++) {
-    for (let y = 0; y <= 100; y++) {
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      const x = (i / (GRID_SIZE - 1)) * BOUNDARY_SCALE;
+      const y = (j / (GRID_SIZE - 1)) * BOUNDARY_SCALE;
       const prediction = svm.predict([x, y]) as 1 | -1;
       regionData.push({ x, y, prediction });
     }

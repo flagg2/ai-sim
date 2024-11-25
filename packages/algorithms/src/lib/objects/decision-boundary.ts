@@ -9,12 +9,29 @@ import {
 } from "three";
 import { Renderable, RenderableObject } from "./renderable";
 
+// Add interface for configuration
+interface DecisionBoundaryConfig {
+  colors?: {
+    pos: Vector2;
+    neg: Vector2;
+  };
+  position?: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  size?: {
+    width: number;
+    height: number;
+  };
+}
+
 export class DecisionBoundary implements Renderable {
   public object: RenderableObject;
 
   constructor(
     regionData: Array<{ x: number; y: number; prediction: number }>,
-    colors?: { pos: Vector2; neg: Vector2 },
+    config?: DecisionBoundaryConfig,
   ) {
     // Create a data texture from our predictions
     const size = Math.sqrt(regionData.length);
@@ -35,12 +52,16 @@ export class DecisionBoundary implements Renderable {
     );
     predictionTexture.needsUpdate = true;
 
-    colors ??= {
+    const colors = config?.colors ?? {
       pos: new Vector2(0x4c / 0xff, 0xaf / 0xff),
       neg: new Vector2(0xf4 / 0xff, 0x43 / 0xff),
     };
 
-    // Create shader material
+    // Use provided position and size or fallback to defaults
+    const pos = config?.position ?? { x: 75, y: 75, z: -1 };
+    const planeSize = config?.size ?? { width: 150, height: 150 };
+
+    // Create shader material with colors
     const material = new ShaderMaterial({
       transparent: true,
       uniforms: {
@@ -63,47 +84,74 @@ export class DecisionBoundary implements Renderable {
          uniform vec2 colorNeg;
          varying vec2 vUv;
  
+         float samplePrediction(vec2 coord) {
+           return texture2D(predictionTexture, coord).r;
+         }
+ 
          void main() {
            vec2 texCoord = vUv;
-           
-           // Sample nearby predictions for smoothing
            float dx = 1.0 / textureSize.x;
            float dy = 1.0 / textureSize.y;
            
-           float c0 = texture2D(predictionTexture, texCoord).r;
-           float c1 = texture2D(predictionTexture, texCoord + vec2(dx, 0.0)).r;
-           float c2 = texture2D(predictionTexture, texCoord + vec2(-dx, 0.0)).r;
-           float c3 = texture2D(predictionTexture, texCoord + vec2(0.0, dy)).r;
-           float c4 = texture2D(predictionTexture, texCoord + vec2(0.0, -dy)).r;
+           // Gaussian blur kernel (3x3)
+           float kernel[9] = float[9](
+             0.0625, 0.125, 0.0625,
+             0.125,  0.25,  0.125,
+             0.0625, 0.125, 0.0625
+           );
            
-           // Average predictions for smoothing
-           float prediction = (c0 + c1 + c2 + c3 + c4) / 5.0;
-           
-           // Interpolate colors
-           vec3 color;
-           if(prediction > 0.0) {
-             color = vec3(colorPos.x, colorPos.y, 0.5);
-           } else {
-             color = vec3(colorNeg.x, colorNeg.y, 0.36);
+           // Apply Gaussian blur
+           float prediction = 0.0;
+           int idx = 0;
+           for(int y = -1; y <= 1; y++) {
+             for(int x = -1; x <= 1; x++) {
+               vec2 offset = vec2(float(x) * dx, float(y) * dy);
+               prediction += kernel[idx] * samplePrediction(texCoord + offset);
+               idx++;
+             }
            }
            
-           // Smooth transition near boundary
-           float confidence = abs(prediction);
-           float alpha = 0.3;
+           // Calculate gradient for edge detection (using Sobel operator)
+           float gx = 
+             samplePrediction(texCoord + vec2(-dx, -dy)) * -1.0 +
+             samplePrediction(texCoord + vec2(-dx,  dy)) * -1.0 +
+             samplePrediction(texCoord + vec2(-dx,  0.0)) * -2.0 +
+             samplePrediction(texCoord + vec2( dx, -dy)) *  1.0 +
+             samplePrediction(texCoord + vec2( dx,  dy)) *  1.0 +
+             samplePrediction(texCoord + vec2( dx,  0.0)) *  2.0;
+             
+           float gy = 
+             samplePrediction(texCoord + vec2(-dx, -dy)) * -1.0 +
+             samplePrediction(texCoord + vec2( 0.0,-dy)) * -2.0 +
+             samplePrediction(texCoord + vec2( dx, -dy)) * -1.0 +
+             samplePrediction(texCoord + vec2(-dx,  dy)) *  1.0 +
+             samplePrediction(texCoord + vec2( 0.0, dy)) *  2.0 +
+             samplePrediction(texCoord + vec2( dx,  dy)) *  1.0;
+           
+           float gradientMagnitude = sqrt(gx * gx + gy * gy);
+           
+           // Color interpolation
+           vec3 posColor = vec3(colorPos.x, colorPos.y, 0.5);
+           vec3 negColor = vec3(colorNeg.x, colorNeg.y, 0.36);
+           float t = smoothstep(-0.2, 0.2, prediction);
+           vec3 color = mix(negColor, posColor, t);
+           
+           // Enhanced edge visibility
+           float edgeIntensity = smoothstep(0.0, 0.8, gradientMagnitude);
+           float alpha = mix(0.2, 0.5, edgeIntensity);
            
            gl_FragColor = vec4(color, alpha);
          }
        `,
     });
 
-    // Create a single plane geometry for the entire visualization
-    const geometry = new PlaneGeometry(100, 100);
+    const geometry = new PlaneGeometry(planeSize.width, planeSize.height);
 
     this.object = new RenderableObject({
       three: {
         geometry,
         material,
-        position: new Vector3(50, 50, -1), // Center the plane
+        position: new Vector3(pos.x, pos.y, pos.z),
       },
       name: "DecisionBoundary",
     });

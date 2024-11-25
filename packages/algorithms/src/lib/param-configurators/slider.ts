@@ -15,11 +15,7 @@ export class SliderParamConfigurator extends ParamConfigurator<number> {
   public step: number;
 
   constructor(props: SliderParamConfiguratorProps) {
-    super({
-      label: props.label,
-      description: props.description,
-      defaultValue: props.defaultValue,
-    });
+    super(props);
     this.min = props.min;
     this.max = props.max;
     this.step = props.step ?? 1;

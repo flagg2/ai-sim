@@ -2,8 +2,10 @@ import {
   AlgorithmDefinition,
   Coords2D,
   ParamConfiguratorDict,
+  SelectParamConfigurator,
   SliderParamConfigurator,
   Step,
+  SwitchParamConfigurator,
 } from "../../lib";
 
 export type DataPoint = {
@@ -16,6 +18,8 @@ type SVMStepType =
   | "initial"
   | "findSupportVectors"
   | "calculateDecisionBoundary";
+
+type KernelType = "linear" | "rbf" | "polynomial";
 
 type SVMStepState = {
   supportVectors?: DataPoint[];
@@ -36,10 +40,13 @@ export type SVMStep = Step<SVMStepState, SVMStepType>;
 
 export type SVMParamConfiguratorDict = ParamConfiguratorDict<{
   points: SliderParamConfigurator;
+  generateRadialData: SwitchParamConfigurator;
+  kernelType: SelectParamConfigurator<KernelType>;
 }>;
 
 export type SVMConfig = {
   points: DataPoint[];
+  kernelType: KernelType;
 };
 
 export type SVMDefinition = AlgorithmDefinition<

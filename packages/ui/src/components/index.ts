@@ -42,3 +42,16 @@ export {
   Loader,
   SearchBox,
 } from "./custom/general";
+
+export {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+} from "./shadcn/select";
