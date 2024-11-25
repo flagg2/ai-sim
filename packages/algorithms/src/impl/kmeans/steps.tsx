@@ -1,7 +1,11 @@
 import { calculateDistance } from "../../lib/utils";
 import type { KMeansDefinition, Point } from "./types";
-import { getMaterial } from "../../lib/materials";
+import { getColoredMaterial } from "../../lib/materials";
 import type { Group } from "../../lib";
+import Description from "../../lib/descriptions/description";
+import Paragraph from "../../lib/descriptions/paragraph";
+import Note from "../../lib/descriptions/note";
+import Expression from "../../lib/descriptions/math";
 
 export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
   config,
@@ -13,8 +17,6 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
   let iteration = 0;
 
   while (iteration < maxIterations) {
-    // Initialize centroids if first iteration
-
     if (iteration === 0) {
       centroids = generateRandomCentroids(points, k);
 
@@ -27,23 +29,16 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
           iteration,
         },
         description: (
-          <div>
-            <p>Start by initializing {k} random centroids:</p>
-            <ul>
-              {centroids.map((centroid, index) => (
-                <li key={centroid.id}>
-                  Centroid {index + 1}: ({centroid.coords.x.toFixed(2)},{" "}
-                  {centroid.coords.y.toFixed(2)}, {centroid.coords.z.toFixed(2)}
-                  )
-                </li>
-              ))}
-            </ul>
-          </div>
+          <Description>
+            <Paragraph>
+              Because it is the first iteration, we start by initializing{" "}
+              <Expression>k={k}</Expression> random centroids.
+            </Paragraph>
+          </Description>
         ),
       });
     }
 
-    // Assign points to clusters
     const updatedPoints = points.map((point) => {
       const nearestCentroid = centroids.reduce((nearest, centroid) => {
         const distance = calculateDistance(point.coords, centroid.coords);
@@ -63,17 +58,16 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration,
       },
       description: (
-        <div>
-          <p>
-            Assigning points to their nearest centroid based on Euclidean
+        <Description>
+          <Paragraph>
+            We assign each point to the nearest centroid based on Euclidean
             distance.
-          </p>
-          <p>Each point is colored according to its assigned cluster.</p>
-        </div>
+          </Paragraph>
+          <Note>Each point is colored according to its assigned cluster.</Note>
+        </Description>
       ),
     });
 
-    // Update centroids
     const updatedCentroids = centroids.map((centroid) => {
       const clusterPoints = updatedPoints.filter(
         (p) => p.group.label === centroid.group.label,
@@ -101,24 +95,15 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration,
       },
       description: (
-        <div>
-          <p>
-            Update each centroid to the mean position of all points in its
-            cluster.
-          </p>
-          <ul>
-            {updatedCentroids.map((centroid, index) => (
-              <li key={centroid.id}>
-                Centroid {index + 1}: ({centroid.coords.x.toFixed(2)},{" "}
-                {centroid.coords.y.toFixed(2)}, {centroid.coords.z.toFixed(2)})
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Description>
+          <Paragraph>
+            Update each centroid to the mean position (
+            <Expression>\mu</Expression>) of all points in its cluster.
+          </Paragraph>
+        </Description>
       ),
     });
 
-    // Check convergence
     const hasConverged = centroids.every(
       (centroid, i) =>
         calculateDistance(centroid.coords, updatedCentroids[i]!.coords) === 0,
@@ -133,20 +118,17 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration: iteration + 1,
       },
       description: (
-        <div>
-          <p>
-            Checking if the algorithm has converged by comparing the old and new
+        <Description>
+          <Paragraph>
+            We check if the algorithm has converged by comparing the old and new
             centroid positions.
-          </p>
-          <p>
+          </Paragraph>
+          <Note>
             {hasConverged
-              ? "The algorithm has converged - centroids no longer move."
+              ? "The algorithm has converged - centroids no longer move. We can stop the algorithm."
               : "Centroids are still moving - continue to next iteration."}
-          </p>
-          <p>
-            Iteration: {iteration + 1} / {maxIterations}
-          </p>
-        </div>
+          </Note>
+        </Description>
       ),
     });
 
@@ -183,6 +165,6 @@ function generateRandomCentroids(points: Point[], k: number): Point[] {
 function generateKGroups(k: number): Group[] {
   return Array.from({ length: k }, (_, i) => ({
     label: `Group ${i + 1}`,
-    material: getMaterial(i),
+    material: getColoredMaterial(i),
   }));
 }

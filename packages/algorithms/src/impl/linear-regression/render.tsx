@@ -1,4 +1,4 @@
-import { getMaterial } from "../../lib/materials";
+import { getColoredMaterial } from "../../lib/materials";
 import { Point3D } from "../../lib/objects/point";
 import { Renderable } from "../../lib/objects/renderable";
 import { Tube } from "../../lib/objects/tube";
@@ -9,8 +9,8 @@ export const renderLinearRegression: LinearRegressionDefinition["render"] = (
   config,
 ) => {
   const renderables: Renderable[] = [];
-  const defaultMaterial = getMaterial(0);
-  const predictionLineMaterial = getMaterial(1);
+  const defaultMaterial = getColoredMaterial(0);
+  const predictionLineMaterial = getColoredMaterial(1);
 
   // Render all data points
   config.points.forEach((point) => {
@@ -82,7 +82,7 @@ export const renderLinearRegression: LinearRegressionDefinition["render"] = (
           y: state.means.y,
           z: state.means.z,
         },
-        material: getMaterial(2),
+        material: getColoredMaterial(2),
         scale: 5,
         tooltip: (
           <div>

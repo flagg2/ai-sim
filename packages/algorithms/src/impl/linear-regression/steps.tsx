@@ -1,5 +1,10 @@
 import type { Coords3D } from "../../lib";
 import type { LinearRegressionDefinition } from "./types";
+import Description from "../../lib/descriptions/description";
+import Paragraph from "../../lib/descriptions/paragraph";
+import List, { ListItem } from "../../lib/descriptions/list";
+import Note from "../../lib/descriptions/note";
+import Expression from "../../lib/descriptions/math";
 
 export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
   async (config, initialStep) => {
@@ -16,15 +21,22 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
     steps.push({
       type: "calculateMeans",
       title: "Calculate Means",
-      state: {
-        means,
-      },
+      state: { means },
       description: (
-        <div>
-          <p>
-            Start by calculating the mean values for x, y, and z for the data.
-          </p>
-        </div>
+        <Description>
+          <Paragraph>
+            In this model, we treat <Expression>x</Expression> as our
+            independent variable (predictor), while <Expression>y</Expression>{" "}
+            and <Expression>z</Expression> are our dependent variables
+            (outcomes).
+          </Paragraph>
+          <Paragraph>
+            First, we calculate the center point of our data by finding the
+            average (mean) of all <Expression>x</Expression>,{" "}
+            <Expression>y</Expression>, and <Expression>z</Expression>{" "}
+            coordinates:
+          </Paragraph>
+        </Description>
       ),
     });
 
@@ -56,27 +68,33 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
     steps.push({
       type: "calculateCoefficients",
       title: "Calculate Coefficients",
-      state: {
-        means,
-        coefficients,
-      },
+      state: { means, coefficients },
       description: (
-        <div>
-          <p>Calculate the regression line coefficients:</p>
-          <ul>
-            <li>Slope X-Y: {coefficients.slopeXY.toFixed(4)}</li>
-            <li>Slope X-Z: {coefficients.slopeXZ.toFixed(4)}</li>
-            <li>Intercept Y: {coefficients.interceptY.toFixed(4)}</li>
-            <li>Intercept Z: {coefficients.interceptZ.toFixed(4)}</li>
-          </ul>
-          <p>
-            The equations of the plane are:
-            <br />y = {coefficients.slopeXY.toFixed(2)}x +{" "}
-            {coefficients.interceptY.toFixed(2)}
-            <br />z = {coefficients.slopeXZ.toFixed(2)}x +{" "}
-            {coefficients.interceptZ.toFixed(2)}
-          </p>
-        </div>
+        <Description>
+          <Paragraph>
+            We're performing two separate simple linear regressions: one for{" "}
+            <Expression>x \rightarrow y</Expression> and another for{" "}
+            <Expression>x \rightarrow z</Expression>. For each regression, we
+            calculate:
+          </Paragraph>
+          <List>
+            <ListItem>
+              A slope that tells us how much the dependent variable (
+              <Expression>y</Expression> or <Expression>z</Expression>) changes
+              when <Expression>x</Expression> increases
+            </ListItem>
+            <ListItem>
+              An intercept that tells us the baseline value when{" "}
+              <Expression>x</Expression> is zero
+            </ListItem>
+          </List>
+          <Note>
+            Note: This approach treats <Expression>y</Expression> and{" "}
+            <Expression>z</Expression> as independent from each other. Each
+            prediction depends only on <Expression>x</Expression>, not on the
+            other dependent variable.
+          </Note>
+        </Description>
       ),
     });
 
@@ -99,44 +117,29 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
 
     steps.push({
       type: "updateLine",
-      title: "Update Regression Line",
-      state: {
-        means,
-        coefficients,
-        predictionLine,
-      },
+      title: "Create Regression Line",
+      state: { means, coefficients, predictionLine },
       description: (
-        <div>
-          <p>Draw the regression line using the calculated coefficients:</p>
-          <ul>
-            <li>
-              Starting point: ({predictionLine.start.x.toFixed(2)},{" "}
-              {(
-                coefficients.slopeXY * predictionLine.start.x +
-                coefficients.interceptY
-              ).toFixed(2)}
-              ,{" "}
-              {(
-                coefficients.slopeXZ * predictionLine.start.x +
-                coefficients.interceptZ
-              ).toFixed(2)}
-              )
-            </li>
-            <li>
-              Ending point: ({predictionLine.end.x.toFixed(2)},{" "}
-              {(
-                coefficients.slopeXY * predictionLine.end.x +
-                coefficients.interceptY
-              ).toFixed(2)}
-              ,{" "}
-              {(
-                coefficients.slopeXZ * predictionLine.end.x +
-                coefficients.interceptZ
-              ).toFixed(2)}
-              )
-            </li>
-          </ul>
-        </div>
+        <Description>
+          <Paragraph>
+            Using our coefficients, we create a line in 3D space that represents
+            our predictions. This line:
+          </Paragraph>
+          <List>
+            <ListItem>
+              Uses <Expression>x</Expression> values as inputs to predict both{" "}
+              <Expression>y</Expression> and <Expression>z</Expression> values
+            </ListItem>
+            <ListItem>
+              Spans from the minimum to maximum <Expression>x</Expression>{" "}
+              values in our dataset
+            </ListItem>
+            <ListItem>
+              Shows how both dependent variables (<Expression>y</Expression> and{" "}
+              <Expression>z</Expression>) change with <Expression>x</Expression>
+            </ListItem>
+          </List>
+        </Description>
       ),
     });
 
@@ -156,21 +159,35 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
 
     steps.push({
       type: "calculateSumOfSquaredErrors",
-      title: "Calculate Sum of Squared Errors",
-      state: {
-        sumOfSquaredErrors,
-        coefficients,
-        means,
-        predictionLine,
-      },
+      title: "Evaluate Model Accuracy",
+      state: { sumOfSquaredErrors, coefficients, means, predictionLine },
       description: (
-        <div>
-          <p>
-            We can calculate how good the line is by calculating the sum of
-            squared errors.
-          </p>
-          <p>The sum of squared errors is {sumOfSquaredErrors.toFixed(2)}.</p>
-        </div>
+        <Description>
+          <Paragraph>
+            Finally, we evaluate how well our model fits the data by calculating
+            the sum of squared errors for both predictions (
+            <Expression>y</Expression> and <Expression>z</Expression>):
+          </Paragraph>
+          <List>
+            <ListItem>
+              For each point, we calculate the difference between actual and
+              predicted values
+            </ListItem>
+            <ListItem>
+              We combine the errors from both <Expression>y</Expression> and{" "}
+              <Expression>z</Expression> predictions
+            </ListItem>
+            <ListItem>
+              The total error gives us a measure of how well our model predicts
+              both dependent variables
+            </ListItem>
+          </List>
+          <Note>
+            Remember: Since we treated <Expression>y</Expression> and{" "}
+            <Expression>z</Expression> independently, their errors are
+            calculated separately and then combined.
+          </Note>
+        </Description>
       ),
     });
 

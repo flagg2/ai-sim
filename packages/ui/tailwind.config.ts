@@ -9,6 +9,7 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "../../packages/ui/src/**/*.{ts,tsx}",
+    "../../packages/algorithms/src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -41,6 +42,10 @@ const config = {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
+        },
+        dimmed: {
+          DEFAULT: "hsl(var(--dimmed))",
+          foreground: "hsl(var(--dimmed-foreground))",
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",

@@ -1,3 +1,6 @@
+import Description from "../../lib/descriptions/description";
+import Expression from "../../lib/descriptions/math";
+import Paragraph from "../../lib/descriptions/paragraph";
 import type { KMeansDefinition } from "./types";
 
 export const getKMeansInitialStep: KMeansDefinition["getInitialStep"] = (
@@ -7,10 +10,13 @@ export const getKMeansInitialStep: KMeansDefinition["getInitialStep"] = (
     type: "initial",
     title: "Initial State",
     description: (
-      <div>
-        We will cluster {config.points.length} points into {config.k} groups
-        using the K-means algorithm.
-      </div>
+      <Description>
+        <Paragraph>
+          We will cluster <Expression>{config.points.length}</Expression> points
+          into <Expression>k={config.k.toString()}</Expression> groups using the
+          K-means algorithm.
+        </Paragraph>
+      </Description>
     ),
     index: 1,
     state: {

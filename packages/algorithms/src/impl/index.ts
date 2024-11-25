@@ -3,6 +3,7 @@ import { ffnnMeta } from "./ffnn/meta";
 import { kmeansMeta } from "./kmeans/meta";
 import { linearRegressionMeta } from "./linear-regression/meta";
 import { svmMeta } from "./svm/meta";
+import { xgboostMeta } from "./xgboost/meta";
 
 // These are the algorithms, which will be rendered on the landing page.
 // It is assumed that there is a folder for each algorithm with called {slug}
@@ -15,4 +16,5 @@ export const meta = [
   svmMeta,
   ffnnMeta,
   autoencoderMeta,
+  xgboostMeta,
 ];

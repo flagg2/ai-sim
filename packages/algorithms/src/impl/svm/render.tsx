@@ -4,7 +4,7 @@ import { Renderable } from "../../lib/objects/renderable";
 import type { SVMDefinition } from "./types";
 import { MeshStandardMaterial } from "three";
 
-export const renderSVM2: SVMDefinition["render"] = (state, config) => {
+export const renderSVM: SVMDefinition["render"] = (state, config) => {
   const objects: Renderable[] = [];
   const { points } = config;
   const { supportVectors, separationLine } = state;

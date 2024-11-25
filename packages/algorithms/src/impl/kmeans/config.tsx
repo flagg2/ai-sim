@@ -1,4 +1,4 @@
-import { getMaterial } from "../../lib/materials";
+import { getColoredMaterial } from "../../lib/materials";
 import { calculateDistance } from "../../lib/utils";
 import type { KMeansDefinition, Point } from "./types";
 
@@ -44,7 +44,7 @@ function generateRandomPoint({ points }: { points: Point[] }): Point {
     coords,
     group: {
       label: "Unassigned",
-      material: getMaterial(0),
+      material: getColoredMaterial(0),
     },
   };
 }

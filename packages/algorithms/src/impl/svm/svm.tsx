@@ -2,8 +2,8 @@ import { getSVMConfig } from "./config";
 import { getSVMInitialStep } from "./initial-step";
 import { paramConfigurators } from "./param-configurators";
 import type { SVMDefinition } from "./types";
-import { renderSVM2 } from "./render";
-import { getSVMSteps2 } from "./steps";
+import { renderSVM } from "./render";
+import { getSVMSteps } from "./steps";
 import { svmMeta } from "./meta";
 
 const svm: SVMDefinition = {
@@ -16,8 +16,8 @@ const svm: SVMDefinition = {
   },
   getConfig: getSVMConfig,
   getInitialStep: getSVMInitialStep,
-  getSteps: getSVMSteps2,
-  render: renderSVM2,
+  getSteps: getSVMSteps,
+  render: renderSVM,
 };
 
 export default svm;

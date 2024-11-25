@@ -12,7 +12,7 @@ export type VisualisationProps = {
   algorithm: AlgorithmDefinition<any, any, any>;
 };
 
-export function Visualisation({ algorithm }: VisualisationProps) {
+export function Visualization({ algorithm }: VisualisationProps) {
   const {
     params,
     simulation,
@@ -78,7 +78,7 @@ export function Visualisation({ algorithm }: VisualisationProps) {
   );
 }
 
-export function VisualisationSkeleton() {
+export function VisualizationSkeleton() {
   return (
     <div className="flex flex-col w-full h-[calc(100vh-68px)]">
       {/* Mobile layout */}

@@ -26,7 +26,7 @@ function getContrastingColor(at: number): string {
   return contrastingColors[at]!;
 }
 
-export function getMaterial(at: number): MeshStandardMaterial {
+export function getColoredMaterial(at: number): MeshStandardMaterial {
   return new MeshStandardMaterial({ color: getContrastingColor(at) });
 }
 

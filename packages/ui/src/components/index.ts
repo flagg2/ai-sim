@@ -1,7 +1,7 @@
 export {
-  Visualisation,
-  VisualisationSkeleton,
-} from "./custom/visualisations/visualisation";
+  Visualization,
+  VisualizationSkeleton,
+} from "./custom/visualisations/visualization";
 export {
   Button,
   Drawer,

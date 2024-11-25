@@ -1,7 +1,11 @@
 import type { SVMDefinition } from "./types";
 import SVM from "ml-svm";
+import Description from "../../lib/descriptions/description";
+import Paragraph from "../../lib/descriptions/paragraph";
+import List, { ListItem } from "../../lib/descriptions/list";
+import Note from "../../lib/descriptions/note";
 
-export const getSVMSteps2: SVMDefinition["getSteps"] = async (
+export const getSVMSteps: SVMDefinition["getSteps"] = async (
   config,
   initialStep,
 ) => {
@@ -27,14 +31,17 @@ export const getSVMSteps2: SVMDefinition["getSteps"] = async (
     title: "Initialize SVM",
     state: { alphas: [], bias: 0 },
     description: (
-      <div>
-        <p>Setting up SVM with:</p>
-        <ul>
-          <li>C (regularization parameter) = 1.0</li>
-          <li>Kernel: Linear</li>
-          <li>{points.length} training points</li>
-        </ul>
-      </div>
+      <Description>
+        <Paragraph>
+          The Support Vector Machine (SVM) begins by analyzing the training
+          data, looking for the best way to separate the two classes with a
+          clear boundary.
+        </Paragraph>
+        <Note>
+          We'll use a linear approach, which means our boundary will be a
+          straight line that maximizes the gap between the two classes.
+        </Note>
+      </Description>
     ),
   });
 
@@ -78,14 +85,19 @@ export const getSVMSteps2: SVMDefinition["getSteps"] = async (
       supportVectors,
     },
     description: (
-      <div>
-        <p>Identifying support vectors:</p>
-        <ul>
-          <li>These are the points closest to the decision boundary</li>
-          <li>Found {supportVectors.length} support vectors</li>
-          <li>Current bias: {yIntercept.toFixed(4)}</li>
-        </ul>
-      </div>
+      <Description>
+        <Paragraph>
+          The algorithm now identifies the most important points - called
+          support vectors. These are the points closest to where we'll draw our
+          boundary, and they're crucial because they alone determine where the
+          final boundary will be.
+        </Paragraph>
+        <Note>
+          Think of support vectors as the "goal posts" that define where to draw
+          the boundary line. All other points could be moved or removed without
+          affecting our decision.
+        </Note>
+      </Description>
     ),
   });
 
@@ -97,13 +109,17 @@ export const getSVMSteps2: SVMDefinition["getSteps"] = async (
       separationLine,
     },
     description: (
-      <div>
-        <p>SVM training completed:</p>
-        <ul>
-          <li>Found {supportVectors.length} support vectors</li>
-          <li>Final bias: {yIntercept.toFixed(4)}</li>
-        </ul>
-      </div>
+      <Description>
+        <Paragraph>
+          With our support vectors identified, we can now draw the optimal
+          boundary. This line sits exactly halfway between the closest points of
+          each class, creating the widest possible gap between them.
+        </Paragraph>
+        <Note>
+          Any new points can now be classified simply by checking which side of
+          this boundary they fall on.
+        </Note>
+      </Description>
     ),
   });
 

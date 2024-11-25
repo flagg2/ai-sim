@@ -13,10 +13,12 @@
     "@tensorflow/tfjs": "4.22.0",
     "ml-matrix": "6.12.0",
     "mathjs": "13.2.1",
-    "ml-svm": "2.1.2"
+    "ml-svm": "2.1.2",
+    "react-katex": "3.0.1"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/react-katex": "3.0.4"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

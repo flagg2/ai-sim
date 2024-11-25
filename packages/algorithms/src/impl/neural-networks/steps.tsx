@@ -1,4 +1,9 @@
 import type { NNConfig, NNStep } from "./types";
+import Description from "../../lib/descriptions/description";
+import Paragraph from "../../lib/descriptions/paragraph";
+import List, { ListItem } from "../../lib/descriptions/list";
+import Note from "../../lib/descriptions/note";
+import Expression from "../../lib/descriptions/math";
 
 // Sigmoid activation function
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
@@ -48,26 +53,21 @@ export const getNNSteps: (
           neuronIndex + 1
         })`,
         description: (
-          <div>
-            <p>Calculating weighted sum for neuron {currentNeuron.id}:</p>
-            <p>
-              Weighted Sum ={" "}
-              {incomingConnections.map((conn, idx) => {
-                const fromNeuron = currentNeurons.find(
-                  (n) => n.id === conn.fromNeuron.id,
-                );
-                return (
-                  <span key={conn.id}>
-                    {idx > 0 ? " + " : ""}(
-                    {fromNeuron?.activation?.toFixed(3) || "0"} ×{" "}
-                    {conn.weight.toFixed(3)})
-                  </span>
-                );
-              })}{" "}
-              + {currentNeuron.bias?.toFixed(3) || "0"}={" "}
-              {weightedSum.toFixed(3)}
-            </p>
-          </div>
+          <Description>
+            <Paragraph>
+              For each neuron, we first calculate the weighted sum of its
+              inputs:
+            </Paragraph>
+            <List>
+              <ListItem>Multiply each input by its connection weight</ListItem>
+              <ListItem>Add all these products together</ListItem>
+              <ListItem>Add the neuron's bias term</ListItem>
+            </List>
+            <Note>
+              This weighted sum determines how strongly the neuron will activate
+              based on its inputs.
+            </Note>
+          </Description>
         ),
         state: {
           currentLayer: layer,
@@ -98,14 +98,17 @@ export const getNNSteps: (
           neuronIndex + 1
         })`,
         description: (
-          <div>
-            <p>
-              Apply sigmoid activation function to neuron {currentNeuron.id}:
-            </p>
-            <p>
-              sigmoid({weightedSum.toFixed(3)}) = {activation.toFixed(3)}
-            </p>
-          </div>
+          <Description>
+            <Paragraph>
+              We apply the sigmoid activation function to transform the weighted
+              sum into an activation value:
+            </Paragraph>
+            <Expression>{"\\sigma(x) = \\frac{1}{1 + e^{-x}}"}</Expression>
+            <Note>
+              The sigmoid function squashes any input into a value between 0 and
+              1, creating a non-linear activation pattern.
+            </Note>
+          </Description>
         ),
         state: {
           currentLayer: layer,
@@ -123,20 +126,20 @@ export const getNNSteps: (
       type: "layerComplete",
       title: `${getLayerTitle(layer, type, config.layers)} Complete`,
       description: (
-        <div>
-          <p>
+        <Description>
+          <Paragraph>
             {type === "autoencoder"
               ? `Completed processing all neurons in ${getLayerDescription(layer, config.layers)}.`
               : `Completed processing all neurons in layer ${layer}.`}
-          </p>
+          </Paragraph>
           {layer === config.layers + 1 && (
-            <p>
+            <Note>
               {type === "autoencoder"
-                ? "Autoencoder processing complete! Reconstruction values are ready."
-                : "Network processing complete! Final output values are ready."}
-            </p>
+                ? "Autoencoder processing complete! The network has attempted to reconstruct the input."
+                : "Forward propagation complete! The network has produced its final outputs."}
+            </Note>
           )}
-        </div>
+        </Description>
       ),
       state: {
         currentLayer: layer,
@@ -171,20 +174,19 @@ export const getNNSteps: (
       type: "lossCalculation",
       title: "Calculate Loss",
       description: (
-        <div>
-          <p>Calculating Mean Squared Error (MSE) loss:</p>
-          <p>
-            MSE ={" "}
-            {outputNeurons.map((neuron, idx) => (
-              <span key={neuron.id}>
-                {idx > 0 ? " + " : ""}
-                (({neuron.activation.toFixed(3)} -{" "}
-                {config.targetValues?.[idx].toFixed(3)})²/2)
-              </span>
-            ))}{" "}
-            = {loss.toFixed(3)}
-          </p>
-        </div>
+        <Description>
+          <Paragraph>
+            Calculate the Mean Squared Error (MSE) loss to measure prediction
+            accuracy:
+          </Paragraph>
+          <Expression block>
+            {"MSE = \\frac{1}{n}\\sum_{i=1}^{n}\\frac{(y_i - \\hat{y}_i)^2}{2}"}
+          </Expression>
+          <Note>
+            The MSE tells us how far our predictions are from the target values,
+            with smaller values indicating better performance.
+          </Note>
+        </Description>
       ),
       state: {
         currentLayer: config.layers + 1,
@@ -203,10 +205,25 @@ export const getNNSteps: (
       type: "backpropStart",
       title: "Start Backpropagation",
       description: (
-        <div>
-          <p>Beginning backpropagation to update network weights.</p>
-          <p>Learning rate: {config.learningRate}</p>
-        </div>
+        <Description>
+          <Paragraph>
+            Now that we've calculated the error, we'll use backpropagation to
+            improve our network's performance:
+          </Paragraph>
+          <List>
+            <ListItem>Start from the output layer and work backwards</ListItem>
+            <ListItem>
+              Calculate how much each neuron contributed to the error
+            </ListItem>
+            <ListItem>
+              Adjust the network's parameters to reduce future errors
+            </ListItem>
+          </List>
+          <Note>
+            Think of backpropagation like giving feedback to each part of the
+            network about how it can do better next time.
+          </Note>
+        </Description>
       ),
       state: {
         currentLayer: config.layers + 1,
@@ -261,14 +278,23 @@ export const getNNSteps: (
             type: "biasUpdate",
             title: `Calculated gradient and update Bias (Output Neuron ${neuron.id})`,
             description: (
-              <div>
-                <p>Updating bias for neuron {neuron.id}:</p>
-                <p>Bias gradient = δ = {biasGradient.toFixed(3)}</p>
-                <p>
-                  New bias = {(neuron.bias || 0).toFixed(3)} - {learningRate} ×{" "}
-                  {biasGradient.toFixed(3)} = {newBias.toFixed(3)}
-                </p>
-              </div>
+              <Description>
+                <Paragraph>
+                  For output neurons, we can directly calculate their
+                  responsibility for the prediction error:
+                </Paragraph>
+                <List>
+                  <ListItem>
+                    Compare the prediction with the target value
+                  </ListItem>
+                  <ListItem>
+                    Consider how sensitive the neuron's output is to changes
+                  </ListItem>
+                  <ListItem>
+                    Update the bias to help reduce this error next time
+                  </ListItem>
+                </List>
+              </Description>
             ),
             state: {
               currentLayer: layer,
@@ -312,21 +338,28 @@ export const getNNSteps: (
             type: "biasUpdate",
             title: `Calculate Gradient and Update Bias (Hidden Neuron ${neuron.id})`,
             description: (
-              <div>
-                <p>Calculating gradient for hidden neuron {neuron.id}:</p>
-                <p>
-                  δ = Σ(δₖ × w<sub>jk</sub>) × activation derivative
-                </p>
-                <p>
-                  δ = ({sumDeltaWeights.toFixed(3)}) ×{" "}
-                  {activationDerivative.toFixed(3)} = {delta.toFixed(3)}
-                </p>
-                <p>Updating bias:</p>
-                <p>
-                  New bias = {(neuron.bias || 0).toFixed(3)} - {learningRate} ×{" "}
-                  {biasGradient.toFixed(3)} = {newBias.toFixed(3)}
-                </p>
-              </div>
+              <Description>
+                <Paragraph>
+                  Hidden neurons receive feedback about their contribution to
+                  the error from later layers:
+                </Paragraph>
+                <List>
+                  <ListItem>
+                    Collect error signals from all connected neurons in the next
+                    layer
+                  </ListItem>
+                  <ListItem>
+                    Consider how this neuron's activation affects those errors
+                  </ListItem>
+                  <ListItem>
+                    Adjust the bias based on this neuron's responsibility
+                  </ListItem>
+                </List>
+                <Note>
+                  This process allows deep layers to learn despite not being
+                  directly connected to the output.
+                </Note>
+              </Description>
             ),
             state: {
               currentLayer: layer,
@@ -384,21 +417,27 @@ export const getNNSteps: (
           type: "weightUpdate",
           title: `Update Weight (Layer ${layer}, Connection ${conn.id})`,
           description: (
-            <div>
-              <p>Updating weight for connection {conn.id}:</p>
-              <p>
-                Weight gradient = δ<sub>k</sub> × activation of neuron{" "}
-                {conn.fromNeuron.id}
-              </p>
-              <p>
-                Weight gradient = {delta_j.toFixed(3)} ×{" "}
-                {activation_i.toFixed(3)} = {weightGradient.toFixed(3)}
-              </p>
-              <p>
-                Updated weight = {oldWeight.toFixed(3)} - {learningRate} ×{" "}
-                {weightGradient.toFixed(3)} = {newWeight.toFixed(3)}
-              </p>
-            </div>
+            <Description>
+              <Paragraph>
+                Updating the connection weights between neurons:
+              </Paragraph>
+              <List>
+                <ListItem>
+                  Consider both the sending and receiving neurons' contributions
+                </ListItem>
+                <ListItem>
+                  Strengthen or weaken connections based on their impact on the
+                  error
+                </ListItem>
+                <ListItem>
+                  Make smaller adjustments for more stable learning
+                </ListItem>
+              </List>
+              <Note>
+                Each connection learns to either amplify or dampen signals that
+                help reduce the network's error.
+              </Note>
+            </Description>
           ),
           state: {
             currentLayer: layer,
@@ -421,9 +460,20 @@ export const getNNSteps: (
       type: "backpropComplete",
       title: "Backpropagation Complete",
       description: (
-        <div>
-          <p>Backpropagation completed. All weights have been updated.</p>
-        </div>
+        <Description>
+          <Paragraph>
+            The network has completed one full round of learning:
+          </Paragraph>
+          <List>
+            <ListItem>All neurons have received their feedback</ListItem>
+            <ListItem>Connection weights have been fine-tuned</ListItem>
+            <ListItem>The network is ready for its next prediction</ListItem>
+          </List>
+          <Note>
+            With each training cycle, the network gets incrementally better at
+            its task.
+          </Note>
+        </Description>
       ),
       state: {
         currentLayer: 0,

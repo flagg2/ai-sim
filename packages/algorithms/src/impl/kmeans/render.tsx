@@ -58,7 +58,7 @@ export const renderKMeans: KMeansDefinition["render"] = (state) => {
       }),
     );
 
-    // Render tubes between centroids and their cluster points
+    // Render tubes between centroids and points
     state.points
       .filter((point) => point.group.label === centroid.group.label)
       .forEach((point) => {
