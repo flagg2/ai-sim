@@ -55,12 +55,12 @@ Visit [https://ai-sim.wittlinger.dev](https://ai-sim.wittlinger.dev) to see the 
 
 ## Project Structure
 
-├── apps/
-│ └── web/ # Next.js web application
-├── packages/
-│ ├── algorithms/ # Algorithm implementations and core logic
-│ ├── config/ # Shared configuration files
-│ └── ui/ # Reusable UI components and hooks
+apps/
+└── web/ # Next.js web application
+packages/
+├── algorithms/ # Algorithm implementations and core logic
+├── config/ # Shared configuration files
+└── ui/ # Reusable UI components and hooks
 
 ## Adding New Algorithms
 
