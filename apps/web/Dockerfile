@@ -36,7 +36,7 @@ COPY --from=deps /app/node_modules ./node_modules
 # Build the project
 WORKDIR /app
 
-RUN bunx turbo run build --filter=web...
+RUN bun run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
