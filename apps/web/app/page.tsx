@@ -1,6 +1,6 @@
 "use client";
 
-import { meta } from "@repo/algorithms/impl";
+import { registry } from "@repo/algorithms/impl";
 import { SearchBox, ThemeToggle } from "@repo/ui/components";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { useState } from "react";
 // import xgboost from "@repo/ui/public/xgboost.png";
 
 export default function Page() {
-  const [hits, setHits] = useState<typeof meta>(meta);
+  const [hits, setHits] = useState<typeof registry>(registry);
 
   return (
     <div className="w-full">
@@ -23,7 +23,7 @@ export default function Page() {
               Select and algorithm to explore its visualization.
             </p>
             <SearchBox
-              items={meta}
+              items={registry}
               keys={["title", "synonyms"]}
               onResults={setHits}
             />

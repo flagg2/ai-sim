@@ -10,7 +10,7 @@ import { xgboostMeta } from "./xgboost/meta";
 // which contains a {slug}.tsx file. The file should export a default constant
 // which implements the AlgorithmDefinition interface.
 
-export const meta = [
+export const registry = [
   kmeansMeta,
   linearRegressionMeta,
   svmMeta,

@@ -1,128 +1,82 @@
-# Turborepo starter with shadcn/ui
+# Machine Learning Algorithms Visualizations
 
-![Static Badge](https://img.shields.io/badge/shadcn%2Fui-0.8.0-blue?link=https%3A%2F%2Fgithub.com%2Fshadcn%2Fui)
+An interactive web application for visualizing machine learning algorithms, built with Three.js and React. This application serves as a supplementary learning material for students interested in machine learning, providing intuitive visual understanding of selected algorithms.
 
-This is Turborepo starter with shadcn/ui pre-configured.
+## Live Demo
 
-> [!NOTE]
-> This example uses `pnpm` as package manager.
+Visit [https://ai-sim.wittlinger.dev](https://ai-sim.wittlinger.dev) to see the application in action.
 
-[npm version](https://github.com/dan5py/turborepo-shadcn-ui/tree/npm)
+## Features
 
-## Using this example
+- Interactive 2D and 3D visualizations of machine learning algorithms
+- Step-by-step execution with detailed explanations
+- Configurable algorithm parameters
+- Mobile-friendly responsive design
+- Currently implemented algorithms:
+  - K-means Clustering
+  - Linear Regression
+  - Support Vector Machines (SVM)
+  - Feed Forward Neural Network (FFNN)
+  - Autoencoder
+  - XGBoost
 
-Clone the repository:
+## Technology Stack
 
-```sh
-git clone https://github.com/dan5py/turborepo-shadcn-ui.git
-```
+- TypeScript
+- React
+- Next.js
+- Three.js
+- React Three Fiber
+- TailwindCSS
+- ShadCN UI
+- Docker
 
-Install dependencies:
+## Getting Started
 
-```sh
-cd turborepo-shadcn-ui
-pnpm install
-```
+### Prerequisites
 
-### Add ui components
+- [Docker](https://www.docker.com/) (v20.10.0 or higher)
 
-Use the pre-made script:
+### Installation and Running
 
-```sh
-pnpm ui:add <component-name>
-```
+1. Clone the repository
 
-> This works just like the add command in the `shadcn/ui` CLI.
+   ```bash
+   git clone https://github.com/flagg2/ai-sim
+   cd ml-visualizations
+   ```
 
-### Add a new app
+2. Build and run with Docker
 
-Turborepo offer a simple command to add a new app:
+   ```bash
+   docker compose up
+   ```
 
-```sh
-pnpm turbo gen workspace --name <app-name>
-```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-This will create a new empty app in the `apps` directory.
+## Project Structure
 
-If you want, you can copy an existing app with:
+├── apps/
+│ └── web/ # Next.js web application
+├── packages/
+│ ├── algorithms/ # Algorithm implementations and core logic
+│ ├── config/ # Shared configuration files
+│ └── ui/ # Reusable UI components and hooks
 
-```sh
-pnpm turbo gen workspace --name <app-name> --copy
-```
+## Adding New Algorithms
 
-> [!NOTE]
-> Remember to run `pnpm install` after copying an app.
+The application is designed to be extensible. To add a new algorithm with a certain `{slug}`
 
-## What's inside?
+1. Create a new file for the algorithm in `packages/algorithms/impl/{slug}/{slug}`
+2. Implement the `AlgorithmDefinition` interface
+3. Add algorithm's metadata to the registry in `packages/algorithms/impl/index.ts`
 
-This Turborepo includes the following packages/apps:
+See existing algorithm implementations for examples.
 
-### Apps and Packages
+## License
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications (🚀 powered by **shadcn/ui**)
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## Related
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```sh
-cd turborepo-shadcn-ui
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```sh
-cd turborepo-shadcn-ui
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd turborepo-shadcn-ui
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```sh
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
-
-Learn more about shadcn/ui:
-
-- [Documentation](https://ui.shadcn.com/docs)
+This application was created as part of a bachelor's thesis at Faculty of Informatics, Masaryk University.
