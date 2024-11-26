@@ -39,11 +39,10 @@ Visit [https://ai-sim.wittlinger.dev](https://ai-sim.wittlinger.dev) to see the 
 
 ### Installation and Running
 
-1. Clone the repository
+1. Navigate to the root of the repository
 
    ```bash
-   git clone https://github.com/flagg2/ai-sim
-   cd ml-visualizations
+   cd app
    ```
 
 2. Build and run with Docker
