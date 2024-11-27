@@ -3,7 +3,10 @@ import { LinearRegressionDefinition } from "./types";
 export const linearRegressionMeta: LinearRegressionDefinition["meta"] = {
   slug: "linear-regression",
   image: {
-    path: "/algos/linear-regression.png",
+    paths: {
+      light: "/algos/light/linear-regression.png",
+      dark: "/algos/dark/linear-regression.png",
+    },
     alt: "Linear Regression",
   },
   title: "Linear Regression",

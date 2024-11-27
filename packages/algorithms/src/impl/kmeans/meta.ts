@@ -3,7 +3,10 @@ import { KMeansDefinition } from "./types";
 export const kmeansMeta: KMeansDefinition["meta"] = {
   slug: "kmeans",
   image: {
-    path: "/algos/kmeans.png",
+    paths: {
+      light: "/algos/light/kmeans.png",
+      dark: "/algos/dark/kmeans.png",
+    },
     alt: "K-Means",
   },
   title: "K-Means",

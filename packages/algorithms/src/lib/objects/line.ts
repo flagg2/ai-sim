@@ -5,16 +5,22 @@ import { RenderableObject, type Renderable } from "./renderable";
 type LineProps = {
   from: Coords2D;
   to: Coords2D;
-  material: Material;
+  material:
+    | Material
+    | {
+        dark: Material;
+        light: Material;
+      };
   name?: string;
   radius?: number;
+  getTooltip?: () => React.ReactNode;
 };
 
 export class Line implements Renderable {
   public object: RenderableObject;
 
   constructor(props: LineProps) {
-    const { from, to, material, name, radius = 0.5 } = props;
+    const { from, to, material, name, radius = 0.5, getTooltip } = props;
     this.object = new RenderableObject({
       three: {
         geometry: new TubeGeometry(
@@ -29,6 +35,7 @@ export class Line implements Renderable {
         ),
         material,
       },
+      getTooltip,
       name: name ?? "Tube",
     });
   }

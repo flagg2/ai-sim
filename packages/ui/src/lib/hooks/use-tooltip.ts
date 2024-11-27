@@ -42,12 +42,18 @@ export function useTooltip() {
         };
       } else {
         return {
-          onPointerOut: () => {
-            setTooltip(null);
-          },
           onPointerOver: (e: ThreeEvent<PointerEvent>) => {
             e.stopPropagation();
+            if (tooltipTimeoutRef.current) {
+              clearTimeout(tooltipTimeoutRef.current);
+            }
             setTooltip(tooltipContent);
+            tooltipTimeoutRef.current = setTimeout(() => {
+              setTooltip(null);
+            }, 3000);
+          },
+          onPointerOut: () => {
+            setTooltip(null);
           },
         };
       }

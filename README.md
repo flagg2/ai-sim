@@ -1,6 +1,6 @@
-# Machine Learning Algorithms Visualizations
+# Machine Learning Algorithms Visualizations - MLens
 
-An interactive web application for visualizing machine learning algorithms, built with Three.js and React. This application serves as a supplementary learning material for students interested in machine learning, providing intuitive visual understanding of selected algorithms.
+MLens is an interactive web application for visualizing machine learning algorithms, built with Three.js and React. This application serves as a supplementary learning material for students interested in machine learning, providing intuitive visual understanding of selected algorithms.
 
 ## Live Demo
 

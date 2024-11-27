@@ -2,6 +2,7 @@
 
 import { registry } from "@repo/algorithms/impl";
 import { SearchBox, ThemeToggle } from "@repo/ui/components";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -39,14 +40,21 @@ export default function Page() {
               className="relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-primary"
               prefetch={false}
             >
-              <div className="w-full h-56 bg-black relative">
+              <div className="w-full h-56 dark:bg-[#050505] bg-[#F6F6F6] relative">
                 <Image
                   layout="fill"
-                  src={viz.image.path}
+                  src={viz.image.paths.light}
                   alt={viz.image.alt}
-                  className="object-contain w-full h-56 group-hover:opacity-50 transition-opacity"
+                  className="block dark:hidden object-contain w-full h-56 group-hover:opacity-50 transition-opacity "
+                />
+                <Image
+                  layout="fill"
+                  src={viz.image.paths.dark}
+                  alt={viz.image.alt}
+                  className="dark:block hidden object-contain w-full h-56 group-hover:opacity-50 transition-opacity "
                 />
               </div>
+
               <div className="py-6 bg-card inset-0 z-10 flex items-center justify-center">
                 <div className="text-center text-card-foreground">
                   <h3 className="text-xl font-bold">{viz.title}</h3>

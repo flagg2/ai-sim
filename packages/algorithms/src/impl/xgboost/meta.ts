@@ -3,7 +3,10 @@ import { XGBoostDefinition } from "./types";
 export const xgboostMeta: XGBoostDefinition["meta"] = {
   slug: "xgboost",
   image: {
-    path: "/algos/xgboost.png",
+    paths: {
+      light: "/algos/light/xgboost.png",
+      dark: "/algos/dark/xgboost.png",
+    },
     alt: "XGBoost",
   },
   title: "XGBoost",

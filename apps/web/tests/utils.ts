@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 
 export const addMockRandomInitScript = async (page: Page) => {
   await page.addInitScript(() => {
-    let seed = 42;
+    let seed = 45;
     Math.random = () => {
       seed = seed + 0x6d2b79f5;
       let t = seed;

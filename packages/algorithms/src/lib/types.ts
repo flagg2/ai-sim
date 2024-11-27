@@ -56,7 +56,10 @@ export type RenderFunction<
 export type AlgorithmMeta = {
   slug: string;
   image: {
-    path: string;
+    paths: {
+      light: string;
+      dark: string;
+    };
     alt: string;
   };
   title: string;

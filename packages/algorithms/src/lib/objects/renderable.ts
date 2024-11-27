@@ -4,7 +4,7 @@ import type { Euler } from "three";
 import type { Vector3 } from "three";
 
 export type ThreeProps = {
-  material: Material;
+  material: Material | { dark: Material; light: Material };
   geometry: BufferGeometry;
   rotation?: Euler;
   position?: Vector3;

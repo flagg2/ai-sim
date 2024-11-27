@@ -3,6 +3,7 @@ import AxesHelper from "../axes-helper";
 import Scene3D from "./scene3d";
 import Scene2D from "./scene2d";
 import { SceneSetup as SceneSetupType } from "@repo/algorithms/lib";
+import { useTheme } from "next-themes";
 
 export default function Scene({
   children,
@@ -13,6 +14,7 @@ export default function Scene({
 }) {
   const { dimension } = sceneSetup;
   const is3d = dimension === "3D";
+  const { theme } = useTheme();
 
   return (
     <div className="h-full w-screen">
@@ -24,8 +26,11 @@ export default function Scene({
       >
         {is3d ? <Scene3D /> : <Scene2D />}
         {sceneSetup.renderAxes !== false && <AxesHelper is3D={is3d} />}
-        <color attach="background" args={["#050505"]} />
-        <ambientLight intensity={is3d ? 0.5 : 1} />
+        <color
+          attach="background"
+          args={[theme === "dark" ? "#050505" : "#f5f5f5"]}
+        />
+        <ambientLight intensity={is3d ? (theme === "dark" ? 0.5 : 0.8) : 1} />
         <group
           position={[0, is3d ? -0.01 : 0, 0]}
           rotation={[is3d ? 0 : -Math.PI / 2, 0, 0]}

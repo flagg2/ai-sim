@@ -56,9 +56,16 @@ export const renderNN: NNDefinition["render"] = (state, config) => {
       new Line({
         from: { x: fromX, y: fromY },
         to: { x: toX, y: toY },
+        getTooltip: () => (
+          <div>
+            Connection {connection.id}
+            <br />
+            Weight: {connection.weight.toFixed(3)}
+          </div>
+        ),
         material: getWeightMaterial(connection.weight),
         name: `Connection ${connection.id}`,
-        radius: highlightedConnectionIds?.includes(connection.id) ? 0.5 : 0.25,
+        radius: highlightedConnectionIds?.includes(connection.id) ? 0.8 : 0.4,
       }),
     );
   });

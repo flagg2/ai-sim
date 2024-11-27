@@ -3,7 +3,10 @@ import { FFNNDefinition } from "./types";
 export const ffnnMeta: FFNNDefinition["meta"] = {
   slug: "ffnn",
   image: {
-    path: "/algos/ffnn.png",
+    paths: {
+      light: "/algos/light/ffnn.png",
+      dark: "/algos/dark/ffnn.png",
+    },
     alt: "Feedforward Neural Network",
   },
   title: "Feedforward Neural Network",

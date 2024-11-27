@@ -3,7 +3,10 @@ import { SVMDefinition } from "./types";
 export const svmMeta: SVMDefinition["meta"] = {
   slug: "svm",
   image: {
-    path: "/algos/svm.png",
+    paths: {
+      light: "/algos/light/svm.png",
+      dark: "/algos/dark/svm.png",
+    },
     alt: "Support Vector Machine",
   },
   title: "Support Vector Machine",

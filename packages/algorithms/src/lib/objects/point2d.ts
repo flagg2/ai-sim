@@ -4,7 +4,12 @@ import { RenderableObject, type Renderable } from "./renderable";
 
 type Point2DProps = {
   coords: Coords2D;
-  material: MeshStandardMaterial;
+  material:
+    | MeshStandardMaterial
+    | {
+        dark: MeshStandardMaterial;
+        light: MeshStandardMaterial;
+      };
   tooltip?: React.ReactNode;
   name?: string;
   scale?: number;

@@ -3,7 +3,10 @@ import { AutoEncoderDefinition } from "./types";
 export const autoencoderMeta: AutoEncoderDefinition["meta"] = {
   slug: "autoencoder",
   image: {
-    path: "/algos/autoencoder.png",
+    paths: {
+      light: "/algos/light/autoencoder.png",
+      dark: "/algos/dark/autoencoder.png",
+    },
     alt: "Autoencoder",
   },
   title: "Autoencoder",

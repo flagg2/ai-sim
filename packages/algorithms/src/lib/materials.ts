@@ -27,7 +27,9 @@ function getContrastingColor(at: number): string {
 }
 
 export function getColoredMaterial(at: number): MeshStandardMaterial {
-  return new MeshStandardMaterial({ color: getContrastingColor(at) });
+  return new MeshStandardMaterial({
+    color: getContrastingColor(at),
+  });
 }
 
 export function getWhiteMaterial(): MeshStandardMaterial {
@@ -44,27 +46,37 @@ export function getInactiveMaterial(): MeshStandardMaterial {
 
 export function getActiveMaterial(
   activation: number,
-  hue: number = 240, // Fixed hue for red
-): MeshStandardMaterial {
-  // Transition from gray (saturation 0%) to bright red (saturation 100%)
-  const saturation = activation * 100; // Varies from 0% (gray) to 100% (red)
-  const lightness = 50; // Fixed at 50% for brightness consistency
+  hue: number = 240,
+): { light: MeshStandardMaterial; dark: MeshStandardMaterial } {
+  const saturation = activation * 100;
 
-  return new MeshStandardMaterial({
-    color: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
-  });
+  return {
+    dark: new MeshStandardMaterial({
+      color: `hsl(${hue}, ${saturation}%, 50%)`, // Original behavior for dark mode
+    }),
+    light: new MeshStandardMaterial({
+      // For light mode: interpolate from white (inactive) to bright blue (active)
+      color: `hsl(${hue}, ${saturation}%, ${100 - activation * 50}%)`, // Starts at white (0%, 100%) and moves to bright blue (100%, 50%)
+    }),
+  };
 }
 
-export function getWeightMaterial(activation: number): MeshStandardMaterial {
+export function getWeightMaterial(activation: number): {
+  light: MeshStandardMaterial;
+  dark: MeshStandardMaterial;
+} {
   // Determine hue (0 for red, 120 for green)
   const hue = activation >= 0 ? 120 : 0; // 0 (red) on the left, 120 (green) on the right
 
   // Calculate saturation from activation, going from 100% at |activation| = 1 to 0% at activation = 0
   const saturation = 100 * Math.abs(activation); // Full saturation at |activation| = 1, grey (0%) at 0
 
-  const lightness = 50; // Constant lightness for consistency
-
-  return new MeshStandardMaterial({
-    color: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
-  });
+  return {
+    dark: new MeshStandardMaterial({
+      color: `hsl(${hue}, ${saturation}%, 50%)`, // Original behavior: 50% lightness
+    }),
+    light: new MeshStandardMaterial({
+      color: `hsl(${hue}, ${saturation}%, ${90 - Math.abs(activation) * 40}%)`, // Starts very light (90%) for weak weights, goes to 50% for strong weights
+    }),
+  };
 }
