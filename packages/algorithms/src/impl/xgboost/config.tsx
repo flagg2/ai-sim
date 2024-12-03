@@ -7,40 +7,37 @@ export const getXGBoostConfig: XGBoostDefinition["getConfig"] = (params) => {
   const points: DataPoint[] = [];
   let id = 0;
 
-  // Generate points for class 1 (centered in upper right)
-  const center1X = BOUNDARY_SCALE * 0.6;
-  const center1Y = BOUNDARY_SCALE * 0.6;
+  // Define multiple cluster centers for each class
+  const clusters = [
+    // Class 1 clusters (three clusters)
+    { x: BOUNDARY_SCALE * 0.7, y: BOUNDARY_SCALE * 0.7, label: 1, spread: 15 },
+    { x: BOUNDARY_SCALE * 0.3, y: BOUNDARY_SCALE * 0.8, label: 1, spread: 20 },
+    { x: BOUNDARY_SCALE * 0.8, y: BOUNDARY_SCALE * 0.3, label: 1, spread: 25 },
+    // Class -1 clusters (two clusters with different spreads)
+    { x: BOUNDARY_SCALE * 0.2, y: BOUNDARY_SCALE * 0.2, label: -1, spread: 30 },
+    { x: BOUNDARY_SCALE * 0.6, y: BOUNDARY_SCALE * 0.4, label: -1, spread: 18 },
+    // class -1 cluster at top right
+    { x: BOUNDARY_SCALE * 0.9, y: BOUNDARY_SCALE * 0.9, label: -1, spread: 20 },
+  ] as const;
 
-  // Generate points for class -1 (centered in lower left)
-  const center2X = BOUNDARY_SCALE * 0.4;
-  const center2Y = BOUNDARY_SCALE * 0.4;
+  // Generate points for each cluster
+  const pointsPerCluster = Math.ceil(params.points / clusters.length);
 
-  // Generate points for each class
-  for (let i = 0; i < params.points; i++) {
-    // Add point for class 1
-    const angle1 = Math.random() * 2 * Math.PI;
-    const radius1 = Math.random() * 20; // Spread of the cluster
-    points.push({
-      id: id++,
-      coords: {
-        x: center1X + radius1 * Math.cos(angle1),
-        y: center1Y + radius1 * Math.sin(angle1),
-      },
-      label: 1,
-    });
-
-    // Add point for class -1
-    const angle2 = Math.random() * 2 * Math.PI;
-    const radius2 = Math.random() * 20; // Spread of the cluster
-    points.push({
-      id: id++,
-      coords: {
-        x: center2X + radius2 * Math.cos(angle2),
-        y: center2Y + radius2 * Math.sin(angle2),
-      },
-      label: -1,
-    });
-  }
+  clusters.forEach((cluster) => {
+    for (let i = 0; i < pointsPerCluster; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      // Use square root for more uniform distribution
+      const radius = Math.sqrt(Math.random()) * cluster.spread;
+      points.push({
+        id: id++,
+        coords: {
+          x: cluster.x + radius * Math.cos(angle),
+          y: cluster.y + radius * Math.sin(angle),
+        },
+        label: cluster.label,
+      });
+    }
+  });
 
   return {
     trainingPoints: points,
