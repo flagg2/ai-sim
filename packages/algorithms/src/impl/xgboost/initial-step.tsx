@@ -1,4 +1,7 @@
 import type { XGBoostDefinition } from "./types";
+import Description from "../../lib/descriptions/description";
+import Paragraph from "../../lib/descriptions/paragraph";
+import Note from "../../lib/descriptions/note";
 
 export const getXGBoostInitialStep: XGBoostDefinition["getInitialStep"] = (
   config,
@@ -7,24 +10,18 @@ export const getXGBoostInitialStep: XGBoostDefinition["getInitialStep"] = (
     type: "initial",
     title: "Initial State",
     description: (
-      <div>
-        <p>
-          We'll train an XGBoost model with {config.numTrees} trees to predict
-          values based on the input data points.
-        </p>
-        <ul>
-          <li>Number of training points: {config.points.length}</li>
-          <li>Maximum tree depth: {config.maxDepth}</li>
-          <li>Learning rate: {config.learningRate}</li>
-        </ul>
-        <p>
-          Each tree will attempt to correct the prediction errors made by the
-          previous trees.
-        </p>
-      </div>
+      <Description>
+        <Paragraph>
+          We'll use XGBoost to classify our data points into two classes. The
+          algorithm builds an ensemble of decision trees, where each tree tries
+          to correct the mistakes made by previous trees.
+        </Paragraph>
+        <Note>
+          We'll start by calculating the mean prediction as our base prediction,
+          then iteratively add trees to improve our predictions.
+        </Note>
+      </Description>
     ),
-    state: {
-      points: config.points,
-    },
+    state: {},
   };
 };

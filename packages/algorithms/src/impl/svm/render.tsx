@@ -16,10 +16,10 @@ function getPointColor(point: DataPoint, supportVectors: DataPoint[]) {
 export const renderSVM: SVMDefinition["render"] = (state, config) => {
   const objects: Renderable[] = [];
   const { points } = config;
-  const { supportVectors, separationLine, regionData = [] } = state;
+  const { supportVectors, regionData = [] } = state;
 
-  // Add decision boundary visualization if we have the separation line
-  if (separationLine && regionData.length > 0) {
+  // Add decision boundary visualization if we have the region data
+  if (regionData && regionData.length > 0) {
     objects.push(
       new DecisionBoundary(regionData, {
         colors: {

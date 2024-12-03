@@ -1,18 +1,17 @@
+import type { XGBoostDefinition } from "./types";
 import { getXGBoostConfig } from "./config";
 import { getXGBoostInitialStep } from "./initial-step";
-import { paramConfigurators } from "./param-configurators";
-import { renderXGBoost } from "./render";
 import { getXGBoostSteps } from "./steps";
+import { renderXGBoost } from "./render";
 import { xgboostMeta } from "./meta";
-import type { XGBoostDefinition } from "./types";
+import { xgboostParamConfigurators } from "./param-configurators";
 
 const xgboost: XGBoostDefinition = {
   meta: xgboostMeta,
-  paramConfigurators: paramConfigurators,
   getSceneSetup: () => ({
     dimension: "2D",
-    renderAxes: true,
   }),
+  paramConfigurators: xgboostParamConfigurators,
   getConfig: getXGBoostConfig,
   getInitialStep: getXGBoostInitialStep,
   getSteps: getXGBoostSteps,

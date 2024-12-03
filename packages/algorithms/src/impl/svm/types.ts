@@ -30,10 +30,6 @@ type SVMStepState = {
     y: number;
     prediction: 1 | -1;
   }[];
-  separationLine?: {
-    slope: number;
-    yIntercept: number;
-  };
 };
 
 export type SVMStep = Step<SVMStepState, SVMStepType>;

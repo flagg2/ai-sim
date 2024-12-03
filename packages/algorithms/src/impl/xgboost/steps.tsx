@@ -1,229 +1,136 @@
-import type { XGBoostDefinition, TreeNode, DataPoint } from "./types";
+import type { XGBoostDefinition } from "./types";
+import Description from "../../lib/descriptions/description";
+import Paragraph from "../../lib/descriptions/paragraph";
+import Note from "../../lib/descriptions/note";
+import Expression from "../../lib/descriptions/math";
+
+// Add these constants at the top
+const BOUNDARY_SCALE = 150;
+const GRID_SIZE = 50;
 
 export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
   config,
   initialStep,
 ) => {
   const steps = [initialStep];
-  const { points, maxDepth, learningRate, numTrees } = config;
-  let currentPoints = [...points];
-  const trees: TreeNode[] = [];
 
-  // For each tree in the ensemble
-  for (let treeIndex = 0; treeIndex < numTrees; treeIndex++) {
-    const currentTree = await buildDecisionTree(
-      currentPoints,
-      maxDepth,
-      treeIndex * 200, // Offset each tree's visualization
-    );
-
-    // Add step to show tree structure being built
-    steps.push({
-      type: "buildTree",
-      title: `Building Tree ${treeIndex + 1}`,
-      state: {
-        points: currentPoints,
-        currentTree,
-        trees,
-        iteration: treeIndex,
-      },
-      description: (
-        <div>
-          <p>
-            Building decision tree {treeIndex + 1} of {numTrees}
-          </p>
-          <ul>
-            <li>Max depth: {maxDepth}</li>
-            <li>Learning rate: {learningRate}</li>
-          </ul>
-        </div>
-      ),
-    });
-
-    // Calculate predictions for current tree
-    const treePredictions = currentPoints.map((point) =>
-      predictWithTree(point, currentTree),
-    );
-
-    // Add step to show predictions from current tree
-    steps.push({
-      type: "calculatePredictions",
-      title: `Tree ${treeIndex + 1} Predictions`,
-      state: {
-        points: currentPoints.map((point, i) => ({
-          ...point,
-          currentPrediction: treePredictions[i],
-        })),
-        currentTree,
-        trees,
-        iteration: treeIndex,
-      },
-      description: (
-        <div>
-          <p>Calculating predictions for tree {treeIndex + 1}</p>
-          <p>
-            These predictions will be scaled by the learning rate (
-            {learningRate}) and added to the ensemble.
-          </p>
-        </div>
-      ),
-    });
-
-    // Update residuals and prepare points for next iteration
-    currentPoints = currentPoints.map((point, i) => ({
-      ...point,
-      label: point.label - learningRate * treePredictions[i]!, // Update residuals
-      currentPrediction: treePredictions[i],
-    }));
-
-    // Add step to show residual updates
-    steps.push({
-      type: "updateResiduals",
-      title: `Update Residuals - Tree ${treeIndex + 1}`,
-      state: {
-        points: currentPoints,
-        currentTree,
-        trees,
-        iteration: treeIndex,
-      },
-      description: (
-        <div>
-          <p>Updating residuals after tree {treeIndex + 1}</p>
-          <ul>
-            <li>Residuals = Actual - Predicted</li>
-            <li>These residuals will be the targets for the next tree</li>
-          </ul>
-        </div>
-      ),
-    });
-
-    // Store the tree in the ensemble
-    trees.push(currentTree);
+  // Generate grid points for the decision boundary
+  const boundaryPoints = [];
+  const step = BOUNDARY_SCALE / GRID_SIZE;
+  for (let x = 0; x <= BOUNDARY_SCALE; x += step) {
+    for (let y = 0; y <= BOUNDARY_SCALE; y += step) {
+      boundaryPoints.push({ coords: [x, y] });
+    }
   }
 
-  // Final predictions using the entire ensemble
-  const finalPredictions = currentPoints.map((point) => {
-    let prediction = 0;
-    trees.forEach((tree) => {
-      prediction += learningRate * predictWithTree(point, tree);
-    });
-    return prediction;
+  // Update API call to include grid points
+  const response = await fetch("http://localhost:8000/api/xgboost", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...config,
+      boundaryPoints,
+    }),
   });
 
-  // Add final step showing ensemble predictions
+  if (!response.ok) {
+    throw new Error("Failed to process XGBoost model");
+  }
+
+  const { decisionBoundary } = await response.json();
+
+  // Calculate Residuals Step
   steps.push({
-    type: "finalPredictions",
-    title: "Final Ensemble Predictions",
-    state: {
-      points: points.map((point, i) => ({
-        ...point,
-        currentPrediction: finalPredictions[i],
-      })),
-      trees,
-      iteration: numTrees,
-    },
+    type: "calculateResiduals",
+    title: "Calculate Residuals",
     description: (
-      <div>
-        <p>Final predictions from the entire ensemble:</p>
-        <ul>
-          <li>Combined {numTrees} trees</li>
-          <li>Each tree's contribution scaled by {learningRate}</li>
-          <li>
-            Mean Squared Error:{" "}
-            {(
-              finalPredictions.reduce(
-                (sum, pred, i) => sum + Math.pow(pred! - points[i]!.label, 2),
-                0,
-              ) / points.length
-            ).toFixed(4)}
-          </li>
-        </ul>
-      </div>
+      <Description>
+        <Paragraph>
+          For each point, we calculate the residual (error) between its true
+          label and current prediction:
+        </Paragraph>
+        <Expression>residual = actual_value - predicted_value</Expression>
+        <Note>
+          These residuals tell us how much we need to correct our predictions.
+          Positive residuals mean we predicted too low, negative means we
+          predicted too high.
+        </Note>
+      </Description>
     ),
+    state: {},
+  });
+
+  // Build Tree Step
+  steps.push({
+    type: "buildTree",
+    title: "Build Decision Tree",
+    description: (
+      <Description>
+        <Paragraph>
+          A new decision tree is built to predict the residuals. The tree:
+        </Paragraph>
+        <ul>
+          <li>
+            Finds the best splits based on our features (x and y coordinates)
+          </li>
+          <li>Creates branches up to maximum depth of {config.maxDepth}</li>
+          <li>Assigns prediction values to leaf nodes</li>
+        </ul>
+        <Note>
+          Each split aims to group similar residuals together, helping us
+          identify regions where our predictions need similar corrections.
+        </Note>
+      </Description>
+    ),
+    state: {},
+  });
+
+  // Update afterOneIteration step
+  steps.push({
+    type: "afterOneIteration",
+    title: "Update Predictions",
+    description: (
+      <Description>
+        <Paragraph>
+          We update our predictions using the new tree's output scaled by the
+          learning rate ({config.learningRate}):
+        </Paragraph>
+        <Expression>
+          new_prediction = current_prediction + learning_rate × tree_prediction
+        </Expression>
+        <Note>
+          The learning rate helps us make conservative updates, preventing us
+          from overcorrecting.
+        </Note>
+      </Description>
+    ),
+    state: { boundaryPredictions: decisionBoundary },
+  });
+
+  // Update final result step
+  steps.push({
+    type: "showFinalResult",
+    title: "Final Result",
+    description: (
+      <Description>
+        <Paragraph>
+          After {config.numTrees} iterations, each adding a new tree to our
+          ensemble, we have our final model. Each prediction is the sum of:
+        </Paragraph>
+        <ul>
+          <li>The initial prediction (mean)</li>
+          <li>Weighted contributions from each tree</li>
+        </ul>
+        <Note>
+          The final decision boundary shows how the model has learned to
+          separate the two classes.
+        </Note>
+      </Description>
+    ),
+    state: { boundaryPredictions: decisionBoundary },
   });
 
   return steps;
 };
-
-// Helper function to build a decision tree
-async function buildDecisionTree(
-  points: DataPoint[],
-  maxDepth: number,
-  xOffset: number = 0,
-  currentDepth: number = 0,
-  nodeId: string = "0",
-): Promise<TreeNode> {
-  // Base cases: max depth reached or not enough points
-  if (currentDepth >= maxDepth || points.length < 2) {
-    const prediction =
-      points.reduce((sum, p) => sum + p.label, 0) / points.length;
-    return {
-      id: nodeId,
-      prediction,
-      coords: {
-        x: xOffset,
-        y: -currentDepth * 50, // Spread tree vertically
-      },
-    };
-  }
-
-  // Find best split (simplified version - using x coordinate as feature)
-  const feature = 0; // Using x-coordinate as the split feature
-  const sortedPoints = [...points].sort((a, b) => a.coords.x - b.coords.x);
-  const splitIndex = Math.floor(points.length / 2);
-  const splitValue = sortedPoints[splitIndex]!.coords.x;
-
-  // Split points
-  const leftPoints = points.filter((p) => p.coords.x <= splitValue);
-  const rightPoints = points.filter((p) => p.coords.x > splitValue);
-
-  // Create node
-  const node: TreeNode = {
-    id: nodeId,
-    splitFeature: feature,
-    splitValue,
-    coords: {
-      x: xOffset,
-      y: -currentDepth * 50,
-    },
-  };
-
-  // Recursively build children
-  const spacing = 100 / (currentDepth + 1); // Adjust spacing based on depth
-  node.left = await buildDecisionTree(
-    leftPoints,
-    maxDepth,
-    xOffset - spacing,
-    currentDepth + 1,
-    nodeId + "L",
-  );
-  node.right = await buildDecisionTree(
-    rightPoints,
-    maxDepth,
-    xOffset + spacing,
-    currentDepth + 1,
-    nodeId + "R",
-  );
-
-  return node;
-}
-
-// Helper function to make predictions with a tree
-function predictWithTree(point: DataPoint, tree: TreeNode): number {
-  if (tree.prediction !== undefined) {
-    return tree.prediction;
-  }
-
-  if (!tree.splitFeature || tree.splitValue === undefined) {
-    return 0;
-  }
-
-  // For this simplified version, we're always using x-coordinate as the feature
-  const featureValue = point.coords.x;
-
-  if (featureValue <= tree.splitValue) {
-    return tree.left ? predictWithTree(point, tree.left) : 0;
-  } else {
-    return tree.right ? predictWithTree(point, tree.right) : 0;
-  }
-}

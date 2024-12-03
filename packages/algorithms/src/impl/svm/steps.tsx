@@ -116,7 +116,6 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
     title: "Final Decision Boundary",
     state: {
       supportVectors,
-      separationLine,
       regionData,
     },
     description: (

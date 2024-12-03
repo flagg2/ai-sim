@@ -49,3 +49,33 @@ declare module "ml-svm" {
 
   export default SVM;
 }
+
+declare module "ml-xgboost" {
+  interface XGBoostOptions {
+    booster?: string; // default 'gbtree'
+    objective?: string; // default 'reg:linear'
+    max_depth?: number; // default 5
+    eta?: number; // default 0.1
+    min_child_weight?: number; // default 1
+    subsample?: number; // default 0.5
+    colsample_bytree?: number; // default 1
+    silent?: number; // default 1
+    iterations?: number; // default 200
+  }
+
+  class XGBoost {
+    constructor(options?: XGBoostOptions, model?: object);
+
+    train(trainingSet: number[][], trainingValues: number[]): void;
+    predict(toPredict: number[][]): number[];
+    toJSON(): object;
+    free(): void;
+    static load(model: object): XGBoost;
+    static loadFromModel(
+      filepath: string,
+      options?: { labels?: Array<number> },
+    ): XGBoost;
+  }
+
+  export default XGBoost;
+}

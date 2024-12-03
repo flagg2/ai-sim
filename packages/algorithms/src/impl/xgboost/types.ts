@@ -3,57 +3,53 @@ import {
   Coords2D,
   ParamConfiguratorDict,
   SliderParamConfigurator,
-  Step,
 } from "../../lib";
 
-export type TreeNode = {
-  id: string;
-  splitFeature?: number;
-  splitValue?: number;
-  prediction?: number;
-  left?: TreeNode;
-  right?: TreeNode;
-  coords?: Coords2D;
-};
-
+// Point data structure
 export type DataPoint = {
-  id: string;
+  id: number;
   coords: Coords2D;
-  label: number;
-  currentPrediction?: number;
+  label: 1 | -1; // Binary classification
 };
 
-type XGBoostStepType =
-  | "initial"
-  | "buildTree"
-  | "calculatePredictions"
-  | "updateResiduals"
-  | "finalPredictions";
-
-type XGBoostStepState = {
-  points: DataPoint[];
-  currentTree?: TreeNode;
-  trees?: TreeNode[];
-  iteration?: number;
-  predictions?: number[];
-};
-
-export type XGBoostStep = Step<XGBoostStepState, XGBoostStepType>;
-
-export type XGBoostParamConfiguratorDict = ParamConfiguratorDict<{
-  points: SliderParamConfigurator;
-  maxDepth: SliderParamConfigurator;
-  learningRate: SliderParamConfigurator;
-  numTrees: SliderParamConfigurator;
-}>;
-
+// Configuration for the algorithm
 export type XGBoostConfig = {
-  points: DataPoint[];
-  maxDepth: number;
+  trainingPoints: DataPoint[];
   learningRate: number;
+  maxDepth: number;
   numTrees: number;
 };
 
+// State for each step
+export type XGBoostState = {
+  predictions?: Array<{ x: number; y: number; prediction: number }>;
+  boundaryPredictions?: Array<{ x: number; y: number; prediction: number }>;
+};
+
+// Step types
+export type XGBoostStepType =
+  | "initial"
+  | "calculateResiduals"
+  | "buildTree"
+  | "afterOneIteration"
+  | "showFinalResult";
+
+// Step structure
+export type XGBoostStep = {
+  type: XGBoostStepType;
+  title: string;
+  description: React.ReactNode;
+  state: XGBoostState;
+};
+
+export type XGBoostParamConfiguratorDict = ParamConfiguratorDict<{
+  points: SliderParamConfigurator;
+  learningRate: SliderParamConfigurator;
+  maxDepth: SliderParamConfigurator;
+  numTrees: SliderParamConfigurator;
+}>;
+
+// Main algorithm definition
 export type XGBoostDefinition = AlgorithmDefinition<
   XGBoostStep,
   XGBoostConfig,
