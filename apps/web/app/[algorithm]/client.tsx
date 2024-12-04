@@ -17,7 +17,12 @@ export default function AlgorithmClient({ params }: AlgorithmClientProps) {
       import(
         `../../../../packages/algorithms/src/impl/${params.algorithm}/${params.algorithm}`
       ).then(async (algorithm) => {
-        return () => <Visualization algorithm={algorithm.default} />;
+        return () => (
+          <>
+            <Header title={algorithm.default.meta.title} />
+            <Visualization algorithm={algorithm.default} />
+          </>
+        );
       }),
     {
       ssr: true,
@@ -25,10 +30,5 @@ export default function AlgorithmClient({ params }: AlgorithmClientProps) {
     },
   );
 
-  return (
-    <>
-      <Header title="Algorithm Visualisation" />
-      <DynamicVisualisation />
-    </>
-  );
+  return <DynamicVisualisation />;
 }

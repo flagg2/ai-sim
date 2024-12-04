@@ -1,7 +1,12 @@
 "use client";
 
 import { AlgorithmDefinition } from "@repo/algorithms/lib";
-import { Drawer, DrawerContent } from "../../shadcn/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from "../../shadcn/drawer";
 import { SimpleControls } from "./controls/simple";
 import { BaseControls } from "./controls/base";
 import { useVisualisation } from "../../../lib/hooks/use-visualisation";
@@ -34,16 +39,21 @@ export function Visualization({ algorithm }: VisualisationProps) {
             {simulation.tooltip}
           </div>
         )}
-        <Drawer onOpenChange={setIsDrawerOpen}>
+        <Drawer onOpenChange={setIsDrawerOpen} open={isDrawerOpen}>
           <SimpleControls simulation={simulation} isDrawerOpen={isDrawerOpen} />
 
           <DrawerContent className="h-full max-h-[80vh]">
+            <DrawerTitle hidden>Configuration</DrawerTitle>
+            <DrawerDescription hidden>
+              Configure the algorithm parameters and start the simulation.
+            </DrawerDescription>
             <div className="p-4 flex flex-col h-full">
               <BaseControls
                 simulation={simulation}
                 configComponent={ParamsConfigurator}
                 algorithmDescription={algorithm.meta.description}
                 showConfig={Object.keys(params).length > 0}
+                setIsDrawerOpen={setIsDrawerOpen}
               />
             </div>
           </DrawerContent>

@@ -8,11 +8,13 @@ export function BaseControls({
   configComponent,
   algorithmDescription,
   showConfig = true,
+  setIsDrawerOpen,
 }: {
   simulation: UseSimulationReturn;
   configComponent: React.ReactNode;
   algorithmDescription: React.ReactNode;
   showConfig?: boolean;
+  setIsDrawerOpen?: (open: boolean) => void;
 }) {
   const { status } = runner;
 
@@ -30,7 +32,14 @@ export function BaseControls({
             </>
           )}
           <div className=" bg-background pt-2 absolute bottom-4 left-4 right-4">
-            <Button onClick={start} className="w-full">
+            <Button
+              onClick={() => {
+                console.log("setIsDrawerOpen", setIsDrawerOpen);
+                setIsDrawerOpen?.(false);
+                start();
+              }}
+              className="w-full"
+            >
               Run
             </Button>
           </div>
