@@ -2,7 +2,6 @@ import {
   AlgorithmDefinition,
   Coords2D,
   ParamConfiguratorDict,
-  SelectParamConfigurator,
   SliderParamConfigurator,
 } from "../../lib";
 
