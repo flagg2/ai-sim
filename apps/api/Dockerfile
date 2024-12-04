@@ -1,17 +1,32 @@
-FROM python:3.11-slim
+# Stage 1: Build dependencies
+FROM python:3.11-slim as builder
 
-WORKDIR /app
+WORKDIR /build
 
-# Install system dependencies required for XGBoost
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first to leverage Docker cache
+# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /build/wheels -r requirements.txt
 
-# Copy the application code
+# Stage 2: Final runtime image
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy wheels from builder stage
+COPY --from=builder /build/wheels /wheels
+
+# Install Python packages from wheels
+RUN pip install --no-cache-dir /wheels/*
+
+# Clean up wheels
+RUN rm -rf /wheels
+
+# Copy application code
 COPY . .
 
 # Expose the port the app runs on

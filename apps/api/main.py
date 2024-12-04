@@ -13,5 +13,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
 # Include routers
 app.include_router(xgboost.router, prefix="/api")

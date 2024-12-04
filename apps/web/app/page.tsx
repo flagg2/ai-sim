@@ -2,7 +2,6 @@
 
 import { registry } from "@repo/algorithms/impl";
 import { SearchBox, ThemeToggle } from "@repo/ui/components";
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";

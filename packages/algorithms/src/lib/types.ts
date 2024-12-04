@@ -51,7 +51,7 @@ export type ParamConfiguratorDict<T = Record<string, ParamConfigurator>> = {
 export type RenderFunction<
   TStep extends Step = Step<object, string>,
   TConfig extends object = object,
-> = (state: TStep["state"], config: TConfig) => Renderable[];
+> = (step: TStep, config: TConfig) => Renderable[];
 
 export type AlgorithmMeta = {
   slug: string;

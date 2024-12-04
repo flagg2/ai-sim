@@ -3,7 +3,7 @@ import { Point3D } from "../../lib/objects/point";
 import { Tube } from "../../lib/objects/tube";
 import type { Renderable } from "../../lib/objects/renderable";
 
-export const renderKMeans: KMeansDefinition["render"] = (state) => {
+export const renderKMeans: KMeansDefinition["render"] = ({ state }) => {
   const renderables: Renderable[] = [];
 
   // Render all points

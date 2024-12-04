@@ -17,18 +17,15 @@
     "next": "14.2.9",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-test-renderer": "18.3.1",
     "zustand": "4.5.4",
     "next-themes": "0.3.0",
     "zod": "3.23.8",
-    "leva": "0.9.35",
     "three": "0.168.0",
     "@react-three/fiber": "8.17.7",
     "@react-three/drei": "9.112.0",
     "@react-three/postprocessing": "2.16.3",
     "framer-motion": "11.9.0",
-    "sharp": "0.33.5",
-    "ml-xgboost": "1.1.2"
+    "sharp": "0.33.5"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "14.2.4",

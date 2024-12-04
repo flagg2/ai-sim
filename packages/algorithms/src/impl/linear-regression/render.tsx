@@ -5,7 +5,7 @@ import { Tube } from "../../lib/objects/tube";
 import type { LinearRegressionDefinition } from "./types";
 
 export const renderLinearRegression: LinearRegressionDefinition["render"] = (
-  state,
+  { state },
   config,
 ) => {
   const renderables: Renderable[] = [];

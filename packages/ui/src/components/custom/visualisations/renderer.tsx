@@ -1,7 +1,6 @@
 import { RenderFunction } from "@repo/algorithms/lib";
 import { useMemo } from "react";
 import { UseSimulationReturn } from "../../../lib/hooks/use-simulation";
-import { useTheme } from "next-themes";
 
 type Props = {
   simulation: UseSimulationReturn;
@@ -9,6 +8,7 @@ type Props = {
 };
 
 import type { Material } from "three";
+import useTheme from "../../../lib/hooks/use-theme";
 
 export function getMaterial(
   material: Material | { dark: Material; light: Material },
@@ -21,8 +21,7 @@ export function getMaterial(
 
 export default function Renderer({ simulation, renderFn }: Props) {
   const renderables = useMemo(
-    () =>
-      renderFn(simulation.runner.currentStep.state, simulation.runner.config),
+    () => renderFn(simulation.runner.currentStep, simulation.runner.config),
     [simulation.runner.currentStep.state, simulation.runner.config],
   );
   const { theme } = useTheme();

@@ -75,7 +75,7 @@ export class NonDiscreteDecisionBoundary implements Renderable {
            float dx = 1.0 / textureSize.x;
            float dy = 1.0 / textureSize.y;
            
-           // Gaussian blur kernel (3x3)
+           // Gaussian blur kernel (3x3) for smoother interpolation
            float kernel[9] = float[9](
              0.0625, 0.125, 0.0625,
              0.125,  0.25,  0.125,
@@ -93,33 +93,10 @@ export class NonDiscreteDecisionBoundary implements Renderable {
              }
            }
            
-           // Calculate gradient for edge detection (using Sobel operator)
-           float gx = 
-             sampleValue(texCoord + vec2(-dx, -dy)) * -1.0 +
-             sampleValue(texCoord + vec2(-dx,  dy)) * -1.0 +
-             sampleValue(texCoord + vec2(-dx,  0.0)) * -2.0 +
-             sampleValue(texCoord + vec2( dx, -dy)) *  1.0 +
-             sampleValue(texCoord + vec2( dx,  dy)) *  1.0 +
-             sampleValue(texCoord + vec2( dx,  0.0)) *  2.0;
-             
-           float gy = 
-             sampleValue(texCoord + vec2(-dx, -dy)) * -1.0 +
-             sampleValue(texCoord + vec2( 0.0,-dy)) * -2.0 +
-             sampleValue(texCoord + vec2( dx, -dy)) * -1.0 +
-             sampleValue(texCoord + vec2(-dx,  dy)) *  1.0 +
-             sampleValue(texCoord + vec2( 0.0, dy)) *  2.0 +
-             sampleValue(texCoord + vec2( dx,  dy)) *  1.0;
-           
-           float gradientMagnitude = sqrt(gx * gx + gy * gy);
-           
-           // Interpolate between red and green with smooth transition
+           // Simple interpolation between red and green
            vec3 color = mix(vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), smoothstep(0.0, 1.0, value));
            
-           // Enhanced edge visibility
-           float edgeIntensity = smoothstep(0.0, 0.8, gradientMagnitude);
-           float alpha = mix(0.2, 0.5, edgeIntensity);
-           
-           gl_FragColor = vec4(color, alpha);
+           gl_FragColor = vec4(color, 0.3);
          }
        `,
     });

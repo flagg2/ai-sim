@@ -2,7 +2,7 @@ import { Bloom } from "@react-three/postprocessing";
 
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer } from "@react-three/postprocessing";
-import { useTheme } from "next-themes";
+import useTheme from "../../../../lib/hooks/use-theme";
 
 export default function Scene3D() {
   const { theme } = useTheme();

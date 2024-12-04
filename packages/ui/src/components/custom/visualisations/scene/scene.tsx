@@ -3,7 +3,7 @@ import AxesHelper from "../axes-helper";
 import Scene3D from "./scene3d";
 import Scene2D from "./scene2d";
 import { SceneSetup as SceneSetupType } from "@repo/algorithms/lib";
-import { useTheme } from "next-themes";
+import useTheme from "../../../../lib/hooks/use-theme";
 
 export default function Scene({
   children,

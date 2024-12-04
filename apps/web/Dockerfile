@@ -2,6 +2,7 @@
 
 ARG BUN_VERSION=latest
 ARG NODE_VERSION=20.12.2
+ARG NEXT_PUBLIC_API_URL
 FROM imbios/bun-node:${BUN_VERSION}-${NODE_VERSION}-slim as base
 
 # Install dependencies
@@ -21,7 +22,6 @@ COPY packages/algorithms/package.json ./packages/algorithms/
 # ideally would freeze but doesnt work now and dont have the nerve to debug
 # developed on mac, deploying on linux, cant be bothered to use a lockfile
 RUN bun install
-RUN bun install -g turbo
 
 # Rebuild the source code
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -57,5 +57,6 @@ EXPOSE 3000
 
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 CMD ["node", "apps/web/server.js"]

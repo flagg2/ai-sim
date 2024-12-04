@@ -4,7 +4,7 @@ import { Point2D } from "../../lib/objects/point2d";
 import { Renderable } from "../../lib/objects/renderable";
 import type { NNDefinition } from "./types";
 
-export const renderNN: NNDefinition["render"] = (state, config) => {
+export const renderNN: NNDefinition["render"] = ({ state }, config) => {
   const renderables: Renderable[] = [];
   const {
     neurons,

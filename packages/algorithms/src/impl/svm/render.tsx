@@ -13,7 +13,7 @@ function getPointColor(point: DataPoint, supportVectors: DataPoint[]) {
   return point.label === 1 ? "#4CAF50" : "#F44336";
 }
 
-export const renderSVM: SVMDefinition["render"] = (state, config) => {
+export const renderSVM: SVMDefinition["render"] = ({ state }, config) => {
   const objects: Renderable[] = [];
   const { points } = config;
   const { supportVectors, regionData = [] } = state;
