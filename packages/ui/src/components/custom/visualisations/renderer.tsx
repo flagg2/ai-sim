@@ -25,6 +25,19 @@ export default function Renderer({ simulation, renderFn }: Props) {
     [simulation.runner.currentStep.state, simulation.runner.config],
   );
   const { theme } = useTheme();
+
+  const materialCache = useMemo(() => new Map(), [theme]);
+
+  const getCachedMaterial = (
+    material: Material | { dark: Material; light: Material },
+  ) => {
+    const cacheKey = JSON.stringify(material);
+    if (!materialCache.has(cacheKey)) {
+      materialCache.set(cacheKey, getMaterial(material, theme));
+    }
+    return materialCache.get(cacheKey);
+  };
+
   return (
     <>
       {renderables.map((renderable) => {
@@ -38,7 +51,7 @@ export default function Renderer({ simulation, renderFn }: Props) {
             <Component
               key={renderable.getKey()}
               {...prop}
-              material={getMaterial(prop.material, theme)}
+              material={getCachedMaterial(prop.material)}
               {...simulation.tooltipHandlers(renderable.getTooltip())}
             />
           ));
@@ -48,7 +61,7 @@ export default function Renderer({ simulation, renderFn }: Props) {
           <Component
             key={renderable.getKey()}
             {...props}
-            material={getMaterial(props.material, theme)}
+            material={getCachedMaterial(props.material)}
             {...simulation.tooltipHandlers(renderable.getTooltip())}
           />
         );

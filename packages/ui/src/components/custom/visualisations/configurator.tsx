@@ -33,7 +33,7 @@ export function Configurator<T extends ParamConfiguratorDict>({
   setParams,
 }: ParamConfiguratorProps<T> & {
   params: ParamConfiguratorState<T>;
-  setParams: Dispatch<SetStateAction<ParamConfiguratorState<T>>>;
+  setParams: (newParams: ParamConfiguratorState<T>) => void;
 }) {
   const getParamComponent = useCallback(
     (param: ParamConfigurator, key: keyof T) => {

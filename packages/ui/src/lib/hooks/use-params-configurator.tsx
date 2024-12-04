@@ -6,11 +6,12 @@ import {
   Configurator,
   ParamConfiguratorState,
 } from "../../components/custom/visualisations/configurator";
+import { useDebounce } from "./use-debounce";
 
 export function useParamsConfigurator<T extends ParamConfiguratorDict>(
   configurators: T,
 ) {
-  const [params, setState] = useState<ParamConfiguratorState<T>>(
+  const [params, setParams] = useState<ParamConfiguratorState<T>>(
     Object.fromEntries(
       Object.entries(configurators).map(([key, param]) => [
         key,
@@ -19,13 +20,25 @@ export function useParamsConfigurator<T extends ParamConfiguratorDict>(
     ) as ParamConfiguratorState<T>,
   );
 
+  const [debouncedParams, setDebouncedParams] = useState(params);
+
+  const debouncedSetParams = useDebounce(
+    (newParams: ParamConfiguratorState<T>) => {
+      setDebouncedParams(newParams);
+    },
+    100,
+  );
+
   return {
-    params,
+    params: debouncedParams,
     ParamsConfigurator: (
       <Configurator
         configurators={configurators}
         params={params}
-        setParams={setState}
+        setParams={(newParams) => {
+          setParams(newParams);
+          debouncedSetParams(newParams);
+        }}
       />
     ),
   };
