@@ -34,7 +34,7 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
         boundaryPoints,
       }),
     }),
-    fetch(`${API_URL}/api/xgboost/`, {
+    fetch(`${API_URL}/api/xgboost`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
