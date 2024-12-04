@@ -5,7 +5,6 @@ import { SearchBox, ThemeToggle } from "@repo/ui/components";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-// import xgboost from "@repo/ui/public/xgboost.png";
 
 export default function Page() {
   const [hits, setHits] = useState<typeof registry>(registry);

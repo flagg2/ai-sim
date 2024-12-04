@@ -12,5 +12,7 @@ module.exports = {
     "**/.eslintrc.{js,cjs,mjs}",
     "**/packages/eslint-config/**/*",
     "**/tailwind.config.*",
+    "**/playwright-report/**/*",
+    "**/test-results/**/*",
   ],
 };

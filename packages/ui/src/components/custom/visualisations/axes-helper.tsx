@@ -12,7 +12,6 @@ const AxesHelper: React.FC<AxesHelperProps> = ({ size = 500, is3D = true }) => {
 
   return (
     <group>
-      {/* X-axis (red) */}
       <Line
         points={[
           new Vector3(!is3D ? -axisEnd : 0, 0, 0),
@@ -21,7 +20,6 @@ const AxesHelper: React.FC<AxesHelperProps> = ({ size = 500, is3D = true }) => {
         color="red"
       />
 
-      {/* Y-axis (green) */}
       <Line
         points={[
           new Vector3(0, !is3D ? -axisEnd : 0, 0),

@@ -2,9 +2,6 @@ import {
   MeshStandardMaterial,
   SphereGeometry,
   CylinderGeometry,
-  Sprite,
-  SpriteMaterial,
-  CanvasTexture,
   Euler,
   Vector2,
   Vector3,
@@ -12,7 +9,6 @@ import {
 import { Renderable, ThreeProps } from "./renderable";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-// Import the font (you'll need to host this file in your project)
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json";
 
 type TreeNode = {
@@ -22,11 +18,13 @@ type TreeNode = {
   children?: TreeNode[];
 };
 
+/**
+ * Renders a tree in 2D space.
+ */
 export class Tree implements Renderable {
   private font: any;
 
   constructor(private rootNode: TreeNode) {
-    // Load the font when the Tree is instantiated
     const loader = new FontLoader();
     this.font = loader.parse(helvetiker);
   }
@@ -40,7 +38,6 @@ export class Tree implements Renderable {
       bevelEnabled: false,
     });
 
-    // Center the text geometry
     geometry.computeBoundingBox();
     const centerOffset = geometry.boundingBox!.getCenter(new Vector3());
     geometry.translate(-centerOffset.x, -centerOffset.y, 0);
@@ -58,7 +55,6 @@ export class Tree implements Renderable {
   private buildTreeProps(node: TreeNode): ThreeProps[] {
     const props: ThreeProps[] = [];
 
-    // Ensure node position is valid
     if (!node.position) {
       console.warn("Node position is undefined:", node);
       return props;
@@ -66,7 +62,6 @@ export class Tree implements Renderable {
 
     const nodePosition = new Vector3(node.position.x, node.position.y, 0);
 
-    // Node circle
     props.push({
       geometry: new SphereGeometry(3),
       material: new MeshStandardMaterial({
@@ -75,14 +70,12 @@ export class Tree implements Renderable {
       position: nodePosition.clone(),
     });
 
-    // Node text
     const textProps = this.getTextGeometry(node.value);
     props.push({
       ...textProps,
       position: new Vector3(nodePosition.x, nodePosition.y + 8, 0),
     });
 
-    // Add connections to children
     if (node.children?.length) {
       node.children.forEach((child) => {
         if (!child.position) {

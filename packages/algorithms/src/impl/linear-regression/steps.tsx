@@ -1,6 +1,6 @@
 import type { Coords3D } from "../../lib";
 import type { LinearRegressionDefinition } from "./types";
-import Description from "../../lib/descriptions/description";
+import Text from "../../lib/descriptions/text";
 import Paragraph from "../../lib/descriptions/paragraph";
 import List, { ListItem } from "../../lib/descriptions/list";
 import Note from "../../lib/descriptions/note";
@@ -11,7 +11,7 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
     const steps = [initialStep];
     const { points } = config;
 
-    // Calculate means
+    // calculate means
     const means = {
       x: points.reduce((sum, point) => sum + point.coords.x, 0) / points.length,
       y: points.reduce((sum, point) => sum + point.coords.y, 0) / points.length,
@@ -23,7 +23,7 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
       title: "Calculate Means",
       state: { means },
       description: (
-        <Description>
+        <Text>
           <Paragraph>
             In this model, we treat <Expression>x</Expression> as our
             independent variable (predictor), while <Expression>y</Expression>{" "}
@@ -36,11 +36,11 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
             <Expression>y</Expression>, and <Expression>z</Expression>{" "}
             coordinates:
           </Paragraph>
-        </Description>
+        </Text>
       ),
     });
 
-    // Calculate coefficients (slope and intercept)
+    // calculate coefficients (slope and intercept)
     const numeratorXY = points.reduce(
       (sum, point) =>
         sum + (point.coords.x - means.x) * (point.coords.y - means.y),
@@ -70,7 +70,7 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
       title: "Calculate Coefficients",
       state: { means, coefficients },
       description: (
-        <Description>
+        <Text>
           <Paragraph>
             We're performing two separate simple linear regressions: one for{" "}
             <Expression>x \rightarrow y</Expression> and another for{" "}
@@ -94,11 +94,11 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
             prediction depends only on <Expression>x</Expression>, not on the
             other dependent variable.
           </Note>
-        </Description>
+        </Text>
       ),
     });
 
-    // Create prediction line points
+    // create prediction line points
     const minX = Math.min(...points.map((p) => p.coords.x));
     const maxX = Math.max(...points.map((p) => p.coords.x));
 
@@ -120,7 +120,7 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
       title: "Create Regression Line",
       state: { means, coefficients, predictionLine },
       description: (
-        <Description>
+        <Text>
           <Paragraph>
             Using our coefficients, we create a line in 3D space that represents
             our predictions. This line:
@@ -139,11 +139,9 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
               <Expression>z</Expression>) change with <Expression>x</Expression>
             </ListItem>
           </List>
-        </Description>
+        </Text>
       ),
     });
-
-    // we can calculate how good the line is by calculating the sum of squared errors
 
     const sumOfSquaredErrors = points.reduce((sum, point) => {
       const predictedY =
@@ -162,7 +160,7 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
       title: "Evaluate Model Accuracy",
       state: { sumOfSquaredErrors, coefficients, means, predictionLine },
       description: (
-        <Description>
+        <Text>
           <Paragraph>
             Finally, we evaluate how well our model fits the data by calculating
             the sum of squared errors for both predictions (
@@ -187,7 +185,7 @@ export const getLinearRegressionSteps: LinearRegressionDefinition["getSteps"] =
             <Expression>z</Expression> independently, their errors are
             calculated separately and then combined.
           </Note>
-        </Description>
+        </Text>
       ),
     });
 

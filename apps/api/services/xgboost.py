@@ -18,10 +18,10 @@ class XGBoostService:
     def train_model(X_train: np.ndarray, y_train: np.ndarray, max_depth: int, learning_rate: float, num_trees: int):
         dtrain = xgb.DMatrix(X_train, label=y_train)
         params = {
-            'max_depth': max_depth,
-            'eta': learning_rate,
-            'objective': 'binary:logistic',
-            'eval_metric': 'error'
+            "max_depth": max_depth,
+            "eta": learning_rate,
+            "objective": "binary:logistic",
+            "eval_metric": "error",
         }
         return xgb.train(params, dtrain, num_boost_round=num_trees)
 

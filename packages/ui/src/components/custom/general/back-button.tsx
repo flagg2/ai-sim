@@ -6,7 +6,7 @@ import { Button } from "../../shadcn/button";
 export function BackButton() {
   const router = useRouter();
 
-  // scroll restoration wouldnt work with normal link
+  // scroll restoration wouldnt work with a normal link
   const handleBack = () => {
     if (window.history.length > 1) {
       router.back();

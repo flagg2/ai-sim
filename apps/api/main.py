@@ -4,7 +4,6 @@ from endpoints import xgboost
 
 app = FastAPI()
 
-# Add CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,10 +12,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Health check endpoint
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
 
-# Include routers
 app.include_router(xgboost.router, prefix="/api")

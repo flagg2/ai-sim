@@ -1,5 +1,5 @@
 import type { SVMDefinition } from "./types";
-import Description from "../../lib/descriptions/description";
+import Text from "../../lib/descriptions/text";
 import Paragraph from "../../lib/descriptions/paragraph";
 import Note from "../../lib/descriptions/note";
 
@@ -8,7 +8,7 @@ export const getSVMInitialStep: SVMDefinition["getInitialStep"] = () => {
     type: "initial",
     title: "Initial State",
     description: (
-      <Description>
+      <Text>
         <Paragraph>
           We want to classify the data points into two classes using Support
           Vector Machine (SVM).
@@ -20,7 +20,7 @@ export const getSVMInitialStep: SVMDefinition["getInitialStep"] = () => {
           SVM will find the optimal hyperplane that maximizes the margin between
           classes.
         </Note>
-      </Description>
+      </Text>
     ),
     state: {},
   };

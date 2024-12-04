@@ -8,7 +8,6 @@ test("Visual regression test", async ({ page }) => {
   await page.goto("/kmeans");
 
   await page.waitForTimeout(1000);
-  // Take screenshot
   await expect(page.getByRole("main").locator("canvas")).toHaveScreenshot(
     "kmeans-page.png",
   );

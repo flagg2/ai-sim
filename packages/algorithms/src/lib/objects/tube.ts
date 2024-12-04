@@ -2,7 +2,7 @@ import { CatmullRomCurve3, Material, TubeGeometry, Vector3 } from "three";
 import type { Coords3D } from "../types";
 import { RenderableObject, type Renderable } from "./renderable";
 
-type LineProps = {
+type TubeProps = {
   from: Coords3D;
   to: Coords3D;
   material: Material;
@@ -10,10 +10,13 @@ type LineProps = {
   radius?: number;
 };
 
+/**
+ * Renders a tube between two points in 3D space.
+ */
 export class Tube implements Renderable {
   public object: RenderableObject;
 
-  constructor(props: LineProps) {
+  constructor(props: TubeProps) {
     const { from, to, material, name, radius = 0.5 } = props;
     this.object = new RenderableObject({
       three: {
@@ -23,7 +26,7 @@ export class Tube implements Renderable {
             new Vector3(to.x, to.y, to.z),
           ]),
           20, // tubular segments
-          radius, // radius
+          radius,
           8, // radial segments
           false, // closed
         ),

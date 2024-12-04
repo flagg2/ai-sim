@@ -1,12 +1,11 @@
 import type { KMeansDefinition } from "./types";
-import { Point3D } from "../../lib/objects/point";
+import { Point3D } from "../../lib/objects/point3d";
 import { Tube } from "../../lib/objects/tube";
 import type { Renderable } from "../../lib/objects/renderable";
 
 export const renderKMeans: KMeansDefinition["render"] = ({ state }) => {
   const renderables: Renderable[] = [];
 
-  // Render all points
   state.points.forEach((point) => {
     renderables.push(
       new Point3D({
@@ -32,7 +31,6 @@ export const renderKMeans: KMeansDefinition["render"] = ({ state }) => {
     );
   });
 
-  // Render centroids
   state.centroids.forEach((centroid) => {
     renderables.push(
       new Point3D({
@@ -58,7 +56,6 @@ export const renderKMeans: KMeansDefinition["render"] = ({ state }) => {
       }),
     );
 
-    // Render tubes between centroids and points
     state.points
       .filter((point) => point.group.label === centroid.group.label)
       .forEach((point) => {

@@ -6,6 +6,9 @@ type SwitchParamConfiguratorProps = {
   description?: string;
 };
 
+/**
+ * A configurable parameter in an algorithm that allows the user to toggle a boolean value.
+ */
 export class SwitchParamConfigurator extends ParamConfigurator<boolean> {
   constructor(props: SwitchParamConfiguratorProps) {
     super({

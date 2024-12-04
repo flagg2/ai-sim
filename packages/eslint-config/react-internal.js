@@ -2,12 +2,6 @@ const { resolve } = require("node:path");
 
 const project = resolve(process.cwd(), "tsconfig.json");
 
-/*
- * This is a custom ESLint configuration for use with
- * internal (bundled by their consumer) libraries
- * that utilize React.
- */
-
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
@@ -27,11 +21,19 @@ module.exports = {
     },
   },
   ignorePatterns: [
-    // Ignore dotfiles
-    ".*.js",
-    "node_modules/",
-    "dist/",
+    ".eslintrc.js",
+    "**/dist/*",
+    "**/node_modules/*",
+    "**/*.config.{js,cjs,mjs,ts}",
+    "**/.eslintrc.{js,cjs,mjs}",
+    "**/packages/eslint-config/**/*",
+    "**/tailwind.config.*",
+    "**/playwright-report/**/*",
+    "**/test-results/**/*",
   ],
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off",
+  },
   overrides: [
     {
       files: ["*.ts", "*.tsx"],

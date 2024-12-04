@@ -11,7 +11,7 @@ import {
 export type DataPoint = {
   id: string;
   coords: Coords2D;
-  label: 1 | -1; // Binary classification
+  label: 1 | -1;
 };
 
 type SVMStepType =

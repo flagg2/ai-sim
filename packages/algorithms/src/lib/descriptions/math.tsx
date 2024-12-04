@@ -6,6 +6,9 @@ type Props = {
   block?: boolean;
 };
 
+/**
+ * A mathematical expression in an algorithm description, supports LaTeX.
+ */
 export default function Expression({ children, block = false }: Props) {
   const parseChildren = (input: Props["children"]): string => {
     if (Array.isArray(input)) {

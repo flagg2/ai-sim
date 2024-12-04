@@ -62,7 +62,7 @@ test("Linear Regression flow", async ({ page }) => {
   await page.getByPlaceholder("Search...").fill("linear");
   await page.getByRole("link", { name: "Linear Regression" }).click();
 
-  // Adjust noise level
+  // adjust noise level
   await page
     .locator("label")
     .filter({ hasText: "Noise Level0" })
@@ -70,7 +70,7 @@ test("Linear Regression flow", async ({ page }) => {
     .nth(1)
     .click();
 
-  // Adjust number of points
+  // adjust number of points
   await page
     .locator("label")
     .filter({ hasText: "Number of Points20" })
@@ -80,10 +80,10 @@ test("Linear Regression flow", async ({ page }) => {
 
   await page.getByRole("button", { name: "Run" }).click();
 
-  // Check initial state
+  // check initial state
   await expect(page.getByText("Initial State").first()).toBeAttached();
 
-  // Step through visualization
+  // step through visualization
   await page.getByRole("button", { name: "Forward" }).click();
   await expect(page.getByText("Calculate Means").first()).toBeAttached();
 
@@ -98,13 +98,13 @@ test("Linear Regression flow", async ({ page }) => {
     page.getByText("Calculate Sum of Squared Errors").first(),
   ).toBeAttached();
 
-  // Test settings panel
+  // test settings panel
   await page.getByRole("button", { name: "Settings" }).click();
   await expect(
     page.getByRole("heading", { name: "Configuration" }),
   ).toBeVisible();
 
-  // Return to main page
+  // return to main page
   await page.getByRole("button", { name: "Go back" }).click();
   await expect(
     page.getByRole("heading", { name: "AI Algorithm Visualizations" }),

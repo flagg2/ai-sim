@@ -2,17 +2,16 @@ import {
   AlgorithmDefinition,
   Coords2D,
   ParamConfiguratorDict,
+  SelectParamConfigurator,
   SliderParamConfigurator,
 } from "../../lib";
 
-// Point data structure
 export type DataPoint = {
-  id: number;
+  id: string;
   coords: Coords2D;
-  label: 1 | -1; // Binary classification
+  label: 1 | -1;
 };
 
-// Configuration for the algorithm
 export type XGBoostConfig = {
   trainingPoints: DataPoint[];
   learningRate: number;
@@ -20,13 +19,11 @@ export type XGBoostConfig = {
   numTrees: number;
 };
 
-// State for each step
 export type XGBoostState = {
   predictions?: Array<{ x: number; y: number; prediction: number }>;
   boundaryPredictions?: Array<{ x: number; y: number; prediction: number }>;
 };
 
-// Step types
 export type XGBoostStepType =
   | "initial"
   | "calculateResiduals"
@@ -34,7 +31,6 @@ export type XGBoostStepType =
   | "afterOneIteration"
   | "showFinalResult";
 
-// Step structure
 export type XGBoostStep = {
   type: XGBoostStepType;
   title: string;
@@ -49,7 +45,6 @@ export type XGBoostParamConfiguratorDict = ParamConfiguratorDict<{
   numTrees: SliderParamConfigurator;
 }>;
 
-// Main algorithm definition
 export type XGBoostDefinition = AlgorithmDefinition<
   XGBoostStep,
   XGBoostConfig,

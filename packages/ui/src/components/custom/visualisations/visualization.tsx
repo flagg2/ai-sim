@@ -8,7 +8,6 @@ import { useVisualisation } from "../../../lib/hooks/use-visualisation";
 import Scene from "./scene/scene";
 
 export type VisualisationProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   algorithm: AlgorithmDefinition<any, any, any>;
 };
 
@@ -25,7 +24,7 @@ export function Visualization({ algorithm }: VisualisationProps) {
 
   return (
     <div className="flex flex-col w-full  h-[calc(100vh-68px)]">
-      {/* Mobile layout */}
+      {/* mobile layout */}
       <div className="xl:hidden flex-1 relative">
         <div className="w-full h-full flex items-center justify-center">
           <Scene sceneSetup={sceneSetup}>{Renderer}</Scene>
@@ -51,7 +50,7 @@ export function Visualization({ algorithm }: VisualisationProps) {
         </Drawer>
       </div>
 
-      {/* Desktop layout */}
+      {/* desktop layout */}
       <div className="hidden xl:flex flex-col w-full h-[65vh] xl:h-[calc(100vh-68px)]">
         <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
           <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
@@ -81,14 +80,14 @@ export function Visualization({ algorithm }: VisualisationProps) {
 export function VisualizationSkeleton() {
   return (
     <div className="flex flex-col w-full h-[calc(100vh-68px)]">
-      {/* Mobile layout */}
+      {/* mobile layout */}
       <div className="xl:hidden flex-1 relative">
         <div className="w-full h-full flex items-center justify-center">
           <div className="w-full h-full bg-muted animate-pulse rounded-lg" />
         </div>
       </div>
 
-      {/* Desktop layout */}
+      {/* desktop layout */}
       <div className="hidden xl:flex flex-col w-full h-[65vh] xl:h-[calc(100vh-68px)]">
         <main className="flex-1 grid grid-cols-[1fr_600px] gap-6 p-6 md:p-10">
           <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">

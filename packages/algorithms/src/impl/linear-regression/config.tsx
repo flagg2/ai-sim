@@ -1,3 +1,4 @@
+import { getNextId } from "../../lib/utils";
 import type { LinearRegressionDefinition, DataPoint } from "./types";
 
 export const getLinearRegressionConfig: LinearRegressionDefinition["getConfig"] =
@@ -13,12 +14,6 @@ export const getLinearRegressionConfig: LinearRegressionDefinition["getConfig"] 
     };
   };
 
-let id = 0;
-
-function getNextId() {
-  return id++;
-}
-
 function generateRandomPoints(
   numberOfPoints: number,
   noise: number,
@@ -26,11 +21,9 @@ function generateRandomPoints(
 ): DataPoint[] {
   const points: DataPoint[] = [];
 
-  // Generate points along a 3D line with controlled noise
-
+  // generate points along a 3D line with controlled noise
   for (let i = 0; i < numberOfPoints; i++) {
-    // Generate more controlled coordinates along a path
-    const t = i / (numberOfPoints - 1); // Parameter between 0 and 1
+    const t = i / (numberOfPoints - 1);
     const coords = {
       x:
         noise === 0
@@ -44,7 +37,7 @@ function generateRandomPoints(
     };
 
     points.push({
-      id: getNextId().toString(),
+      id: getNextId(),
       coords,
     });
   }

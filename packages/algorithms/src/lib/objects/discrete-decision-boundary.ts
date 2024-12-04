@@ -9,7 +9,6 @@ import {
 } from "three";
 import { Renderable, RenderableObject } from "./renderable";
 
-// Add interface for configuration
 interface DecisionBoundaryConfig {
   colors?: {
     pos: Vector2;
@@ -26,21 +25,22 @@ interface DecisionBoundaryConfig {
   };
 }
 
-export class DecisionBoundary implements Renderable {
+/**
+ * Renders a decision boundary for a discrete classification problem, meaning that there is no interpolation between the classes.
+ */
+export class DiscreteDecisionBoundary implements Renderable {
   public object: RenderableObject;
 
   constructor(
     regionData: Array<{ x: number; y: number; prediction: number }>,
     config?: DecisionBoundaryConfig,
   ) {
-    // Create a data texture from our predictions
     const size = Math.sqrt(regionData.length);
     const data = new Float32Array(size * size * 4);
 
-    // Fill texture with prediction data
     regionData.forEach((point, i) => {
-      data[i * 4] = point.prediction; // R channel stores prediction
-      data[i * 4 + 3] = 1; // A channel set to 1
+      data[i * 4] = point.prediction;
+      data[i * 4 + 3] = 1;
     });
 
     const predictionTexture = new DataTexture(
@@ -57,11 +57,9 @@ export class DecisionBoundary implements Renderable {
       neg: new Vector2(0xf4 / 0xff, 0x43 / 0xff),
     };
 
-    // Use provided position and size or fallback to defaults
     const pos = config?.position ?? { x: 75, y: 75, z: -1 };
     const planeSize = config?.size ?? { width: 150, height: 150 };
 
-    // Create shader material with colors
     const material = new ShaderMaterial({
       transparent: true,
       uniforms: {
@@ -93,14 +91,14 @@ export class DecisionBoundary implements Renderable {
            float dx = 1.0 / textureSize.x;
            float dy = 1.0 / textureSize.y;
            
-           // Gaussian blur kernel (3x3)
+           // gaussian blur kernel
            float kernel[9] = float[9](
              0.0625, 0.125, 0.0625,
              0.125,  0.25,  0.125,
              0.0625, 0.125, 0.0625
            );
            
-           // Apply Gaussian blur
+           // apply Gaussian blur
            float prediction = 0.0;
            int idx = 0;
            for(int y = -1; y <= 1; y++) {
@@ -111,7 +109,7 @@ export class DecisionBoundary implements Renderable {
              }
            }
            
-           // Calculate gradient for edge detection (using Sobel operator)
+           // calculate gradient for edge detection
            float gx = 
              samplePrediction(texCoord + vec2(-dx, -dy)) * -1.0 +
              samplePrediction(texCoord + vec2(-dx,  dy)) * -1.0 +
@@ -130,13 +128,13 @@ export class DecisionBoundary implements Renderable {
            
            float gradientMagnitude = sqrt(gx * gx + gy * gy);
            
-           // Color interpolation
+           // color interpolation
            vec3 posColor = vec3(colorPos.x, colorPos.y, 0.5);
            vec3 negColor = vec3(colorNeg.x, colorNeg.y, 0.36);
            float t = smoothstep(-0.2, 0.2, prediction);
            vec3 color = mix(negColor, posColor, t);
            
-           // Enhanced edge visibility
+           // enhanced edge visibility
            float edgeIntensity = smoothstep(0.0, 0.8, gradientMagnitude);
            float alpha = mix(0.2, 0.5, edgeIntensity);
            

@@ -1,4 +1,4 @@
-import Description from "../../lib/descriptions/description";
+import Text from "../../lib/descriptions/text";
 import type { LinearRegressionDefinition } from "./types";
 
 export const getLinearRegressionInitialStep: LinearRegressionDefinition["getInitialStep"] =
@@ -7,12 +7,12 @@ export const getLinearRegressionInitialStep: LinearRegressionDefinition["getInit
       type: "initial",
       title: "Initial State",
       description: (
-        <Description>
+        <Text>
           We want to fit a linear regression line, which is going to capture the
           nature of our data and help us predict future values. We demonstrate
           the Ordinary Least Squares method (OLS), which works well for
           manageable datasets.
-        </Description>
+        </Text>
       ),
       state: {
         means: undefined,

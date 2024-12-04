@@ -1,3 +1,4 @@
+import { getNextId } from "../../lib/utils";
 import type { Neuron, Connection } from "../neural-networks/types";
 import type { FFNNDefinition } from "./types";
 
@@ -34,11 +35,6 @@ export const getFFNNConfig: FFNNDefinition["getConfig"] = (params) => {
   };
 };
 
-let id = 0;
-function getNextId() {
-  return (id++).toString();
-}
-
 function generateNeurons(
   layers: number,
   neuronsPerLayer: number,
@@ -47,20 +43,19 @@ function generateNeurons(
   activations: number[],
 ): Neuron[] {
   const neurons: Neuron[] = [];
-  // Input layer
   for (let i = 0; i < inputSize; i++) {
     const activation = activations[i];
     neurons.push({
       id: getNextId(),
       layer: 0,
       index: i,
-      value: activation, // Random initial input
-      activation: activation, // For input layer, value = activation
+      value: activation,
+      activation: activation,
       bias: 0,
     });
   }
 
-  // Hidden layers
+  // hidden layers
   for (let layer = 1; layer <= layers; layer++) {
     for (let i = 0; i < neuronsPerLayer; i++) {
       neurons.push({
@@ -74,7 +69,7 @@ function generateNeurons(
     }
   }
 
-  // Output layer
+  // output layer
   for (let i = 0; i < outputSize; i++) {
     neurons.push({
       id: getNextId(),
@@ -93,7 +88,6 @@ function generateConnections(neurons: Neuron[]): Connection[] {
   const connections: Connection[] = [];
   const layerMap = new Map<number, Neuron[]>();
 
-  // Group neurons by layer
   neurons.forEach((neuron) => {
     if (!layerMap.has(neuron.layer)) {
       layerMap.set(neuron.layer, []);
@@ -101,7 +95,6 @@ function generateConnections(neurons: Neuron[]): Connection[] {
     layerMap.get(neuron.layer)!.push(neuron);
   });
 
-  // Create connections between consecutive layers
   for (let layer = 0; layer < Math.max(...layerMap.keys()); layer++) {
     const currentLayerNeurons = layerMap.get(layer)!;
     const nextLayerNeurons = layerMap.get(layer + 1)!;
@@ -112,7 +105,7 @@ function generateConnections(neurons: Neuron[]): Connection[] {
           id: getNextId(),
           fromNeuron,
           toNeuron,
-          weight: Math.random() * 2 - 1, // Random weight between -1 and 1
+          weight: Math.random() * 2 - 1,
         });
       });
     });

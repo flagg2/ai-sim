@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { useCallback } from "react";
 import { Slider } from "../../shadcn/slider";
 import { Switch } from "../../shadcn/switch";
 import {

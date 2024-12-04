@@ -7,10 +7,8 @@ router = APIRouter()
 @router.post("/xgboost", response_model=XGBoostResponse)
 async def run_xgboost(config: XGBoostConfig):
     try:
-        # Prepare training data
         X_train, y_train = XGBoostService.prepare_training_data(config.trainingPoints)
         
-        # Train model
         model = XGBoostService.train_model(
             X_train,
             y_train,
@@ -19,10 +17,8 @@ async def run_xgboost(config: XGBoostConfig):
             config.numTrees
         )
         
-        # Get predictions
         boundary_predictions = XGBoostService.predict_boundary(model, config.boundaryPoints)
         
-        # Format response
         decision_boundary = [
             DecisionBoundaryPoint(
                 x=point.coords[0],

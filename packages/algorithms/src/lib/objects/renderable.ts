@@ -27,6 +27,9 @@ export type RenderFn<TState, TConfig> = (
   dimension: "2D" | "3D";
 };
 
+/**
+ * A renderable object in an algorithm.
+ */
 export class RenderableObject {
   getTooltip: (object: RenderableObject) => React.ReactNode;
   three: ThreeProps;

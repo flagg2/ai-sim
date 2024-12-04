@@ -7,6 +7,9 @@ type SelectParamConfiguratorProps<TValue extends string> = {
   defaultValue: TValue;
 };
 
+/**
+ * A configurable parameter in an algorithm that allows the user to select a value from a list of options.
+ */
 export class SelectParamConfigurator<
   TValue extends string,
 > extends ParamConfigurator<TValue> {

@@ -20,10 +20,19 @@ module.exports = {
       },
     },
   },
-  ignorePatterns: [".*.js", "node_modules/", "dist/"],
+  ignorePatterns: [
+    ".eslintrc.js",
+    "**/dist/*",
+    "**/node_modules/*",
+    "**/*.config.{js,cjs,mjs,ts}",
+    "**/.eslintrc.{js,cjs,mjs}",
+    "**/packages/eslint-config/**/*",
+    "**/tailwind.config.*",
+    "**/playwright-report/**/*",
+    "**/test-results/**/*",
+  ],
   rules: {
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["warn"],
+    "@typescript-eslint/no-explicit-any": "off",
   },
   overrides: [
     {

@@ -1,6 +1,5 @@
 import { AlgorithmDefinition, ParamConfiguratorDict, Step } from "../../lib";
 
-// Define a neuron structure
 export type Neuron = {
   id: string;
   layer: number;
@@ -10,7 +9,6 @@ export type Neuron = {
   bias?: number;
 };
 
-// Define a connection between neurons
 export type Connection = {
   id: string;
   fromNeuron: Neuron;
@@ -18,7 +16,6 @@ export type Connection = {
   weight: number;
 };
 
-// Define possible step types in the feed-forward process
 type NNStepType =
   | "initial"
   | "weightedSum"
@@ -30,7 +27,6 @@ type NNStepType =
   | "weightUpdate"
   | "backpropComplete";
 
-// State maintained during the visualization
 type NNStepState = {
   currentLayer: number;
   currentNeuron: number;
@@ -52,7 +48,6 @@ export type NNStep = Step<NNStepState, NNStepType>;
 
 type NNParamConfiguratorDict = ParamConfiguratorDict<unknown>;
 
-// Configuration for the network
 export type NNConfig = {
   layers: number;
   neuronsPerLayer: number;
@@ -64,7 +59,6 @@ export type NNConfig = {
   targetValues?: number[];
 };
 
-// Complete algorithm definition type
 export type NNDefinition = AlgorithmDefinition<
   NNStep,
   NNConfig,

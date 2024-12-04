@@ -25,9 +25,20 @@ module.exports = {
       },
     },
   },
-  ignorePatterns: [".*.js", "node_modules/"],
+  ignorePatterns: [
+   ".eslintrc.js",
+    "**/dist/*",
+    "**/node_modules/*",
+    "**/*.config.{js,cjs,mjs,ts}",
+    "**/.eslintrc.{js,cjs,mjs}",
+    "**/packages/eslint-config/**/*",
+    "**/tailwind.config.*",
+    "**/playwright-report/**/*",
+    "**/test-results/**/*",
+  ],
   rules: {
     "@next/next/no-html-link-for-pages": "off",
+    "@typescript-eslint/no-explicit-any": "off",
   },
   overrides: [
     {

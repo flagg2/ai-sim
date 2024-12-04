@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bun run --cwd apps/web build",
     "dev": "bun run --cwd apps/web dev",
-    "lint": "bun run --cwd apps/web lint",
+    "lint": "eslint . --max-warnings 0",
     "ui:add": "bunx --cwd packages/ui shadcn-ui@latest add"
   },
   "dependencies": {},

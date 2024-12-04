@@ -1,3 +1,4 @@
+// is not in a separate config package to enable use of shadcn commands
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 

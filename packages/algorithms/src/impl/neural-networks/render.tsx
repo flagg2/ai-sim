@@ -13,25 +13,20 @@ export const renderNN: NNDefinition["render"] = ({ state }, config) => {
     highlightedConnectionIds,
   } = state;
 
-  // Calculate layout dimensions
-  //   const layerCount = config.layers + 2; // input + hidden + output
   const maxNeuronsInLayer = Math.max(
     config.inputSize,
     config.neuronsPerLayer,
     config.outputSize,
   );
 
-  // Calculate spacing and offsets
   const spacing = {
     x: 100, // space between layers
     y: 50, // space between neurons in a layer
   };
-  const offsetY = 100; // Add this line to move everything up
+  const offsetY = 100; // move everything up
 
-  // Calculate canvas dimensions
   const height = spacing.y * (maxNeuronsInLayer - 1);
 
-  // Render connections first (so they appear behind neurons)
   connections.forEach((connection) => {
     const fromLayer = connection.fromNeuron.layer;
     const toLayer = connection.toNeuron.layer;
@@ -70,7 +65,6 @@ export const renderNN: NNDefinition["render"] = ({ state }, config) => {
     );
   });
 
-  // Render neurons
   neurons.forEach((neuron) => {
     const neuronsInLayer = getNeuronsInLayer(neuron.layer, config);
     const x = neuron.layer * spacing.x;
@@ -89,6 +83,8 @@ export const renderNN: NNDefinition["render"] = ({ state }, config) => {
             Value: {neuron.value.toFixed(3)}
             <br />
             Activation: {neuron.activation.toFixed(3)}
+            <br />
+            {neuron.bias !== undefined && `Bias: ${neuron.bias.toFixed(3)}`}
           </div>
         ),
         name: `Neuron ${neuron.id}`,
@@ -100,7 +96,6 @@ export const renderNN: NNDefinition["render"] = ({ state }, config) => {
   return renderables;
 };
 
-// Helper function to get number of neurons in a specific layer
 function getNeuronsInLayer(
   layer: number,
   config: {
@@ -115,7 +110,6 @@ function getNeuronsInLayer(
   return config.neuronsPerLayer;
 }
 
-// Helper function to calculate Y position for a neuron
 function calculateNeuronY(
   index: number,
   neuronsInLayer: number,

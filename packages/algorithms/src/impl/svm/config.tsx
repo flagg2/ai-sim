@@ -8,6 +8,7 @@ import {
   LINEAR_RANGE,
   MIN_COORDINATE,
 } from "./const";
+import { getNextId } from "../../lib/utils";
 
 export const getSVMConfig: SVMDefinition["getConfig"] = (params) => {
   const points = params.generateRadialData
@@ -19,12 +20,6 @@ export const getSVMConfig: SVMDefinition["getConfig"] = (params) => {
   };
 };
 
-let id = 0;
-
-function getNextId() {
-  return id++;
-}
-
 function generateRadialPoints(numberOfPoints: number): DataPoint[] {
   const points: DataPoint[] = [];
   const centerX = RADIAL_CENTER_X;
@@ -33,12 +28,12 @@ function generateRadialPoints(numberOfPoints: number): DataPoint[] {
   const outerRadiusMin = RADIAL_OUTER_MIN;
   const outerRadiusMax = RADIAL_OUTER_MAX;
 
-  // Generate inner circle (negative class)
+  // generate inner circle (negative class)
   for (let i = 0; i < numberOfPoints / 2; i++) {
     const angle = Math.random() * 2 * Math.PI;
     const radius = Math.random() * innerRadius;
     points.push({
-      id: getNextId().toString(),
+      id: getNextId(),
       coords: {
         x: centerX + radius * Math.cos(angle),
         y: centerY + radius * Math.sin(angle),
@@ -47,13 +42,13 @@ function generateRadialPoints(numberOfPoints: number): DataPoint[] {
     });
   }
 
-  // Generate outer ring (positive class)
+  // generate outer ring (positive class)
   for (let i = 0; i < numberOfPoints / 2; i++) {
     const angle = Math.random() * 2 * Math.PI;
     const radius =
       outerRadiusMin + Math.random() * (outerRadiusMax - outerRadiusMin);
     points.push({
-      id: getNextId().toString(),
+      id: getNextId(),
       coords: {
         x: centerX + radius * Math.cos(angle),
         y: centerY + radius * Math.sin(angle),
@@ -69,18 +64,18 @@ function generatePoints(numberOfPoints: number): DataPoint[] {
   const points: DataPoint[] = [];
 
   for (let i = 0; i < numberOfPoints / 2; i++) {
-    // Negative class (bottom-left)
+    // negative class (bottom-left)
     points.push({
-      id: getNextId().toString(),
+      id: getNextId(),
       coords: {
         x: Math.random() * LINEAR_RANGE + MIN_COORDINATE,
         y: Math.random() * LINEAR_RANGE + MIN_COORDINATE,
       },
       label: -1,
     });
-    // Positive class (top-right)
+    // positive class (top-right)
     points.push({
-      id: getNextId().toString(),
+      id: getNextId(),
       coords: {
         x: Math.random() * LINEAR_RANGE + RADIAL_CENTER_X,
         y: Math.random() * LINEAR_RANGE + RADIAL_CENTER_Y,

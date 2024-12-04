@@ -2,7 +2,7 @@ import { calculateDistance } from "../../lib/utils";
 import type { KMeansDefinition, Point } from "./types";
 import { getColoredMaterial } from "../../lib/materials";
 import type { Group } from "../../lib";
-import Description from "../../lib/descriptions/description";
+import Text from "../../lib/descriptions/text";
 import Paragraph from "../../lib/descriptions/paragraph";
 import Note from "../../lib/descriptions/note";
 import Expression from "../../lib/descriptions/math";
@@ -29,12 +29,12 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
           iteration,
         },
         description: (
-          <Description>
+          <Text>
             <Paragraph>
               Because it is the first iteration, we start by initializing{" "}
               <Expression>k={k}</Expression> random centroids.
             </Paragraph>
-          </Description>
+          </Text>
         ),
       });
     }
@@ -58,13 +58,13 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration,
       },
       description: (
-        <Description>
+        <Text>
           <Paragraph>
             We assign each point to the nearest centroid based on Euclidean
             distance.
           </Paragraph>
           <Note>Each point is colored according to its assigned cluster.</Note>
-        </Description>
+        </Text>
       ),
     });
 
@@ -95,12 +95,12 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration,
       },
       description: (
-        <Description>
+        <Text>
           <Paragraph>
             Update each centroid to the mean position (
             <Expression>\mu</Expression>) of all points in its cluster.
           </Paragraph>
-        </Description>
+        </Text>
       ),
     });
 
@@ -118,7 +118,7 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration: iteration + 1,
       },
       description: (
-        <Description>
+        <Text>
           <Paragraph>
             We check if the algorithm has converged by comparing the old and new
             centroid positions.
@@ -128,7 +128,7 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
               ? "The algorithm has converged - centroids no longer move. We can stop the algorithm."
               : "Centroids are still moving - continue to next iteration."}
           </Note>
-        </Description>
+        </Text>
       ),
     });
 

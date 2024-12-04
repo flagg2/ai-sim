@@ -19,8 +19,8 @@ export function BaseControls({
   if (status === "configuring") {
     const { start } = runner;
     return (
-      <div className="bg-background rounded-lg border p-6 flex flex-col-reverse xl:flex-col gap-6">
-        <div className="grid gap-4">
+      <div className="bg-background h-full rounded-lg border p-6 flex flex-col-reverse xl:flex-col gap-6 relative justify-end xl:justify-start">
+        <div className="grid gap-4 overflow-auto max-h-[calc(100vh-200px)]">
           {showConfig && (
             <>
               <h3 className="hidden xl:block text-xl font-bold">
@@ -29,7 +29,11 @@ export function BaseControls({
               {configComponent}
             </>
           )}
-          <Button onClick={start}>Run</Button>
+          <div className=" bg-background pt-2 absolute bottom-4 left-4 right-4">
+            <Button onClick={start} className="w-full">
+              Run
+            </Button>
+          </div>
         </div>
         <div className="grid gap-2">
           <h3 className="text-xl font-bold">Algorithm Description</h3>
@@ -67,7 +71,6 @@ export function BaseControls({
         <div className="flex flex-col-reverse lg:flex-col gap-2 flex-grow">
           <Slider
             className="lg:mb-4"
-            // value={[currentStep.index]}
             min={0}
             max={totalStepCount - 1}
             value={[currentStepIndex]}

@@ -1,5 +1,5 @@
 import { getColoredMaterial } from "../../lib/materials";
-import { Point3D } from "../../lib/objects/point";
+import { Point3D } from "../../lib/objects/point3d";
 import { Renderable } from "../../lib/objects/renderable";
 import { Tube } from "../../lib/objects/tube";
 import type { LinearRegressionDefinition } from "./types";
@@ -12,7 +12,6 @@ export const renderLinearRegression: LinearRegressionDefinition["render"] = (
   const defaultMaterial = getColoredMaterial(0);
   const predictionLineMaterial = getColoredMaterial(1);
 
-  // Render all data points
   config.points.forEach((point) => {
     renderables.push(
       new Point3D({
@@ -31,16 +30,13 @@ export const renderLinearRegression: LinearRegressionDefinition["render"] = (
     );
   });
 
-  // Render prediction line if available
   if (state.predictionLine) {
     const { start, end } = state.predictionLine;
 
-    // Extend the line by adding padding to x coordinates
     const padding = Math.abs(end.x - start.x) * 2; // 20% padding
     const extendedStart = { ...start, x: start.x - padding };
     const extendedEnd = { ...end, x: end.x + padding };
 
-    // Create start and end points with predicted y and z values
     const startY = state.coefficients
       ? state.coefficients.slopeXY * extendedStart.x +
         state.coefficients.interceptY
@@ -73,7 +69,6 @@ export const renderLinearRegression: LinearRegressionDefinition["render"] = (
     );
   }
 
-  // Render mean point if available
   if (state.means) {
     renderables.push(
       new Point3D({

@@ -6,7 +6,6 @@ import {
   Visualization,
   VisualizationSkeleton,
 } from "@repo/ui/components";
-import { Suspense } from "react";
 
 interface AlgorithmClientProps {
   params: { algorithm: string };

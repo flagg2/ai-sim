@@ -5,9 +5,6 @@ import { MeshStandardMaterial, Vector2 } from "three";
 import { NonDiscreteDecisionBoundary } from "../../lib/objects/nondiscrete-decision-boundary";
 import { Tree } from "../../lib/objects/tree";
 
-const BOUNDARY_SCALE = 150;
-const GRID_SIZE = 50;
-
 function getPointColor(point: DataPoint) {
   return point.label === 1 ? "#4CAF50" : "#F44336";
 }
@@ -18,29 +15,29 @@ export const renderXGBoost: XGBoostDefinition["render"] = (
 ) => {
   const objects: Renderable[] = [];
 
+  // render example tree
   if (type === "buildTree") {
-    // Render example decision tree, centered with positive coordinates
     const exampleTree = {
       value: "x <= 75",
-      position: new Vector2(75, 100), // Centered at <75, 100>
+      position: new Vector2(75, 100),
       children: [
         {
           value: "y <= 45",
-          position: new Vector2(50, 75), // Adjusted to positive coordinates
+          position: new Vector2(50, 75),
           children: [
             {
               value: "-0.6",
-              position: new Vector2(25, 50), // Adjusted to positive coordinates
+              position: new Vector2(25, 50),
             },
             {
               value: "+0.3",
-              position: new Vector2(50, 50), // Adjusted to positive coordinates
+              position: new Vector2(50, 50),
             },
           ],
         },
         {
           value: "+0.8",
-          position: new Vector2(100, 75), // Adjusted to positive coordinates
+          position: new Vector2(100, 75),
         },
       ],
     };
@@ -52,12 +49,10 @@ export const renderXGBoost: XGBoostDefinition["render"] = (
   const { trainingPoints } = config;
   const { boundaryPredictions } = state;
 
-  // Add decision boundary visualization if we have boundary predictions
   if (boundaryPredictions) {
     objects.push(new NonDiscreteDecisionBoundary(boundaryPredictions));
   }
 
-  // Render all data points (using original labels)
   trainingPoints.forEach((point) => {
     objects.push(
       new Point2D({

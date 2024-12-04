@@ -9,6 +9,9 @@ type SliderParamConfiguratorProps = {
   description?: string;
 };
 
+/**
+ * A configurable parameter in an algorithm that allows the user to select a value from a range of numbers.
+ */
 export class SliderParamConfigurator extends ParamConfigurator<number> {
   public min: number;
   public max: number;

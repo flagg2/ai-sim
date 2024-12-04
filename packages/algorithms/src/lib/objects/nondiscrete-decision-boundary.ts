@@ -21,6 +21,9 @@ interface NonDiscreteDecisionBoundaryConfig {
   };
 }
 
+/**
+ * Renders a decision boundary for a non-discrete classification problem with interpolation between the colors.
+ */
 export class NonDiscreteDecisionBoundary implements Renderable {
   public object: RenderableObject;
 
@@ -32,8 +35,8 @@ export class NonDiscreteDecisionBoundary implements Renderable {
     const data = new Float32Array(size * size * 4);
 
     regionData.forEach((point, i) => {
-      data[i * 4] = point.prediction; // R channel stores value
-      data[i * 4 + 3] = 1; // A channel set to 1
+      data[i * 4] = point.prediction;
+      data[i * 4 + 3] = 1;
     });
 
     const valueTexture = new DataTexture(
@@ -75,14 +78,14 @@ export class NonDiscreteDecisionBoundary implements Renderable {
            float dx = 1.0 / textureSize.x;
            float dy = 1.0 / textureSize.y;
            
-           // Gaussian blur kernel (3x3) for smoother interpolation
+           // gaussian blur kernel for smoother interpolation
            float kernel[9] = float[9](
              0.0625, 0.125, 0.0625,
              0.125,  0.25,  0.125,
              0.0625, 0.125, 0.0625
            );
            
-           // Apply Gaussian blur
+           // apply Gaussian blur
            float value = 0.0;
            int idx = 0;
            for(int y = -1; y <= 1; y++) {
@@ -93,7 +96,7 @@ export class NonDiscreteDecisionBoundary implements Renderable {
              }
            }
            
-           // Simple interpolation between red and green
+           // simple interpolation between red and green
            vec3 color = mix(vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), smoothstep(0.0, 1.0, value));
            
            gl_FragColor = vec4(color, 0.3);

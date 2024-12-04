@@ -10,6 +10,9 @@ type PointProps = {
   scale?: number;
 };
 
+/**
+ * Renders a point in 3D space.
+ */
 export class Point3D implements Renderable {
   public object: RenderableObject;
 

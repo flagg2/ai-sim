@@ -16,6 +16,9 @@ type LineProps = {
   getTooltip?: () => React.ReactNode;
 };
 
+/**
+ * Renders a line between two points in 2D space.
+ */
 export class Line implements Renderable {
   public object: RenderableObject;
 

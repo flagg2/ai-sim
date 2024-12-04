@@ -18,7 +18,7 @@ export const getNNInitialStep: NNDefinition["getInitialStep"] = (config) => {
       highlightedConnectionIds: [],
       highlightedNeuronIds: config.neurons
         .filter((n) => n.layer === 0)
-        .map((n) => n.id), // Initially highlight input layer neurons
+        .map((n) => n.id),
     },
   };
 };

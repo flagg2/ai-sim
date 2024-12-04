@@ -2,6 +2,10 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function Description({ children }: Props) {
+/**
+ * Wrapper component for algoroithm descriptions
+ */
+
+export default function Text({ children }: Props) {
   return <div className="space-y-4 text-dimmed-foreground">{children}</div>;
 }

@@ -15,6 +15,9 @@ type Point2DProps = {
   scale?: number;
 };
 
+/**
+ * Renders a point in 2D space.
+ */
 export class Point2D implements Renderable {
   public object: RenderableObject;
 

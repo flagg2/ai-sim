@@ -1,5 +1,5 @@
 import { getColoredMaterial } from "../../lib/materials";
-import { calculateDistance } from "../../lib/utils";
+import { calculateDistance, getNextId } from "../../lib/utils";
 import type { KMeansDefinition, Point } from "./types";
 
 export const getKMeansConfig: KMeansDefinition["getConfig"] = (params) => {
@@ -10,12 +10,6 @@ export const getKMeansConfig: KMeansDefinition["getConfig"] = (params) => {
     maxIterations: params.maxIterations,
   };
 };
-
-let id = 0;
-
-function getNextId() {
-  return id++;
-}
 
 function generateRandomPoint({ points }: { points: Point[] }): Point {
   const coords = {
@@ -40,7 +34,7 @@ function generateRandomPoint({ points }: { points: Point[] }): Point {
   }
 
   return {
-    id: getNextId().toString(),
+    id: getNextId(),
     coords,
     group: {
       label: "Unassigned",

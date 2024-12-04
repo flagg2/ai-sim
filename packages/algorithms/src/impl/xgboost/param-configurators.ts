@@ -1,4 +1,4 @@
-import { SliderParamConfigurator } from "../../lib";
+import { SelectParamConfigurator, SliderParamConfigurator } from "../../lib";
 import type { XGBoostDefinition } from "./types";
 
 export const xgboostParamConfigurators: XGBoostDefinition["paramConfigurators"] =
@@ -15,7 +15,7 @@ export const xgboostParamConfigurators: XGBoostDefinition["paramConfigurators"] 
       label: "Learning Rate",
       description:
         "How much each tree contributes to the final prediction (smaller values = more conservative learning)",
-      defaultValue: 0.05,
+      defaultValue: 0.1,
       min: 0.01,
       max: 0.3,
       step: 0.01,
@@ -25,7 +25,7 @@ export const xgboostParamConfigurators: XGBoostDefinition["paramConfigurators"] 
       label: "Max Tree Depth",
       description:
         "Maximum depth of each decision tree (controls model complexity)",
-      defaultValue: 4,
+      defaultValue: 3,
       min: 2,
       max: 10,
       step: 1,
@@ -34,9 +34,9 @@ export const xgboostParamConfigurators: XGBoostDefinition["paramConfigurators"] 
     numTrees: new SliderParamConfigurator({
       label: "Number of Trees",
       description: "Total number of trees to build in the ensemble",
-      defaultValue: 50,
+      defaultValue: 100,
       min: 10,
-      max: 100,
+      max: 200,
       step: 5,
     }),
   };

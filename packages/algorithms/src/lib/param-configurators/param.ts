@@ -4,6 +4,9 @@ type ParamConfiguratorProps<TDefaultValue> = {
   defaultValue: TDefaultValue;
 };
 
+/**
+ * A genericconfigurable parameter in an algorithm.
+ */
 export class ParamConfigurator<TDefaultValue = unknown> {
   public label: string;
   public description?: string;
