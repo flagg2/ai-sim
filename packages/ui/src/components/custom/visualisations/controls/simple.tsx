@@ -72,7 +72,7 @@ export function SimpleControls({
                     variant="outline"
                     size="default"
                   >
-                    <span className="text-sm">Show Detailed Info</span>
+                    <span className="text-sm">Details</span>
                     <IoExpand className="h-5 w-5 ml-2" />
                   </Button>
                 </DrawerTrigger>
