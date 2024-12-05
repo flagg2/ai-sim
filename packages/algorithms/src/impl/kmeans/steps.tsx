@@ -137,7 +137,7 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         <Text>
           <Paragraph>
             We check if the centroids have stopped moving. If they haven't moved
-            since the last step, we've found our final groups.
+            since the last time we checked, we've found our final groups.
           </Paragraph>
           <Note>
             {hasConverged
