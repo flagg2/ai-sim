@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <div className="w-full">
       <ThemeToggle className="fixed top-0 right-0 m-4" />
-      <section className="pt-8 md:pt-12 lg:pt-20 pb-6 md:pb-0">
+      <section className="pt-8 md:pt-12 lg:pt-20 pb-6 md:pb-6">
         <div className="container px-4 mx-auto md:px-6">
           <div className="max-w-3xl mx-auto text-center gap-4 flex flex-col">
             <h1 className="text-xl font-bold tracking-tight md:text-3xl">
