@@ -13,9 +13,6 @@ export const getSVMInitialStep: SVMDefinition["getInitialStep"] = () => {
           We want to classify the data points into two classes using Support
           Vector Machine (SVM).
         </Paragraph>
-        <Paragraph>
-          The data points are linearly separable in 2D space.
-        </Paragraph>
         <Note>
           SVM will find the optimal hyperplane that maximizes the margin between
           classes.

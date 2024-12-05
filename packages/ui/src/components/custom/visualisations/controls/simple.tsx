@@ -4,7 +4,7 @@ import { DrawerTrigger } from "../../../shadcn/drawer";
 import { Slider } from "../../../shadcn/slider";
 import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
-import { IoInformationCircleOutline } from "react-icons/io5";
+import { IoExpand } from "react-icons/io5";
 
 export function SimpleControls({
   simulation: { runner },
@@ -67,9 +67,13 @@ export function SimpleControls({
               showReset={false}
               extraButtons={
                 <DrawerTrigger asChild>
-                  <Button className="ml-auto" variant="outline" size="icon">
-                    <IoInformationCircleOutline className="h-5 w-5" />
-                    <span className="sr-only">Show Step Details</span>
+                  <Button
+                    className="ml-auto flex items-center"
+                    variant="outline"
+                    size="default"
+                  >
+                    <span className="text-sm">Show Detailed Info</span>
+                    <IoExpand className="h-5 w-5 ml-2" />
                   </Button>
                 </DrawerTrigger>
               }

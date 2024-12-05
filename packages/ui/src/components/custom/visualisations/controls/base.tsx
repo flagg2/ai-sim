@@ -71,8 +71,15 @@ export function BaseControls({
           <h3 className="hidden lg:block text-xl font-bold">
             Simulation Controls
           </h3>
-          <div className="flex items-center gap-2">
-            <ControlsButtons runner={runner} />
+          <div className="flex items-center gap-2 xl:hidden">
+            <ControlsButtons
+              runner={runner}
+              onClose={() => setIsDrawerOpen?.(false)}
+              showClose={true}
+            />
+          </div>
+          <div className="items-center gap-2 hidden xl:flex">
+            <ControlsButtons runner={runner} showClose={false} />
           </div>
         </>
       </div>

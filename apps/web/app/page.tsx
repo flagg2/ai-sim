@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <div className="w-full">
       <ThemeToggle className="fixed top-0 right-0 m-4" />
-      <section className="pt-8 md:pt-12 lg:pt-20 pb-6 md:pb-12">
+      <section className="pt-8 md:pt-12 lg:pt-20 pb-6 md:pb-0">
         <div className="container px-4 mx-auto md:px-6">
           <div className="max-w-3xl mx-auto text-center gap-4 flex flex-col">
             <h1 className="text-xl font-bold tracking-tight md:text-3xl">
@@ -22,6 +22,7 @@ export default function Page() {
               Select and algorithm to explore its visualization.
             </p>
             <SearchBox
+              className="text-sm"
               items={registry}
               keys={["title", "synonyms"]}
               onResults={setHits}
@@ -29,7 +30,7 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <section className="pb-6 md:pb-12 max-h-[calc(100vh-10rem)] overflow-auto">
+      <section className="md:pt-6 pb-6 md:pb-12 max-h-[calc(100vh-10rem)] overflow-auto">
         <div className="container grid gap-8 px-4 mx-auto md:grid-cols-2 lg:grid-cols-3 md:px-6">
           {hits.map((viz, index) => (
             <Link

@@ -31,9 +31,15 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         description: (
           <Text>
             <Paragraph>
-              Because it is the first iteration, we start by initializing{" "}
-              <Expression>k={k}</Expression> random centroids.
+              First, we randomly place <Expression>k={k}</Expression> center
+              points (called centroids) in our data space. These centroids will
+              help us group similar points together.
             </Paragraph>
+            <Note>
+              Think of centroids as the "representatives" of each group we want
+              to create. We're starting with random positions, but they'll move
+              to better locations as the algorithm runs.
+            </Note>
           </Text>
         ),
       });
@@ -60,10 +66,15 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
       description: (
         <Text>
           <Paragraph>
-            We assign each point to the nearest centroid based on Euclidean
-            distance.
+            For each point in our dataset, we find the closest centroid and
+            assign the point to that centroid's group. We measure "closest" by
+            calculating the straight-line distance between the point and each
+            centroid.
           </Paragraph>
-          <Note>Each point is colored according to its assigned cluster.</Note>
+          <Note>
+            Points are colored based on which centroid they're closest to. All
+            points of the same color belong to the same group.
+          </Note>
         </Text>
       ),
     });
@@ -97,9 +108,14 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
       description: (
         <Text>
           <Paragraph>
-            Update each centroid to the mean position (
-            <Expression>\mu</Expression>) of all points in its cluster.
+            Now that points are assigned to groups, we move each centroid to the
+            center of its group. We do this by calculating the average position
+            of all points in the group.
           </Paragraph>
+          <Note>
+            This helps centroids move to better positions that better represent
+            their group of points.
+          </Note>
         </Text>
       ),
     });
@@ -111,7 +127,7 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
 
     steps.push({
       type: "checkConvergence",
-      title: "Check Convergence",
+      title: "Check if Complete",
       state: {
         points: updatedPoints,
         centroids: updatedCentroids,
@@ -120,13 +136,13 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
       description: (
         <Text>
           <Paragraph>
-            We check if the algorithm has converged by comparing the old and new
-            centroid positions.
+            We check if the centroids have stopped moving. If they haven't moved
+            since the last step, we've found our final groups.
           </Paragraph>
           <Note>
             {hasConverged
-              ? "The algorithm has converged - centroids no longer move. We can stop the algorithm."
-              : "Centroids are still moving - continue to next iteration."}
+              ? "The centroids are now in their final positions! Each group is as well-defined as it can be."
+              : "The centroids are still moving to find better positions - we'll repeat the process."}
           </Note>
         </Text>
       ),

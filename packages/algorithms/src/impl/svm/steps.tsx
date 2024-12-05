@@ -31,13 +31,15 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
     description: (
       <Text>
         <Paragraph>
-          The Support Vector Machine (SVM) begins by analyzing the training
-          data, looking for the best way to separate the two classes with a
-          clear boundary.
+          We start by setting up the Support Vector Machine (SVM) with the data
+          provided. The SVM will try to find the best way to separate the data
+          points into two groups, using the kernel type you've selected.
         </Paragraph>
         <Note>
-          We'll use a linear approach, which means our boundary will be a
-          straight line that maximizes the gap between the two classes.
+          Different kernel types allow the SVM to create different types of
+          boundaries. A linear kernel creates straight lines, while other
+          kernels like RBF can create curved boundaries to better separate
+          complex patterns.
         </Note>
       </Text>
     ),
@@ -55,15 +57,15 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
     description: (
       <Text>
         <Paragraph>
-          The algorithm now identifies the most important points - called
-          support vectors. These are the points closest to where we'll draw our
-          boundary, and they're crucial because they alone determine where the
-          final boundary will be.
+          The SVM identifies the most critical data points, known as support
+          vectors. These points are closest to where the boundary will be and
+          are key because they determine its shape and position.
         </Paragraph>
         <Note>
-          Think of support vectors as the "goal posts" that define where to draw
-          the boundary line. All other points could be moved or removed without
-          affecting our decision.
+          Think of support vectors as the key markers that help decide where to
+          draw the boundary. The kernel type determines how these points
+          influence the boundary's shape - it could be straight or curved
+          depending on your choice.
         </Note>
       </Text>
     ),
@@ -90,13 +92,15 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
     description: (
       <Text>
         <Paragraph>
-          With our support vectors identified, we can now draw the optimal
-          boundary. This line sits exactly halfway between the closest points of
-          each class, creating the widest possible gap between them.
+          Using the selected kernel and the identified support vectors, the SVM
+          creates the optimal boundary. This boundary maximizes the separation
+          between the two groups, taking into account the kernel's ability to
+          create either straight or curved divisions.
         </Paragraph>
         <Note>
-          Any new points can now be classified simply by checking which side of
-          this boundary they fall on.
+          New data points can be classified by checking which side of this
+          boundary they fall on. The kernel helps transform the space so that
+          even complex patterns can be effectively separated.
         </Note>
       </Text>
     ),

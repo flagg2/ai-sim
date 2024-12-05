@@ -3,17 +3,22 @@ import { FaBackward, FaPause } from "react-icons/fa";
 import { Button } from "../../../shadcn/button";
 import { VscSettings } from "react-icons/vsc";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
+import { IoContract } from "react-icons/io5";
 
 export function ControlsButtons({
   runner,
   variant = "ghost",
   extraButtons,
   showReset = true,
+  showClose = false,
+  onClose,
 }: {
   runner: UseSimulationReturn["runner"];
   variant?: "ghost" | "outline";
   extraButtons?: React.ReactNode;
   showReset?: boolean;
+  showClose?: boolean;
+  onClose?: () => void;
 }) {
   if (runner.status !== "running") {
     return null;
@@ -67,18 +72,26 @@ export function ControlsButtons({
       </Button>
       {extraButtons}
       {showReset && (
-        <Button
-          className="ml-auto"
-          variant={variant}
-          size="icon"
-          onClick={() => {
-            stop();
-            reset();
-          }}
-        >
-          <VscSettings className="h-5 w-5" />
-          <span className="sr-only">Settings</span>
-        </Button>
+        <>
+          <Button
+            className="ml-auto"
+            variant={variant}
+            size="icon"
+            onClick={() => {
+              stop();
+              reset();
+            }}
+          >
+            <VscSettings className="h-5 w-5" />
+            <span className="sr-only">Settings</span>
+          </Button>
+          {showClose && (
+            <Button variant={variant} size="icon" onClick={onClose}>
+              <IoContract className="h-5 w-5" />
+              <span className="sr-only">Close</span>
+            </Button>
+          )}
+        </>
       )}
     </div>
   );
