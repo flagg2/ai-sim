@@ -18,7 +18,7 @@ export function SimpleControls({
       <div className="absolute bottom-4 left-0 right-0 px-4">
         <div className="flex gap-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4">
           <Button className="flex-grow" onClick={runner.start}>
-            Start
+            Run
           </Button>
           <DrawerTrigger asChild>
             <Button className="flex-grow" variant="outline">
