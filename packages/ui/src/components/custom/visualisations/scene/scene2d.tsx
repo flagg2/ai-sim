@@ -12,7 +12,7 @@ export default function Scene2D() {
       <OrthographicCamera
         makeDefault
         position={[100, 100, 200]}
-        zoom={screenSize.width > BREAKPOINT ? 3 : 1.5}
+        zoom={screenSize.width > BREAKPOINT ? 3 : 2}
         near={0.1}
         far={2000}
         rotation={[0, 0, 0]}

@@ -5,7 +5,7 @@ export const paramConfigurators: KMeansDefinition["paramConfigurators"] = {
   points: new SliderParamConfigurator({
     label: "Number of Points",
     description: "The number of points to cluster.",
-    defaultValue: 10,
+    defaultValue: 30,
     min: 3,
     max: 100,
   }),
