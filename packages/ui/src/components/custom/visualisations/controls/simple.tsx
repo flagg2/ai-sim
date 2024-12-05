@@ -4,7 +4,9 @@ import { DrawerTrigger } from "../../../shadcn/drawer";
 import { Slider } from "../../../shadcn/slider";
 import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
-import { IoExpand } from "react-icons/io5";
+import { IoExpand, IoPlay } from "react-icons/io5";
+import { FaPlay } from "react-icons/fa";
+import { VscSettings } from "react-icons/vsc";
 
 export function SimpleControls({
   simulation: { runner },
@@ -17,12 +19,18 @@ export function SimpleControls({
     return (
       <div className="absolute bottom-4 left-0 right-0 px-4">
         <div className="flex gap-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4">
-          <Button className="flex-grow" onClick={runner.start}>
+          <Button
+            variant="default"
+            className="flex-grow"
+            onClick={runner.start}
+          >
             Run
+            <IoPlay className="h-5 w-5 ml-2" />
           </Button>
           <DrawerTrigger asChild>
-            <Button className="flex-grow" variant="outline">
+            <Button variant="outline" className="flex-grow">
               Configure
+              <VscSettings className="h-5 w-5 ml-2" />
             </Button>
           </DrawerTrigger>
         </div>

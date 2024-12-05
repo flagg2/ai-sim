@@ -2,6 +2,7 @@ import { ControlsButtons } from "./buttons";
 import { Loader } from "../../general/loader";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 import { Button, Slider } from "../../../shadcn";
+import { IoPlay } from "react-icons/io5";
 
 export function BaseControls({
   simulation: { runner },
@@ -39,8 +40,10 @@ export function BaseControls({
                 start();
               }}
               className="w-full"
+              variant="default"
             >
               Run
+              <IoPlay className="h-5 w-5 ml-2" />
             </Button>
           </div>
         </div>
