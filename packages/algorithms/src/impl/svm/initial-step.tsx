@@ -2,6 +2,8 @@ import type { SVMDefinition } from "./types";
 import Text from "../../lib/descriptions/text";
 import Paragraph from "../../lib/descriptions/paragraph";
 import Note from "../../lib/descriptions/note";
+import { ListItem } from "../../lib/descriptions/list";
+import List from "../../lib/descriptions/list";
 
 export const getSVMInitialStep: SVMDefinition["getInitialStep"] = () => {
   return {
@@ -10,13 +12,22 @@ export const getSVMInitialStep: SVMDefinition["getInitialStep"] = () => {
     description: (
       <Text>
         <Paragraph>
-          We want to classify the data points into two classes using Support
-          Vector Machine (SVM).
+          We will classify data points into two groups using Support Vector
+          Machine (SVM). SVM works by finding a boundary that creates the widest
+          possible gap (called a margin) between different classes of data
+          points.
         </Paragraph>
-        <Note>
-          SVM will find the optimal hyperplane that maximizes the margin between
-          classes.
-        </Note>
+        <List>
+          <Paragraph>The algorithm will:</Paragraph>
+          <ListItem>Analyze the training data points</ListItem>
+          <ListItem>Find the best boundary to separate the classes</ListItem>
+          <ListItem>
+            Identify the key points (support vectors) that define this boundary
+          </ListItem>
+          <ListItem>
+            Create the widest possible margin around the boundary
+          </ListItem>
+        </List>
       </Text>
     ),
     state: {},

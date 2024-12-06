@@ -5,8 +5,6 @@ import { Slider } from "../../../shadcn/slider";
 import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoExpand, IoPlay } from "react-icons/io5";
-import { FaPlay } from "react-icons/fa";
-import { VscSettings } from "react-icons/vsc";
 
 export function SimpleControls({
   simulation: { runner },
@@ -28,9 +26,9 @@ export function SimpleControls({
             <IoPlay className="h-5 w-5 ml-2" />
           </Button>
           <DrawerTrigger asChild>
-            <Button variant="outline" className="flex-grow">
-              Configure
-              <VscSettings className="h-5 w-5 ml-2" />
+            <Button variant="outline">
+              Details
+              <IoExpand className="h-5 w-5 ml-2" />
             </Button>
           </DrawerTrigger>
         </div>
@@ -71,7 +69,6 @@ export function SimpleControls({
             />
             <ControlsButtons
               runner={runner}
-              variant="outline"
               showReset={false}
               extraButtons={
                 <DrawerTrigger asChild>

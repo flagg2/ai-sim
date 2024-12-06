@@ -2,7 +2,7 @@ import { ControlsButtons } from "./buttons";
 import { Loader } from "../../general/loader";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 import { Button, Slider } from "../../../shadcn";
-import { IoPlay } from "react-icons/io5";
+import { IoContract, IoPlay } from "react-icons/io5";
 
 export function BaseControls({
   simulation: { runner },
@@ -32,18 +32,27 @@ export function BaseControls({
               {configComponent}
             </>
           )}
-          <div className=" bg-background pt-2 absolute bottom-4 left-4 right-4">
+          <div className=" bg-background pt-2 absolute bottom-4 left-4 right-4 flex gap-2">
             <Button
               onClick={() => {
                 console.log("setIsDrawerOpen", setIsDrawerOpen);
-                setIsDrawerOpen?.(false);
                 start();
               }}
-              className="w-full"
+              className=" flex-grow"
               variant="default"
             >
               Run
               <IoPlay className="h-5 w-5 ml-2" />
+            </Button>
+            <Button
+              onClick={() => {
+                console.log("setIsDrawerOpen", setIsDrawerOpen);
+                setIsDrawerOpen?.(false);
+              }}
+              className=""
+              variant="outline"
+            >
+              <IoContract className="h-5 w-5" />
             </Button>
           </div>
         </div>
@@ -68,7 +77,7 @@ export function BaseControls({
   const { currentStep, totalStepCount, currentStepIndex } = runner;
 
   return (
-    <div className="bg-background rounded-lg border p-6 flex flex-col-reverse lg:flex-col gap-6 h-full">
+    <div className="bg-background rounded-lg border p-4 flex flex-col-reverse lg:flex-col gap-6 h-full">
       <div className="grid gap-2">
         <>
           <h3 className="hidden lg:block text-xl font-bold">

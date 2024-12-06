@@ -4,17 +4,17 @@ import { Button } from "../../../shadcn/button";
 import { VscSettings } from "react-icons/vsc";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 import { IoContract } from "react-icons/io5";
+import { useScreenSize } from "../../../../lib/hooks/use-screen-size";
+import { breakpoints } from "../../../../lib/utils";
 
 export function ControlsButtons({
   runner,
-  variant = "ghost",
   extraButtons,
   showReset = true,
   showClose = false,
   onClose,
 }: {
   runner: UseSimulationReturn["runner"];
-  variant?: "ghost" | "outline";
   extraButtons?: React.ReactNode;
   showReset?: boolean;
   showClose?: boolean;
@@ -34,10 +34,13 @@ export function ControlsButtons({
     canGoForward,
     isPlaying,
   } = runner;
+  const screenSize = useScreenSize();
+  const isDesktop = screenSize.width > breakpoints.desktop;
+
   return (
     <div className="flex items-center gap-2 w-full">
       <Button
-        variant={variant}
+        variant={isDesktop ? "ghost" : "outline"}
         size="icon"
         onClick={backward}
         disabled={!canGoBackward}
@@ -46,13 +49,17 @@ export function ControlsButtons({
         <span className="sr-only">Backward</span>
       </Button>
       {isPlaying ? (
-        <Button variant={variant} size="icon" onClick={pause}>
+        <Button
+          variant={isDesktop ? "ghost" : "outline"}
+          size="icon"
+          onClick={pause}
+        >
           <FaPause className="h-5 w-5" />
           <span className="sr-only">Pause</span>
         </Button>
       ) : (
         <Button
-          variant={variant}
+          variant={isDesktop ? "ghost" : "outline"}
           size="icon"
           onClick={play}
           disabled={!canGoForward}
@@ -62,7 +69,7 @@ export function ControlsButtons({
         </Button>
       )}
       <Button
-        variant={variant}
+        variant={isDesktop ? "ghost" : "outline"}
         size="icon"
         onClick={forward}
         disabled={!canGoForward}
@@ -75,7 +82,7 @@ export function ControlsButtons({
         <>
           <Button
             className="ml-auto"
-            variant={variant}
+            variant={isDesktop ? "ghost" : "outline"}
             size="icon"
             onClick={() => {
               stop();
@@ -86,9 +93,8 @@ export function ControlsButtons({
             <span className="sr-only">Settings</span>
           </Button>
           {showClose && (
-            <Button variant={variant} size="icon" onClick={onClose}>
+            <Button variant={"outline"} size="icon" onClick={onClose}>
               <IoContract className="h-5 w-5" />
-              <span className="sr-only">Close</span>
             </Button>
           )}
         </>

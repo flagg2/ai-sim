@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
-
-const BREAKPOINT = 768;
+import { breakpoints } from "../utils";
 
 export function useTooltip() {
   const [tooltip, setTooltip] = useState<React.ReactNode | null>(null);
@@ -11,7 +10,7 @@ export function useTooltip() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const checkMobile = () => {
-        setIsMobile(window.innerWidth <= BREAKPOINT);
+        setIsMobile(window.innerWidth <= breakpoints.mobile);
       };
       checkMobile();
       window.addEventListener("resize", checkMobile);
