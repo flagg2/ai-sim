@@ -3,7 +3,6 @@ import { FaBackward, FaPause } from "react-icons/fa";
 import { Button } from "../../../shadcn/button";
 import { VscSettings } from "react-icons/vsc";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
-import { IoContract } from "react-icons/io5";
 import { useScreenSize } from "../../../../lib/hooks/use-screen-size";
 import { breakpoints } from "../../../../lib/utils";
 
@@ -11,14 +10,10 @@ export function ControlsButtons({
   runner,
   extraButtons,
   showReset = true,
-  showClose = false,
-  onClose,
 }: {
   runner: UseSimulationReturn["runner"];
   extraButtons?: React.ReactNode;
   showReset?: boolean;
-  showClose?: boolean;
-  onClose?: () => void;
 }) {
   if (runner.status !== "running") {
     return null;
@@ -92,11 +87,6 @@ export function ControlsButtons({
             <VscSettings className="h-5 w-5" />
             <span className="sr-only">Settings</span>
           </Button>
-          {showClose && (
-            <Button variant={"outline"} size="icon" onClick={onClose}>
-              <IoContract className="h-5 w-5" />
-            </Button>
-          )}
         </>
       )}
     </div>

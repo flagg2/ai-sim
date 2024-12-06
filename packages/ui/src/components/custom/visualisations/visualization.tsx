@@ -53,6 +53,7 @@ export function Visualization({ algorithm }: VisualisationProps) {
             </DrawerDescription>
             <div className="p-4 flex flex-col h-full">
               <BaseControls
+                title={algorithm.meta.title}
                 simulation={simulation}
                 configComponent={ParamsConfigurator}
                 algorithmDescription={algorithm.meta.description}
@@ -79,6 +80,7 @@ export function Visualization({ algorithm }: VisualisationProps) {
           </div>
           <div className="bg-background rounded-lg border p-6 flex flex-col gap-6">
             <BaseControls
+              title={algorithm.meta.title}
               simulation={simulation}
               configComponent={ParamsConfigurator}
               algorithmDescription={algorithm.meta.description}

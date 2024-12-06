@@ -2,15 +2,17 @@ import { ControlsButtons } from "./buttons";
 import { Loader } from "../../general/loader";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 import { Button, Slider } from "../../../shadcn";
-import { IoContract, IoPlay } from "react-icons/io5";
+import { IoPlay } from "react-icons/io5";
 
 export function BaseControls({
+  title,
   simulation: { runner },
   configComponent,
   algorithmDescription,
   showConfig = true,
   setIsDrawerOpen,
 }: {
+  title: string;
   simulation: UseSimulationReturn;
   configComponent: React.ReactNode;
   algorithmDescription: React.ReactNode;
@@ -44,20 +46,10 @@ export function BaseControls({
               Run
               <IoPlay className="h-5 w-5 ml-2" />
             </Button>
-            <Button
-              onClick={() => {
-                console.log("setIsDrawerOpen", setIsDrawerOpen);
-                setIsDrawerOpen?.(false);
-              }}
-              className=""
-              variant="outline"
-            >
-              <IoContract className="h-5 w-5" />
-            </Button>
           </div>
         </div>
         <div className="grid gap-2">
-          <h3 className="text-xl font-bold">Algorithm Description</h3>
+          <h3 className="xl:hidden text-xl font-bold">{title}</h3>
           <div className="prose text-muted-foreground">
             {algorithmDescription}
           </div>
@@ -84,14 +76,10 @@ export function BaseControls({
             Simulation Controls
           </h3>
           <div className="flex items-center gap-2 xl:hidden">
-            <ControlsButtons
-              runner={runner}
-              onClose={() => setIsDrawerOpen?.(false)}
-              showClose={true}
-            />
+            <ControlsButtons runner={runner} />
           </div>
           <div className="items-center gap-2 hidden xl:flex">
-            <ControlsButtons runner={runner} showClose={false} />
+            <ControlsButtons runner={runner} />
           </div>
         </>
       </div>
