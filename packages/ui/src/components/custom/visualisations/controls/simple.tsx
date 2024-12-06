@@ -5,6 +5,7 @@ import { Slider } from "../../../shadcn/slider";
 import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoExpand, IoPlay } from "react-icons/io5";
+import { useRef } from "react";
 
 export function SimpleControls({
   simulation: { runner },
@@ -13,6 +14,27 @@ export function SimpleControls({
   isDrawerOpen: boolean;
   simulation: UseSimulationReturn;
 }) {
+  const touchStartY = useRef<number | null>(null);
+  const SWIPE_THRESHOLD = 50;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartY.current) return;
+
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchStartY.current - touchEndY;
+
+    if (deltaY > SWIPE_THRESHOLD) {
+      const drawerTrigger = document.querySelector('[data-trigger="drawer"]');
+      (drawerTrigger as HTMLButtonElement)?.click();
+    }
+
+    touchStartY.current = null;
+  };
+
   if (runner.status === "configuring") {
     return (
       <div className="absolute bottom-4 left-0 right-0 px-4">
@@ -46,6 +68,8 @@ export function SimpleControls({
     <AnimatePresence>
       {!isDrawerOpen && (
         <motion.div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -76,6 +100,7 @@ export function SimpleControls({
                     className="ml-auto flex items-center"
                     variant="outline"
                     size="default"
+                    data-trigger="drawer"
                   >
                     <span className="text-sm">Details</span>
                     <IoExpand className="h-5 w-5 ml-2" />
