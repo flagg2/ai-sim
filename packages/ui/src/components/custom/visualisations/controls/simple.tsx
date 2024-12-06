@@ -66,7 +66,7 @@ export function SimpleControls({
           transition={{ duration: 0.3 }}
           className="absolute bottom-0 left-0 right-0"
         >
-          <div className="-mb-1 flex flex-col gap-4 bg-background/80 backdrop-blur-sm rounded-t-lg border p-4 px-8">
+          <div className="-mb-1 flex flex-col gap-4 bg-background backdrop-blur-sm rounded-t-lg border p-4 px-8">
             <DrawerIndicator />
 
             <div className="flex justify-between items-center">
