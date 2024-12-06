@@ -14,12 +14,13 @@ export default function Page() {
       <ThemeToggle className="fixed top-0 right-0 m-4" />
       <section className="pt-8 md:pt-12 lg:pt-20 pb-6 md:pb-6">
         <div className="container px-4 mx-auto md:px-6">
-          <div className="max-w-3xl mx-auto text-center gap-4 flex flex-col">
+          <div className="max-w-3xl mx-auto text-center gap-2 md:gap-4 flex flex-col">
             <h1 className="text-xl font-bold tracking-tight md:text-3xl">
-              AI Algorithm Visualizations
+              MLens
             </h1>
-            <p className="text-sm text-muted-foreground md:text-lg">
-              Select and algorithm to explore its visualization.
+            <p className="text-muted-foreground md:text-lg">
+              This website offers a collection of interactive visualizations of
+              machine learning algorithms.
             </p>
             <SearchBox
               className="text-sm"

@@ -56,7 +56,7 @@ const DrawerContent = React.forwardRef<
 DrawerContent.displayName = "DrawerContent";
 
 const DrawerIndicator = () => (
-  <div className="mx-auto h-2 w-[100px] rounded-full bg-primary" />
+  <div className="mx-auto h-2 w-[100px] rounded-full bg-muted-foreground" />
 );
 
 DrawerIndicator.displayName = "DrawerIndicator";

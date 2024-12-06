@@ -39,9 +39,6 @@ export function SimpleControls({
           <DrawerTrigger asChild>
             <div className="flex flex-col items-center w-full justify-center font-bold">
               <div className="flex items-center">SWIPE UP TO START</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                Swipe down anytime to see the visualization
-              </div>
             </div>
           </DrawerTrigger>
         </motion.div>
@@ -66,16 +63,20 @@ export function SimpleControls({
           transition={{ duration: 0.3 }}
           className="absolute bottom-0 left-0 right-0"
         >
-          <div className="-mb-1 flex flex-col gap-4 bg-background backdrop-blur-sm rounded-t-lg border p-4 px-8">
+          <div className="-mb-1 flex flex-col gap-2 bg-background backdrop-blur-sm rounded-t-lg border p-4 px-8">
             <DrawerIndicator />
+            <div className="text-sm text-muted-foreground flex justify-center font-bold">
+              Swipe up to see details
+            </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-2">
               <span className="font-bold">{currentStep.title}</span>
               <span className="text-muted-foreground">
                 {currentStepIndex + 1} / {totalStepCount}
               </span>
             </div>
             <Slider
+              className="mb-2"
               min={0}
               max={totalStepCount - 1}
               value={[currentStepIndex]}

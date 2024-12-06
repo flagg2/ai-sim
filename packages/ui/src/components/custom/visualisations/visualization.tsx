@@ -51,6 +51,9 @@ export function Visualization({ algorithm }: VisualisationProps) {
             <DrawerDescription hidden>
               Configure the algorithm parameters and start the simulation.
             </DrawerDescription>
+            <div className="text-sm text-muted-foreground mt-2 flex justify-center font-bold">
+              Swipe down to see the visualization
+            </div>
             <div className="p-4 flex flex-col h-full">
               <BaseControls
                 title={algorithm.meta.title}

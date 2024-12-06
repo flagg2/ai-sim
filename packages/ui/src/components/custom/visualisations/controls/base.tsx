@@ -83,6 +83,7 @@ export function BaseControls({
           </div>
         </>
       </div>
+
       <div className="flex-grow flex flex-col">
         <div className="flex flex-col-reverse lg:flex-col gap-2 flex-grow">
           <Slider

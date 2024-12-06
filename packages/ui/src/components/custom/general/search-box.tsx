@@ -17,7 +17,7 @@ export function SearchBox<T>({
   items,
   keys,
   onResults,
-  placeholder = "Search...",
+  placeholder = "Search for an algorithm...",
   className,
   threshold = 0.3,
 }: SearchBoxProps<T>) {
