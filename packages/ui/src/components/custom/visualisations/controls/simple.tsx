@@ -5,40 +5,29 @@ import { Slider } from "../../../shadcn/slider";
 import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoExpand, IoPlay } from "react-icons/io5";
-import { useRef } from "react";
+import { useSwipeGesture } from "../../../../lib/hooks/use-swipe-gesture";
 
 export function SimpleControls({
   simulation: { runner },
   isDrawerOpen,
+  setIsDrawerOpen,
 }: {
   isDrawerOpen: boolean;
   simulation: UseSimulationReturn;
+  setIsDrawerOpen: (isDrawerOpen: boolean) => void;
 }) {
-  const touchStartY = useRef<number | null>(null);
-  const SWIPE_THRESHOLD = 50;
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStartY.current) return;
-
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaY = touchStartY.current - touchEndY;
-
-    if (deltaY > SWIPE_THRESHOLD) {
-      const drawerTrigger = document.querySelector('[data-trigger="drawer"]');
-      (drawerTrigger as HTMLButtonElement)?.click();
-    }
-
-    touchStartY.current = null;
-  };
+  const { handleTouchStart, handleTouchEnd } = useSwipeGesture({
+    onSwipeUp: () => setIsDrawerOpen(true),
+  });
 
   if (runner.status === "configuring") {
     return (
       <div className="absolute bottom-4 left-0 right-0 px-4">
-        <div className="flex gap-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4">
+        <div
+          className="flex gap-4 bg-background/80 backdrop-blur-sm rounded-lg border p-4"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <Button
             variant="default"
             className="flex-grow"

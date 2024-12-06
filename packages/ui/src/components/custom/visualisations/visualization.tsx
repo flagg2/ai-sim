@@ -40,7 +40,11 @@ export function Visualization({ algorithm }: VisualisationProps) {
           </div>
         )}
         <Drawer onOpenChange={setIsDrawerOpen} open={isDrawerOpen}>
-          <SimpleControls simulation={simulation} isDrawerOpen={isDrawerOpen} />
+          <SimpleControls
+            simulation={simulation}
+            isDrawerOpen={isDrawerOpen}
+            setIsDrawerOpen={setIsDrawerOpen}
+          />
 
           <DrawerContent className="h-full max-h-[80vh]">
             <DrawerTitle hidden>Configuration</DrawerTitle>

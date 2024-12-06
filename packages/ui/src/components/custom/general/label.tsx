@@ -8,9 +8,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../shadcn/tooltip";
-import { useScreenSize } from "../../../lib/hooks/use-screen-size";
-import { breakpoints } from "../../../lib/utils";
-import { cn } from "../../../lib/utils";
 import { useIsTouchDevice } from "../../../lib/hooks/use-is-touch-device";
 
 type LabelProps = {
