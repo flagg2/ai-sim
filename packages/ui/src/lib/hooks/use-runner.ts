@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState, useTransition } from "react";
 import { useInterval } from "usehooks-ts";
+import { useDebounce } from "./use-debounce";
+import { useIsTouchDevice } from "./use-is-touch-device";
 import type { UseAlgorithmReturn } from "./use-algorithm-state";
 import { AlgorithmDefinition, Step } from "@repo/algorithms/lib";
 
@@ -13,6 +15,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
   | {
       currentStep: TStep;
       currentStepIndex: number;
+      sliderStepIndex: number;
       config: TConfig;
       start: () => void;
       status: "configuring";
@@ -21,12 +24,14 @@ export function useRunner<TStep extends Step, TConfig extends object>({
       status: "loading";
       currentStep: TStep;
       currentStepIndex: number;
+      sliderStepIndex: number;
       config: TConfig;
     }
   | {
       totalStepCount: number;
       currentStep: TStep;
       currentStepIndex: number;
+      sliderStepIndex: number;
       config: TConfig;
       isPlaying: boolean;
       play: () => void;
@@ -37,6 +42,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
       start: () => void;
       stop: () => void;
       goto: (index: number) => void;
+      gotoWithSlider: (index: number) => void;
       canGoForward: boolean;
       canGoBackward: boolean;
       status: "running";
@@ -45,6 +51,8 @@ export function useRunner<TStep extends Step, TConfig extends object>({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
+  const [sliderStepIndex, setSliderStepIndex] = useState(0);
+  const { isTouchDevice } = useIsTouchDevice();
 
   const play = useCallback(() => {
     setIsPlaying(true);
@@ -66,6 +74,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
       }
 
       setCurrentStepIndex((prevIndex) => prevIndex + 1);
+      setSliderStepIndex((prevIndex) => prevIndex + 1);
     },
     isPlaying ? 500 : null,
   );
@@ -74,21 +83,36 @@ export function useRunner<TStep extends Step, TConfig extends object>({
     setCurrentStepIndex((prevIndex) =>
       Math.min(prevIndex + 1, algorithmState.steps.length - 1),
     );
-  }, [setCurrentStepIndex, algorithmState.steps]);
+    setSliderStepIndex((prevIndex) =>
+      Math.min(prevIndex + 1, algorithmState.steps.length - 1),
+    );
+  }, [setCurrentStepIndex, setSliderStepIndex, algorithmState.steps]);
 
   const backward = useCallback(() => {
     setCurrentStepIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-  }, [setCurrentStepIndex]);
+    setSliderStepIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+  }, [setCurrentStepIndex, setSliderStepIndex]);
 
   const reset = useCallback(() => {
     setCurrentStepIndex(0);
-  }, [setCurrentStepIndex]);
+    setSliderStepIndex(0);
+  }, [setCurrentStepIndex, setSliderStepIndex]);
 
-  const goto = useCallback(
+  const debouncedGoto = useDebounce(
     (index: number) => {
-      setCurrentStepIndex(index);
+      if (isStarted && !isLoading) {
+        setCurrentStepIndex(index);
+      }
     },
-    [setCurrentStepIndex],
+    isTouchDevice ? 300 : 0,
+  );
+
+  const gotoWithSlider = useCallback(
+    (index: number) => {
+      setSliderStepIndex(index);
+      debouncedGoto(index);
+    },
+    [debouncedGoto],
   );
 
   const start = useCallback(() => {
@@ -112,6 +136,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
     return {
       currentStep: algorithmState.steps[0]!,
       currentStepIndex: 0,
+      sliderStepIndex: 0,
       config,
       start,
       status: "configuring",
@@ -123,6 +148,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
       status: "loading",
       currentStep: algorithmState.steps[0]!,
       currentStepIndex: 0,
+      sliderStepIndex: 0,
       config,
     };
   }
@@ -131,6 +157,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
     totalStepCount: algorithmState.steps.length,
     currentStep,
     currentStepIndex,
+    sliderStepIndex,
     config,
     isPlaying,
     play,
@@ -140,7 +167,8 @@ export function useRunner<TStep extends Step, TConfig extends object>({
     reset,
     start,
     stop,
-    goto,
+    goto: debouncedGoto,
+    gotoWithSlider,
     canGoForward,
     canGoBackward: currentStepIndex > 0,
     status: "running",

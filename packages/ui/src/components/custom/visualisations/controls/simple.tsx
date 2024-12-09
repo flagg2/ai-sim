@@ -4,7 +4,6 @@ import { Slider } from "../../../shadcn/slider";
 import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSwipeGesture } from "../../../../lib/hooks/use-swipe-gesture";
-import { useEffect } from "react";
 
 export function SimpleControls({
   simulation: { runner },
@@ -18,6 +17,8 @@ export function SimpleControls({
   const { handlers } = useSwipeGesture({
     onSwipeUp: () => setIsDrawerOpen(true),
   });
+
+  const { sliderStepIndex } = runner;
 
   if (runner.status === "configuring") {
     return (
@@ -50,7 +51,8 @@ export function SimpleControls({
     return null;
   }
 
-  const { currentStep, totalStepCount, currentStepIndex } = runner;
+  const { currentStep, totalStepCount, currentStepIndex, gotoWithSlider } =
+    runner;
 
   return (
     <AnimatePresence>
@@ -70,20 +72,18 @@ export function SimpleControls({
             </div>
 
             <div className="bg-background rounded-lg border p-4 mt-2">
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex justify-between items-center mb-4 xl:mb-0">
                 <span className="font-bold">{currentStep.title}</span>
                 <span className="text-muted-foreground">
                   {currentStepIndex + 1} / {totalStepCount}
                 </span>
               </div>
               <Slider
-                className="mb-2"
+                className="mb-4"
                 min={0}
                 max={totalStepCount - 1}
-                value={[currentStepIndex]}
-                onValueChange={(value) => {
-                  runner.goto(value[0]!);
-                }}
+                value={[sliderStepIndex]}
+                onValueChange={(value) => gotoWithSlider(value[0]!)}
               />
               <ControlsButtons runner={runner} showReset={false} />
             </div>
