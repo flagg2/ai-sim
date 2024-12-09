@@ -63,28 +63,30 @@ export function SimpleControls({
           transition={{ duration: 0.3 }}
           className="absolute bottom-0 left-0 right-0"
         >
-          <div className="-mb-1 flex flex-col gap-2 bg-background backdrop-blur-sm rounded-t-lg border p-4 px-8">
+          <div className="-mb-1 flex flex-col gap-2 bg-background backdrop-blur-sm rounded-t-lg border p-4">
             <DrawerIndicator />
             <div className="text-sm text-muted-foreground flex justify-center font-bold">
               Swipe up to see details
             </div>
 
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-bold">{currentStep.title}</span>
-              <span className="text-muted-foreground">
-                {currentStepIndex + 1} / {totalStepCount}
-              </span>
+            <div className="bg-background rounded-lg border p-4 mt-2">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-bold">{currentStep.title}</span>
+                <span className="text-muted-foreground">
+                  {currentStepIndex + 1} / {totalStepCount}
+                </span>
+              </div>
+              <Slider
+                className="mb-2"
+                min={0}
+                max={totalStepCount - 1}
+                value={[currentStepIndex]}
+                onValueChange={(value) => {
+                  runner.goto(value[0]!);
+                }}
+              />
+              <ControlsButtons runner={runner} showReset={false} />
             </div>
-            <Slider
-              className="mb-2"
-              min={0}
-              max={totalStepCount - 1}
-              value={[currentStepIndex]}
-              onValueChange={(value) => {
-                runner.goto(value[0]!);
-              }}
-            />
-            <ControlsButtons runner={runner} showReset={false} />
           </div>
         </motion.div>
       )}
