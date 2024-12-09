@@ -3,6 +3,8 @@ import { Loader } from "../../general/loader";
 import { UseSimulationReturn } from "../../../../lib/hooks/use-simulation";
 import { Button, Slider } from "../../../shadcn";
 import { IoPlay } from "react-icons/io5";
+import { useShowHints } from "../../../../lib/hooks/use-show-hints";
+import { cn } from "../../../../lib/utils";
 
 export function BaseControls({
   title,
@@ -20,11 +22,17 @@ export function BaseControls({
   setIsDrawerOpen?: (open: boolean) => void;
 }) {
   const { status, sliderStepIndex } = runner;
+  const { shouldShowHints } = useShowHints();
 
   if (status === "configuring") {
     const { start } = runner;
     return (
-      <div className="bg-background h-full rounded-lg border p-4 flex flex-col gap-6 relative">
+      <div
+        className={cn(
+          "bg-background h-full rounded-lg border p-4 flex flex-col gap-6 relative",
+          shouldShowHints() && "h-[calc(100%-28px)]",
+        )}
+      >
         <div className="grid gap-2">
           <h3 className="text-xl font-bold">{title}</h3>
           <div className="prose text-muted-foreground">
@@ -64,7 +72,12 @@ export function BaseControls({
     runner;
 
   return (
-    <div className="h-full bg-background rounded-lg border xl:border-none p-4 xl:p-0 flex flex-col-reverse lg:flex-col gap-6">
+    <div
+      className={cn(
+        "h-full bg-background rounded-lg border xl:border-none p-4 xl:p-0 flex flex-col-reverse lg:flex-col gap-6",
+        shouldShowHints() && "h-[calc(100%-28px)]",
+      )}
+    >
       <div className="flex flex-col min-h-0 h-full">
         <div className="xl:border rounded-lg contents xl:flex flex-col gap-2 xl:p-4 flex-shrink-0 mb-2">
           <div className="text-md font-bold flex justify-between mb-2 order-1 lg:order-1 shrink-0">

@@ -11,6 +11,8 @@ import { SimpleControls } from "./controls/simple";
 import { BaseControls } from "./controls/base";
 import { useVisualisation } from "../../../lib/hooks/use-visualisation";
 import Scene from "./scene/scene";
+import { useEffect } from "react";
+import { useShowHints } from "../../../lib/hooks/use-show-hints";
 
 export type VisualisationProps = {
   algorithm: AlgorithmDefinition<any, any, any>;
@@ -26,6 +28,8 @@ export function Visualization({ algorithm }: VisualisationProps) {
     Renderer,
     ParamsConfigurator,
   } = useVisualisation(algorithm);
+
+  const { shouldShowHints } = useShowHints();
 
   return (
     <div className="flex flex-col w-full  h-[calc(100vh-68px)]">
@@ -51,7 +55,12 @@ export function Visualization({ algorithm }: VisualisationProps) {
             <DrawerDescription hidden>
               Configure the algorithm parameters and start the simulation.
             </DrawerDescription>
-            <div className="p-4 h-full flex-shrink-0 flex-grow-0 min-h-full">
+            <div className="p-4 h-full flex-shrink-0 flex-grow-0 min-h-full flex flex-col">
+              {shouldShowHints() && (
+                <div className="text-sm text-muted-foreground mb-2 flex justify-center font-bold ">
+                  Swipe down to see the visualization
+                </div>
+              )}
               <BaseControls
                 title={algorithm.meta.title}
                 simulation={simulation}

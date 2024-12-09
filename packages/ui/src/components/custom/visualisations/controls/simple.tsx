@@ -4,6 +4,7 @@ import { Slider } from "../../../shadcn/slider";
 import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSwipeGesture } from "../../../../lib/hooks/use-swipe-gesture";
+import { useShowHints } from "../../../../lib/hooks/use-show-hints";
 
 export function SimpleControls({
   simulation: { runner },
@@ -14,8 +15,14 @@ export function SimpleControls({
   simulation: UseSimulationReturn;
   setIsDrawerOpen: (isDrawerOpen: boolean) => void;
 }) {
+  const { incrementActionCount, shouldShowHints } = useShowHints();
   const { handlers } = useSwipeGesture({
-    onSwipeUp: () => setIsDrawerOpen(true),
+    onSwipeUp: () => {
+      setIsDrawerOpen(true);
+      if (runner.status === "running") {
+        incrementActionCount();
+      }
+    },
   });
 
   const { sliderStepIndex } = runner;
@@ -67,9 +74,11 @@ export function SimpleControls({
         >
           <div className="-mb-1 flex flex-col gap-2 bg-background backdrop-blur-sm rounded-t-lg border p-4">
             <DrawerIndicator />
-            <div className="text-sm text-muted-foreground flex justify-center font-bold">
-              Swipe up to see details
-            </div>
+            {shouldShowHints() && (
+              <div className="text-sm text-muted-foreground flex justify-center font-bold">
+                Swipe up to see details
+              </div>
+            )}
 
             <div className="bg-background rounded-lg border p-4 mt-2">
               <div className="flex justify-between items-center mb-4 xl:mb-0">
