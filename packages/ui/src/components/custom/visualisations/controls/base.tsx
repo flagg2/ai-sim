@@ -54,7 +54,7 @@ export function BaseControls({
 
   if (status === "loading") {
     return (
-      <div className="bg-background flex items-center justify-center h-full">
+      <div className="bg-background flex items-center justify-center flex-grow">
         <Loader />
       </div>
     );
@@ -64,35 +64,33 @@ export function BaseControls({
     runner;
 
   return (
-    <div className="bg-background rounded-lg border xl:border-none p-4 xl:p-0 flex flex-col-reverse lg:flex-col gap-6 h-full">
-      <div className="flex-grow flex flex-col min-h-0">
-        <div className="flex flex-col gap-2 flex-grow min-h-0">
-          <div className="xl:border rounded-lg contents xl:flex flex-col gap-2 xl:p-4">
-            <div className="text-md font-bold flex justify-between mb-2 order-1 lg:order-1">
-              <span>{currentStep.title}</span>
-              <span className="text-muted-foreground">
-                {currentStepIndex + 1} / {totalStepCount}
-              </span>
+    <div className="h-full bg-background rounded-lg border xl:border-none p-4 xl:p-0 flex flex-col-reverse lg:flex-col gap-6">
+      <div className="flex flex-col min-h-0 h-full">
+        <div className="xl:border rounded-lg contents xl:flex flex-col gap-2 xl:p-4 flex-shrink-0 mb-2">
+          <div className="text-md font-bold flex justify-between mb-2 order-1 lg:order-1 shrink-0">
+            <span>{currentStep.title}</span>
+            <span className="text-muted-foreground">
+              {currentStepIndex + 1} / {totalStepCount}
+            </span>
+          </div>
+          <div className="grid gap-2 mt-4 lg:mt-2 order-3 lg:order-2 shrink-0">
+            <Slider
+              className="mb-2"
+              min={0}
+              max={totalStepCount - 1}
+              value={[sliderStepIndex]}
+              onValueChange={(value) => gotoWithSlider(value[0]!)}
+            />
+            <div className="flex items-center gap-2 xl:hidden">
+              <ControlsButtons runner={runner} />
             </div>
-            <div className="grid gap-2 mt-4 lg:mt-2 order-3 lg:order-2">
-              <Slider
-                className="mb-2"
-                min={0}
-                max={totalStepCount - 1}
-                value={[sliderStepIndex]}
-                onValueChange={(value) => gotoWithSlider(value[0]!)}
-              />
-              <div className="flex items-center gap-2 xl:hidden">
-                <ControlsButtons runner={runner} />
-              </div>
-              <div className="items-center gap-2 hidden xl:flex">
-                <ControlsButtons runner={runner} />
-              </div>
+            <div className="items-center gap-2 hidden xl:flex">
+              <ControlsButtons runner={runner} />
             </div>
           </div>
-          <div className="prose text-muted-foreground overflow-y-auto order-2 lg:order-3 xl:p-4 xl:border rounded-lg flex-grow min-h-0">
-            {currentStep.description}
-          </div>
+        </div>
+        <div className="prose text-muted-foreground order-2 lg:order-3 xl:p-4 xl:border rounded-lg min-h-0 flex-grow overflow-scroll">
+          {currentStep.description}
         </div>
       </div>
     </div>

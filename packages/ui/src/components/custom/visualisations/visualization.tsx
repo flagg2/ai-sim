@@ -46,15 +46,12 @@ export function Visualization({ algorithm }: VisualisationProps) {
             setIsDrawerOpen={setIsDrawerOpen}
           />
 
-          <DrawerContent className="h-full max-h-[80vh]">
+          <DrawerContent className="h-full max-h-[80vh] min-h-[80vh] flex flex-col pb-[16px]">
             <DrawerTitle hidden>Configuration</DrawerTitle>
             <DrawerDescription hidden>
               Configure the algorithm parameters and start the simulation.
             </DrawerDescription>
-            <div className="text-sm text-muted-foreground mt-2 flex justify-center font-bold">
-              Swipe down to see the visualization
-            </div>
-            <div className="p-4 flex flex-col h-full">
+            <div className="p-4 h-full flex-shrink-0 flex-grow-0 min-h-full">
               <BaseControls
                 title={algorithm.meta.title}
                 simulation={simulation}
