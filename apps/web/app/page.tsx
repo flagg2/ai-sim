@@ -20,10 +20,9 @@ export default function Page() {
             </h1>
             <p className="text-muted-foreground md:text-lg">
               This website offers a collection of interactive visualizations of
-              machine learning algorithms.
+              ML algorithms.
             </p>
             <SearchBox
-              className="text-sm"
               items={registry}
               keys={["title", "synonyms"]}
               onResults={setHits}

@@ -45,8 +45,8 @@ export function SimpleControls({
         >
           <DrawerIndicator />
           <DrawerTrigger asChild>
-            <div className="flex flex-col items-center w-full justify-center font-bold py-6">
-              <div className="flex items-center text-xl">SWIPE UP TO START</div>
+            <div className="flex flex-col items-center w-full justify-center font-bold py-4">
+              <div className="flex items-center text-lg">SWIPE UP TO START</div>
             </div>
           </DrawerTrigger>
         </motion.div>
