@@ -11,7 +11,7 @@ export const kmeansMeta: KMeansDefinition["meta"] = {
   },
   title: "K-Means",
   description:
-    "K-means is an unsupervised learning algorithm that separates a dataset into K clusters.",
+    "K-means is a machine learning algorithm that separates a dataset into K clusters.",
   shortDescription: "Partition data into clusters based on similarity.",
   synonyms: ["kmeans", "clustering"],
 };
