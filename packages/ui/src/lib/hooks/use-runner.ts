@@ -76,22 +76,24 @@ export function useRunner<TStep extends Step, TConfig extends object>({
       setCurrentStepIndex((prevIndex) => prevIndex + 1);
       setSliderStepIndex((prevIndex) => prevIndex + 1);
     },
-    isPlaying ? 500 : null,
+    isPlaying ? 750 : null,
   );
 
   const forward = useCallback(() => {
+    pause();
     setCurrentStepIndex((prevIndex) =>
       Math.min(prevIndex + 1, algorithmState.steps.length - 1),
     );
     setSliderStepIndex((prevIndex) =>
       Math.min(prevIndex + 1, algorithmState.steps.length - 1),
     );
-  }, [setCurrentStepIndex, setSliderStepIndex, algorithmState.steps]);
+  }, [pause, setCurrentStepIndex, setSliderStepIndex, algorithmState.steps]);
 
   const backward = useCallback(() => {
+    pause();
     setCurrentStepIndex((prevIndex) => Math.max(prevIndex - 1, 0));
     setSliderStepIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-  }, [setCurrentStepIndex, setSliderStepIndex]);
+  }, [pause, setCurrentStepIndex, setSliderStepIndex]);
 
   const reset = useCallback(() => {
     setCurrentStepIndex(0);
@@ -100,6 +102,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
 
   const debouncedGoto = useDebounce(
     (index: number) => {
+      pause();
       if (isStarted && !isLoading) {
         setCurrentStepIndex(index);
       }
