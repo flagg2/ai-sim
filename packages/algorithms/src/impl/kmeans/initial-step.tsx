@@ -16,15 +16,6 @@ export const getKMeansInitialStep: KMeansDefinition["getInitialStep"] = (
           K-means algorithm. This algorithm helps us find natural groupings in
           our data by organizing similar points together.
         </p>
-        <Note>
-          <p>K-means is an iterative process that will:</p>
-          <ul>
-            <li>Place initial center points (centroids)</li>
-            <li>Group nearby points together</li>
-            <li>Adjust the centroids' positions</li>
-            <li>Repeat until the groups stabilize</li>
-          </ul>
-        </Note>
       </div>
     ),
     index: 1,

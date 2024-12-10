@@ -43,6 +43,7 @@ export type SVMParamConfiguratorDict = ParamConfiguratorDict<{
 export type SVMConfig = {
   points: DataPoint[];
   kernelType: KernelType;
+  hasRadialData: boolean;
 };
 
 export type SVMDefinition = AlgorithmDefinition<

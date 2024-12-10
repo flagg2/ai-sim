@@ -61,7 +61,7 @@ export function Label({ label, info, required, children }: LabelProps) {
                   }}
                 >
                   <div
-                    className="p-2 pb-1"
+                    className="p-2 pb-1 xl:p-2 xl:pl-0"
                     onClick={() => {
                       if (isTouchDevice) {
                         setOpen(!open);

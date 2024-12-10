@@ -17,6 +17,7 @@ export const getSVMConfig: SVMDefinition["getConfig"] = (params) => {
   return {
     points,
     kernelType: params.kernelType,
+    hasRadialData: params.generateRadialData,
   };
 };
 

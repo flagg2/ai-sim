@@ -1,7 +1,23 @@
-import type { SVMDefinition } from "./types";
+import type { SVMConfig, SVMDefinition } from "./types";
 import SVM from "ml-svm";
 import Note from "../../lib/descriptions/note";
 import { BOUNDARY_SCALE, GRID_SIZE } from "./const";
+
+function getKernelDescription(config: SVMConfig) {
+  if (config.kernelType === "linear") {
+    if (config.hasRadialData) {
+      return "Our data has a circular pattern. The linear kernel might not be sufficient to separate the data effectively.";
+    } else {
+      return "Our data is linear, so the linear kernel is appropriate.";
+    }
+  } else {
+    if (config.hasRadialData) {
+      return "Our data has a circular pattern. The radial kernel is appropriate for the data, allowing for effective separation with curved boundaries.";
+    } else {
+      return "Our data is linear, so the radial kernel might be more complex than necessary.";
+    }
+  }
+}
 
 export const getSVMSteps: SVMDefinition["getSteps"] = async (
   config,
@@ -22,6 +38,7 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
   });
 
   svm.train(features, labels);
+
   steps.push({
     type: "initial",
     title: "Initialize SVM",
@@ -32,14 +49,28 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
           We start by setting up the{" "}
           <strong>Support Vector Machine (SVM)</strong> with the data provided.
           The SVM will try to find the best way to{" "}
-          <strong>separate the data points</strong> into two groups, using the{" "}
-          <strong>kernel type</strong> you've selected.
+          <strong>separate the data points</strong> into two groups.
+        </p>
+        <p>
+          A <strong>kernel</strong> is a function that transforms the data into
+          a higher-dimensional space, allowing the SVM to find a boundary that
+          separates the data more effectively.{" "}
+          {config.kernelType === "linear" ? (
+            <span>
+              We are using a <strong>linear kernel</strong> does not transform
+              the data, creating a boundary that is a straight line.
+            </span>
+          ) : (
+            <span>
+              We are using a <strong>rbf kernel</strong> that uses a radial
+              basis function to transform the data, creating a boundary that can
+              be curved.
+            </span>
+          )}
         </p>
         <Note>
-          Different <strong>kernel types</strong> allow the SVM to create
-          different types of boundaries. A <strong>linear kernel</strong>{" "}
-          creates straight lines, while other kernels like <strong>RBF</strong>{" "}
-          can create curved boundaries to better separate complex patterns.
+          {getKernelDescription(config)} You can change the kernel type in
+          configuration to see how it affects the boundary.
         </Note>
       </div>
     ),
@@ -60,7 +91,9 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
           The SVM identifies the most critical data points, known as{" "}
           <strong>support vectors</strong>. These points are closest to where
           the boundary will be and are key because they determine its{" "}
-          <strong>shape and position</strong>.
+          <strong>shape and position</strong>. The boundary is chosen to create
+          the widest possible <strong>margin </strong>between different classes
+          of data points.
         </p>
         <Note>
           Think of <strong>support vectors</strong> as the key markers that help
@@ -102,8 +135,7 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
         </p>
         <Note>
           New data points can be classified by checking which side of this
-          boundary they fall on. The <strong>kernel</strong> helps transform the
-          space so that even complex patterns can be effectively separated.
+          boundary they fall on.
         </Note>
       </div>
     ),

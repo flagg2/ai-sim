@@ -72,11 +72,18 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
             For each point in our dataset, we find the{" "}
             <strong>closest centroid</strong> and assign the point to that
             centroid's group. We measure "closest" by calculating the
-            straight-line distance between the point and each centroid.
+            <strong> euclidean distance</strong> between the point and each
+            centroid.
           </p>
           <Note>
             Points are colored based on which centroid they're closest to. All
             points of the same color belong to the same group.
+          </Note>
+          <Note>
+            Euclidean distance (in 3D) is calculated as{" "}
+            <Expression block className="text-muted-foreground">
+              {"d = \\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2 + (z_2 - z_1)^2}"}
+            </Expression>
           </Note>
         </div>
       ),
@@ -145,7 +152,7 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
           </p>
           {hasConverged ? (
             <p>
-              The centroids are now in their <strong>final positions</strong>!
+              The centroids are now in their <strong>final positions! </strong>
               Each group is as well-defined as it can be.
             </p>
           ) : (
