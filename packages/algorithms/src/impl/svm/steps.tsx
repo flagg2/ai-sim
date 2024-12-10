@@ -41,24 +41,19 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
 
   steps.push({
     type: "initial",
-    title: "Initialize SVM",
+    title: "Use the kernel function",
     state: { alphas: [], bias: 0 },
     description: (
       <div>
         <p>
-          We start by setting up the{" "}
-          <strong>Support Vector Machine (SVM)</strong> with the data provided.
-          The SVM will try to find the best way to{" "}
-          <strong>separate the data points</strong> into two groups.
-        </p>
-        <p>
-          A <strong>kernel</strong> is a function that transforms the data into
-          a higher-dimensional space, allowing the SVM to find a boundary that
-          separates the data more effectively.{" "}
+          A <strong>kernel</strong> function transforms the data into a
+          higher-dimensional space, allowing the SVM to find a boundary that
+          separates the data effectively.{" "}
           {config.kernelType === "linear" ? (
             <span>
-              We are using a <strong>linear kernel</strong> does not transform
-              the data, creating a boundary that is a straight line.
+              We are using a <strong>linear kernel</strong> which keeps the data
+              in the original space, creating a boundary that is a straight
+              line.
             </span>
           ) : (
             <span>
@@ -97,9 +92,7 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
         </p>
         <Note>
           Think of <strong>support vectors</strong> as the key markers that help
-          decide where to draw the boundary. The <strong>kernel type</strong>{" "}
-          determines how these points influence the boundary's shape - it could
-          be straight or curved depending on your choice.
+          decide where to draw the boundary.
         </Note>
       </div>
     ),
@@ -129,9 +122,7 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
           Using the selected <strong>kernel</strong> and the identified{" "}
           <strong>support vectors</strong>, the SVM creates the optimal
           boundary. This boundary maximizes the{" "}
-          <strong>separation between the two groups</strong>, taking into
-          account the kernel's ability to create either straight or curved
-          divisions.
+          <strong>separation between the two groups</strong>.
         </p>
         <Note>
           New data points can be classified by checking which side of this
