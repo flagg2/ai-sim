@@ -101,7 +101,7 @@ export function BaseControls({
             </div>
           </div>
         </div>
-        <Prose className="order-2 lg:order-3 xl:p-4 xl:border rounded-lg min-h-0 flex-grow overflow-scroll">
+        <Prose className="order-2 lg:order-3 xl:p-4 xl:border xl:rounded-lg min-h-0 flex-grow overflow-scroll">
           {currentStep.description}
         </Prose>
       </div>
