@@ -80,10 +80,8 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
             points of the same color belong to the same group.
           </Note>
           <Note>
-            Euclidean distance (in 3D) is calculated as{" "}
-            <Expression block className="text-muted-foreground">
-              {"d = \\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2 + (z_2 - z_1)^2}"}
-            </Expression>
+            Euclidean distance is calculated as the square root of the sum of
+            the squared differences between the coordinates of the two points.
           </Note>
         </div>
       ),
