@@ -31,7 +31,7 @@ export default function Page() {
         </div>
       </section>
       <section className="md:pt-6 pb-6 md:pb-12 max-h-[calc(100vh-10rem)] overflow-auto">
-        <div className="container grid gap-8 px-4 mx-auto md:grid-cols-2 lg:grid-cols-3 md:px-6">
+        <div className="container grid gap-4 xl:gap-8 px-4 mx-auto md:grid-cols-2 lg:grid-cols-3 md:px-6">
           {hits.map((viz, index) => (
             <Link
               key={index}
