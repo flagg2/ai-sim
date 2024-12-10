@@ -16,7 +16,7 @@ export const useShowHints = create<ShowHintsState>()(
       actionCount: 0,
       incrementActionCount: () =>
         set((state) => ({ actionCount: state.actionCount + 1 })),
-      shouldShowHints: () => get().actionCount < HINTS_THRESHOLD,
+      shouldShowHints: () => get().actionCount <= HINTS_THRESHOLD,
       resetActionCount: () => set({ actionCount: 0 }),
     }),
     {

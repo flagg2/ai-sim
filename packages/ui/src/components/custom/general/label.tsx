@@ -60,17 +60,21 @@ export function Label({ label, info, required, children }: LabelProps) {
                     }
                   }}
                 >
-                  <FaInfoCircle
-                    className="text-light-text cursor-pointer"
-                    size={16}
-                    role="button"
-                    aria-label={`Info for ${label}`}
+                  <div
+                    className="p-2 pb-1"
                     onClick={() => {
                       if (isTouchDevice) {
                         setOpen(!open);
                       }
                     }}
-                  />
+                  >
+                    <FaInfoCircle
+                      className="text-light-text cursor-pointer"
+                      size={16}
+                      role="button"
+                      aria-label={`Info for ${label}`}
+                    />
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent
                   side="right"
