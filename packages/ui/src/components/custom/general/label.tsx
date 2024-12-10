@@ -38,7 +38,7 @@ export function Label({ label, info, required, children }: LabelProps) {
 
   return (
     <label className="flex flex-col gap-1">
-      <div className="flex flex-row gap-1 items-center">
+      <div className="flex flex-row gap-1 items-center md:justify-start justify-between">
         <div className="text-sm text-darkish-text">
           {label}
           {required ? "*" : ""}
@@ -59,17 +59,17 @@ export function Label({ label, info, required, children }: LabelProps) {
                       setOpen(false);
                     }
                   }}
-                  onClick={() => {
-                    if (isTouchDevice) {
-                      setOpen(!open);
-                    }
-                  }}
                 >
                   <FaInfoCircle
                     className="text-light-text cursor-pointer"
                     size={16}
                     role="button"
                     aria-label={`Info for ${label}`}
+                    onClick={() => {
+                      if (isTouchDevice) {
+                        setOpen(!open);
+                      }
+                    }}
                   />
                 </TooltipTrigger>
                 <TooltipContent
