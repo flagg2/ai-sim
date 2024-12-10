@@ -42,7 +42,7 @@ export function BaseControls({
 
         <div className="grid gap-4 overflow-auto max-h-[calc(100vh-200px)]">
           {showConfig && configComponent}
-          <div className="bg-background pt-2 absolute bottom-4 left-4 right-4 flex gap-2">
+          <div className="bg-background pt-2 absolute xl:relative bottom-4 left-4 xl:left-auto right-4 xl:right-auto flex gap-2">
             <Button
               onClick={() => {
                 console.log("setIsDrawerOpen", setIsDrawerOpen);

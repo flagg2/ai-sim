@@ -88,11 +88,11 @@ export function SimpleControls({
                 </span>
               </div>
               <Slider
+                undraggable
                 className="mb-4"
                 min={0}
                 max={totalStepCount - 1}
                 value={[sliderStepIndex]}
-                onValueChange={(value) => gotoWithSlider(value[0]!)}
               />
               <ControlsButtons runner={runner} showReset={false} />
             </div>
