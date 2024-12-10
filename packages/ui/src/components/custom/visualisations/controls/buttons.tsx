@@ -10,10 +10,12 @@ export function ControlsButtons({
   runner,
   extraButtons,
   showReset = true,
+  hidePlayButtonOnMobile = false,
 }: {
   runner: UseSimulationReturn["runner"];
   extraButtons?: React.ReactNode;
   showReset?: boolean;
+  hidePlayButtonOnMobile?: boolean;
 }) {
   if (runner.status !== "running") {
     return null;
@@ -31,6 +33,8 @@ export function ControlsButtons({
   } = runner;
   const screenSize = useScreenSize();
   const isDesktop = screenSize.width > breakpoints.desktop;
+  const hidePlayButton =
+    hidePlayButtonOnMobile && screenSize.width < breakpoints.desktop;
 
   return (
     <div className="flex items-center gap-2 w-full">
@@ -43,25 +47,29 @@ export function ControlsButtons({
         <FaBackward className="h-5 w-5" />
         <span className="sr-only">Backward</span>
       </Button>
-      {isPlaying ? (
-        <Button
-          variant={isDesktop ? "ghost" : "outline"}
-          size="icon"
-          onClick={pause}
-        >
-          <FaPause className="h-5 w-5" />
-          <span className="sr-only">Pause</span>
-        </Button>
-      ) : (
-        <Button
-          variant={isDesktop ? "ghost" : "outline"}
-          size="icon"
-          onClick={play}
-          disabled={!canGoForward}
-        >
-          <FaPlay className="h-5 w-5" />
-          <span className="sr-only">Play</span>
-        </Button>
+      {!hidePlayButton && (
+        <>
+          {isPlaying ? (
+            <Button
+              variant={isDesktop ? "ghost" : "outline"}
+              size="icon"
+              onClick={pause}
+            >
+              <FaPause className="h-5 w-5" />
+              <span className="sr-only">Pause</span>
+            </Button>
+          ) : (
+            <Button
+              variant={isDesktop ? "ghost" : "outline"}
+              size="icon"
+              onClick={play}
+              disabled={!canGoForward}
+            >
+              <FaPlay className="h-5 w-5" />
+              <span className="sr-only">Play</span>
+            </Button>
+          )}
+        </>
       )}
       <Button
         variant={isDesktop ? "ghost" : "outline"}

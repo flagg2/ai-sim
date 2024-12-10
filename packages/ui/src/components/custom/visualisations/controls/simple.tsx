@@ -21,6 +21,7 @@ export function SimpleControls({
       setIsDrawerOpen(true);
       if (runner.status === "running") {
         incrementActionCount();
+        runner.pause();
       }
     },
   });

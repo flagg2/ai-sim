@@ -93,11 +93,8 @@ export function BaseControls({
               value={[sliderStepIndex]}
               onValueChange={(value) => gotoWithSlider(value[0]!)}
             />
-            <div className="flex items-center gap-2 xl:hidden">
-              <ControlsButtons runner={runner} />
-            </div>
-            <div className="items-center gap-2 hidden xl:flex">
-              <ControlsButtons runner={runner} />
+            <div className="flex items-center gap-2">
+              <ControlsButtons runner={runner} hidePlayButtonOnMobile />
             </div>
           </div>
         </div>
