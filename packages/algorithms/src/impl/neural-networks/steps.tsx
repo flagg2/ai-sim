@@ -1,7 +1,4 @@
 import type { NNConfig, NNStep } from "./types";
-import Text from "../../lib/descriptions/text";
-import Paragraph from "../../lib/descriptions/paragraph";
-import List, { ListItem } from "../../lib/descriptions/list";
 import Note from "../../lib/descriptions/note";
 import Expression from "../../lib/descriptions/math";
 
@@ -49,21 +46,21 @@ export const getNNSteps: (
           neuronIndex + 1
         })`,
         description: (
-          <Text>
-            <Paragraph>
+          <div>
+            <p>
               For each neuron, we first calculate the weighted sum of its
               inputs:
-            </Paragraph>
-            <List>
-              <ListItem>Multiply each input by its connection weight</ListItem>
-              <ListItem>Add all these products together</ListItem>
-              <ListItem>Add the neuron's bias term</ListItem>
-            </List>
+            </p>
+            <ul>
+              <li>Multiply each input by its connection weight</li>
+              <li>Add all these products together</li>
+              <li>Add the neuron's bias term</li>
+            </ul>
             <Note>
               This weighted sum determines how strongly the neuron will activate
               based on its inputs.
             </Note>
-          </Text>
+          </div>
         ),
         state: {
           currentLayer: layer,
@@ -92,17 +89,17 @@ export const getNNSteps: (
           neuronIndex + 1
         })`,
         description: (
-          <Text>
-            <Paragraph>
+          <div>
+            <p>
               We apply the sigmoid activation function to transform the weighted
               sum into an activation value:
-            </Paragraph>
+            </p>
             <Expression>{"\\sigma(x) = \\frac{1}{1 + e^{-x}}"}</Expression>
             <Note>
               The sigmoid function squashes any input into a value between 0 and
               1, creating a non-linear activation pattern.
             </Note>
-          </Text>
+          </div>
         ),
         state: {
           currentLayer: layer,
@@ -119,12 +116,12 @@ export const getNNSteps: (
       type: "layerComplete",
       title: `${getLayerTitle(layer, type, config.layers)} Complete`,
       description: (
-        <Text>
-          <Paragraph>
+        <div>
+          <p>
             {type === "autoencoder"
               ? `Completed processing all neurons in ${getLayerDescription(layer, config.layers)}.`
               : `Completed processing all neurons in layer ${layer}.`}
-          </Paragraph>
+          </p>
           {layer === config.layers + 1 && (
             <Note>
               {type === "autoencoder"
@@ -132,7 +129,7 @@ export const getNNSteps: (
                 : "Forward propagation complete! The network has produced its final outputs."}
             </Note>
           )}
-        </Text>
+        </div>
       ),
       state: {
         currentLayer: layer,
@@ -164,11 +161,11 @@ export const getNNSteps: (
       type: "lossCalculation",
       title: "Calculate Loss",
       description: (
-        <Text>
-          <Paragraph>
+        <div>
+          <p>
             Calculate the Mean Squared Error (MSE) loss to measure prediction
             accuracy:
-          </Paragraph>
+          </p>
           <Expression block>
             {"MSE = \\frac{1}{n}\\sum_{i=1}^{n}\\frac{(y_i - \\hat{y}_i)^2}{2}"}
           </Expression>
@@ -176,7 +173,7 @@ export const getNNSteps: (
             The MSE tells us how far our predictions are from the target values,
             with smaller values indicating better performance.
           </Note>
-        </Text>
+        </div>
       ),
       state: {
         currentLayer: config.layers + 1,
@@ -194,25 +191,21 @@ export const getNNSteps: (
       type: "backpropStart",
       title: "Start Backpropagation",
       description: (
-        <Text>
-          <Paragraph>
+        <div>
+          <p>
             Now that we've calculated the error, we'll use backpropagation to
             improve our network's performance:
-          </Paragraph>
-          <List>
-            <ListItem>Start from the output layer and work backwards</ListItem>
-            <ListItem>
-              Calculate how much each neuron contributed to the error
-            </ListItem>
-            <ListItem>
-              Adjust the network's parameters to reduce future errors
-            </ListItem>
-          </List>
+          </p>
+          <ul>
+            <li>Start from the output layer and work backwards</li>
+            <li>Calculate how much each neuron contributed to the error</li>
+            <li>Adjust the network's parameters to reduce future errors</li>
+          </ul>
           <Note>
             Think of backpropagation like giving feedback to each part of the
             network about how it can do better next time.
           </Note>
-        </Text>
+        </div>
       ),
       state: {
         currentLayer: config.layers + 1,
@@ -263,23 +256,19 @@ export const getNNSteps: (
             type: "biasUpdate",
             title: `Calculated gradient and update Bias (Output Neuron ${neuron.id})`,
             description: (
-              <Text>
-                <Paragraph>
+              <div>
+                <p>
                   For output neurons, we can directly calculate their
                   responsibility for the prediction error:
-                </Paragraph>
-                <List>
-                  <ListItem>
-                    Compare the prediction with the target value
-                  </ListItem>
-                  <ListItem>
+                </p>
+                <ul>
+                  <li>Compare the prediction with the target value</li>
+                  <li>
                     Consider how sensitive the neuron's output is to changes
-                  </ListItem>
-                  <ListItem>
-                    Update the bias to help reduce this error next time
-                  </ListItem>
-                </List>
-              </Text>
+                  </li>
+                  <li>Update the bias to help reduce this error next time</li>
+                </ul>
+              </div>
             ),
             state: {
               currentLayer: layer,
@@ -321,28 +310,26 @@ export const getNNSteps: (
             type: "biasUpdate",
             title: `Calculate Gradient and Update Bias (Hidden Neuron ${neuron.id})`,
             description: (
-              <Text>
-                <Paragraph>
+              <div>
+                <p>
                   Hidden neurons receive feedback about their contribution to
                   the error from later layers:
-                </Paragraph>
-                <List>
-                  <ListItem>
+                </p>
+                <ul>
+                  <li>
                     Collect error signals from all connected neurons in the next
                     layer
-                  </ListItem>
-                  <ListItem>
+                  </li>
+                  <li>
                     Consider how this neuron's activation affects those errors
-                  </ListItem>
-                  <ListItem>
-                    Adjust the bias based on this neuron's responsibility
-                  </ListItem>
-                </List>
+                  </li>
+                  <li>Adjust the bias based on this neuron's responsibility</li>
+                </ul>
                 <Note>
                   This process allows deep layers to learn despite not being
                   directly connected to the output.
                 </Note>
-              </Text>
+              </div>
             ),
             state: {
               currentLayer: layer,
@@ -395,27 +382,23 @@ export const getNNSteps: (
           type: "weightUpdate",
           title: `Update Weight (Layer ${layer}, Connection ${conn.id})`,
           description: (
-            <Text>
-              <Paragraph>
-                Updating the connection weights between neurons:
-              </Paragraph>
-              <List>
-                <ListItem>
+            <div>
+              <p>Updating the connection weights between neurons:</p>
+              <ul>
+                <li>
                   Consider both the sending and receiving neurons' contributions
-                </ListItem>
-                <ListItem>
+                </li>
+                <li>
                   Strengthen or weaken connections based on their impact on the
                   error
-                </ListItem>
-                <ListItem>
-                  Make smaller adjustments for more stable learning
-                </ListItem>
-              </List>
+                </li>
+                <li>Make smaller adjustments for more stable learning</li>
+              </ul>
               <Note>
                 Each connection learns to either amplify or dampen signals that
                 help reduce the network's error.
               </Note>
-            </Text>
+            </div>
           ),
           state: {
             currentLayer: layer,
@@ -437,20 +420,18 @@ export const getNNSteps: (
       type: "backpropComplete",
       title: "Backpropagation Complete",
       description: (
-        <Text>
-          <Paragraph>
-            The network has completed one full round of learning:
-          </Paragraph>
-          <List>
-            <ListItem>All neurons have received their feedback</ListItem>
-            <ListItem>Connection weights have been fine-tuned</ListItem>
-            <ListItem>The network is ready for its next prediction</ListItem>
-          </List>
+        <div>
+          <p>The network has completed one full round of learning:</p>
+          <ul>
+            <li>All neurons have received their feedback</li>
+            <li>Connection weights have been fine-tuned</li>
+            <li>The network is ready for its next prediction</li>
+          </ul>
           <Note>
             With each training cycle, the network gets incrementally better at
             its task.
           </Note>
-        </Text>
+        </div>
       ),
       state: {
         currentLayer: 0,

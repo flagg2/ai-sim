@@ -12,6 +12,13 @@ function getPointColor(point: DataPoint, supportVectors: DataPoint[]) {
   return point.label === 1 ? "#4CAF50" : "#F44336";
 }
 
+function getPointSize(point: DataPoint, supportVectors: DataPoint[]) {
+  if (supportVectors?.includes(point)) {
+    return 4;
+  }
+  return 3;
+}
+
 export const renderSVM: SVMDefinition["render"] = ({ state }, config) => {
   const objects: Renderable[] = [];
   const { points } = config;
@@ -33,7 +40,7 @@ export const renderSVM: SVMDefinition["render"] = ({ state }, config) => {
           color: getPointColor(point, supportVectors ?? []),
         }),
         name: `Point ${point.id}`,
-        scale: 3,
+        scale: getPointSize(point, supportVectors ?? []),
         tooltip: `Point ${point.id}`,
       }),
     );

@@ -2,8 +2,6 @@ import { calculateDistance } from "../../lib/utils";
 import type { KMeansDefinition, Point } from "./types";
 import { getColoredMaterial } from "../../lib/materials";
 import type { Group } from "../../lib";
-import Text from "../../lib/descriptions/text";
-import Paragraph from "../../lib/descriptions/paragraph";
 import Note from "../../lib/descriptions/note";
 import Expression from "../../lib/descriptions/math";
 
@@ -29,18 +27,23 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
           iteration,
         },
         description: (
-          <Text>
-            <Paragraph>
+          <div>
+            <p>
               First, we randomly place <Expression>k={k}</Expression> center
-              points (called centroids) in our data space. These centroids will
-              help us group similar points together.
-            </Paragraph>
+              points, called <strong>centroids</strong>, in our data space.
+              These centroids will help us group similar points together.
+            </p>
+            <p>
+              Think of centroids as the <strong>representatives</strong> of each
+              group we want to create. We're starting with random positions, but
+              they'll move to better locations as the algorithm runs.
+            </p>
             <Note>
-              Think of centroids as the "representatives" of each group we want
-              to create. We're starting with random positions, but they'll move
-              to better locations as the algorithm runs.
+              In basic K-Means, the initial centroids are chosen randomly. In
+              modern implementations, these initial choices are not entirely
+              random, because they can heavily influence the final result.
             </Note>
-          </Text>
+          </div>
         ),
       });
     }
@@ -64,18 +67,18 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration,
       },
       description: (
-        <Text>
-          <Paragraph>
-            For each point in our dataset, we find the closest centroid and
-            assign the point to that centroid's group. We measure "closest" by
-            calculating the straight-line distance between the point and each
-            centroid.
-          </Paragraph>
+        <div>
+          <p>
+            For each point in our dataset, we find the{" "}
+            <strong>closest centroid</strong> and assign the point to that
+            centroid's group. We measure "closest" by calculating the
+            straight-line distance between the point and each centroid.
+          </p>
           <Note>
             Points are colored based on which centroid they're closest to. All
             points of the same color belong to the same group.
           </Note>
-        </Text>
+        </div>
       ),
     });
 
@@ -106,17 +109,17 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration,
       },
       description: (
-        <Text>
-          <Paragraph>
+        <div>
+          <p>
             Now that points are assigned to groups, we move each centroid to the
-            center of its group. We do this by calculating the average position
-            of all points in the group.
-          </Paragraph>
+            center of its group. We do this by calculating the{" "}
+            <strong>average position</strong> of all points in the group.
+          </p>
           <Note>
             This helps centroids move to better positions that better represent
             their group of points.
           </Note>
-        </Text>
+        </div>
       ),
     });
 
@@ -134,17 +137,24 @@ export const getKMeansSteps: KMeansDefinition["getSteps"] = async (
         iteration: iteration + 1,
       },
       description: (
-        <Text>
-          <Paragraph>
-            We check if the centroids have stopped moving. If they haven't moved
-            since the last time we checked, we've found our final groups.
-          </Paragraph>
-          <Note>
-            {hasConverged
-              ? "The centroids are now in their final positions! Each group is as well-defined as it can be."
-              : "The centroids are still moving to find better positions - we'll repeat the process."}
-          </Note>
-        </Text>
+        <div>
+          <p>
+            We <strong>check</strong> if the centroids have{" "}
+            <strong>stopped moving</strong>. If they haven't moved since the
+            last time we checked, we've found our final groups.
+          </p>
+          {hasConverged ? (
+            <p>
+              The centroids are now in their <strong>final positions</strong>!
+              Each group is as well-defined as it can be.
+            </p>
+          ) : (
+            <p>
+              The centroids are <strong>still moving</strong> to find better
+              positions - we'll <strong>repeat the process</strong>.
+            </p>
+          )}
+        </div>
       ),
     });
 

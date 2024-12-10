@@ -96,7 +96,7 @@ export function Configurator<T extends ParamConfiguratorDict>({
   );
 
   return (
-    <div className="flex flex-col gap-0 w-full pb-16 xl:pb-4">
+    <div className="flex flex-col gap-2 w-full pb-16 xl:pb-4">
       {Object.entries(configurators).map(([key, param]) => (
         <Label key={key} label={param.label} info={param.description}>
           {getParamComponent(param, key)}

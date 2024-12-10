@@ -8,5 +8,5 @@ export default function useTheme() {
     actualTheme = systemTheme ?? "light";
   }
 
-  return { theme: actualTheme, setTheme };
+  return { theme: actualTheme as "light" | "dark", setTheme };
 }

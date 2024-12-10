@@ -19,9 +19,13 @@ export default function Expression({ children, block = false }: Props) {
 
   const expression = parseChildren(children);
 
-  return block ? (
-    <BlockMath>{expression}</BlockMath>
-  ) : (
-    <InlineMath>{expression}</InlineMath>
+  return (
+    <span className="text-secondary-foreground">
+      {block ? (
+        <BlockMath>{expression}</BlockMath>
+      ) : (
+        <InlineMath>{expression}</InlineMath>
+      )}
+    </span>
   );
 }

@@ -1,7 +1,5 @@
 import type { SVMDefinition } from "./types";
 import SVM from "ml-svm";
-import Text from "../../lib/descriptions/text";
-import Paragraph from "../../lib/descriptions/paragraph";
 import Note from "../../lib/descriptions/note";
 import { BOUNDARY_SCALE, GRID_SIZE } from "./const";
 
@@ -29,19 +27,21 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
     title: "Initialize SVM",
     state: { alphas: [], bias: 0 },
     description: (
-      <Text>
-        <Paragraph>
-          We start by setting up the Support Vector Machine (SVM) with the data
-          provided. The SVM will try to find the best way to separate the data
-          points into two groups, using the kernel type you've selected.
-        </Paragraph>
+      <div>
+        <p>
+          We start by setting up the{" "}
+          <strong>Support Vector Machine (SVM)</strong> with the data provided.
+          The SVM will try to find the best way to{" "}
+          <strong>separate the data points</strong> into two groups, using the{" "}
+          <strong>kernel type</strong> you've selected.
+        </p>
         <Note>
-          Different kernel types allow the SVM to create different types of
-          boundaries. A linear kernel creates straight lines, while other
-          kernels like RBF can create curved boundaries to better separate
-          complex patterns.
+          Different <strong>kernel types</strong> allow the SVM to create
+          different types of boundaries. A <strong>linear kernel</strong>{" "}
+          creates straight lines, while other kernels like <strong>RBF</strong>{" "}
+          can create curved boundaries to better separate complex patterns.
         </Note>
-      </Text>
+      </div>
     ),
   });
 
@@ -55,19 +55,20 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
       supportVectors,
     },
     description: (
-      <Text>
-        <Paragraph>
-          The SVM identifies the most critical data points, known as support
-          vectors. These points are closest to where the boundary will be and
-          are key because they determine its shape and position.
-        </Paragraph>
+      <div>
+        <p>
+          The SVM identifies the most critical data points, known as{" "}
+          <strong>support vectors</strong>. These points are closest to where
+          the boundary will be and are key because they determine its{" "}
+          <strong>shape and position</strong>.
+        </p>
         <Note>
-          Think of support vectors as the key markers that help decide where to
-          draw the boundary. The kernel type determines how these points
-          influence the boundary's shape - it could be straight or curved
-          depending on your choice.
+          Think of <strong>support vectors</strong> as the key markers that help
+          decide where to draw the boundary. The <strong>kernel type</strong>{" "}
+          determines how these points influence the boundary's shape - it could
+          be straight or curved depending on your choice.
         </Note>
-      </Text>
+      </div>
     ),
   });
 
@@ -90,19 +91,21 @@ export const getSVMSteps: SVMDefinition["getSteps"] = async (
       regionData,
     },
     description: (
-      <Text>
-        <Paragraph>
-          Using the selected kernel and the identified support vectors, the SVM
-          creates the optimal boundary. This boundary maximizes the separation
-          between the two groups, taking into account the kernel's ability to
-          create either straight or curved divisions.
-        </Paragraph>
+      <div>
+        <p>
+          Using the selected <strong>kernel</strong> and the identified{" "}
+          <strong>support vectors</strong>, the SVM creates the optimal
+          boundary. This boundary maximizes the{" "}
+          <strong>separation between the two groups</strong>, taking into
+          account the kernel's ability to create either straight or curved
+          divisions.
+        </p>
         <Note>
           New data points can be classified by checking which side of this
-          boundary they fall on. The kernel helps transform the space so that
-          even complex patterns can be effectively separated.
+          boundary they fall on. The <strong>kernel</strong> helps transform the
+          space so that even complex patterns can be effectively separated.
         </Note>
-      </Text>
+      </div>
     ),
   });
 

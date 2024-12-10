@@ -1,6 +1,4 @@
 import type { XGBoostDefinition } from "./types";
-import Text from "../../lib/descriptions/text";
-import Paragraph from "../../lib/descriptions/paragraph";
 import Note from "../../lib/descriptions/note";
 import Expression from "../../lib/descriptions/math";
 import { GRID_SIZE, BOUNDARY_SCALE } from "../svm/const";
@@ -58,11 +56,11 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
     type: "calculateResiduals",
     title: "Calculate Gradients",
     description: (
-      <Text>
-        <Paragraph>
+      <div>
+        <p>
           For each point, we calculate the gradient of the loss function
           (pseudo-residuals). For binary classification with logistic loss:
-        </Paragraph>
+        </p>
         <Expression>
           {"gradient = y - \\frac{1}{1 + e^{-\\text{prediction}}}"}
         </Expression>
@@ -71,7 +69,7 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
           loss function. We also calculate second-order derivatives (Hessians)
           to optimize the learning process.
         </Note>
-      </Text>
+      </div>
     ),
     state: {},
   });
@@ -80,11 +78,11 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
     type: "buildTree",
     title: "Build Decision Tree",
     description: (
-      <Text>
-        <Paragraph>
+      <div>
+        <p>
           A new decision tree is built to optimize the loss function using the
           gradients and Hessians. Let's look at an example decision tree.
-        </Paragraph>
+        </p>
         <ul>
           <li>At each node, XGBoost finds the split that maximizes the gain</li>
           <li>
@@ -100,7 +98,7 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
           In the actual model, each tree grows to a maximum depth of{" "}
           {config.maxDepth} and uses regularization to prevent overfitting.
         </Note>
-      </Text>
+      </div>
     ),
     state: {},
   });
@@ -109,11 +107,11 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
     type: "afterOneIteration",
     title: "Update Predictions",
     description: (
-      <Text>
-        <Paragraph>
+      <div>
+        <p>
           We update our predictions using the new tree's output scaled by the
           learning rate ({config.learningRate}):
-        </Paragraph>
+        </p>
         <Expression>
           new\_prediction = current\_prediction + learning\_rate ×
           tree\_prediction
@@ -124,7 +122,7 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
           {config.learningRate} helps prevent overfitting by making small,
           careful updates.
         </Note>
-      </Text>
+      </div>
     ),
     state: {
       boundaryPredictions: iterationResult,
@@ -135,11 +133,11 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
     type: "showFinalResult",
     title: "Final Result",
     description: (
-      <Text>
-        <Paragraph>
+      <div>
+        <p>
           After {config.numTrees} iterations, each adding a new tree to our
           ensemble, we have our final model. Each prediction is the sum of:
-        </Paragraph>
+        </p>
         <ul>
           <li>The initial prediction (mean)</li>
           <li>Weighted contributions from each tree</li>
@@ -148,7 +146,7 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
           The final decision boundary shows how the model has learned to
           separate the two classes.
         </Note>
-      </Text>
+      </div>
     ),
     state: { boundaryPredictions: decisionBoundary },
   });

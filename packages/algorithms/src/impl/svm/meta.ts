@@ -11,7 +11,7 @@ export const svmMeta: SVMDefinition["meta"] = {
   },
   title: "Support Vector Machine",
   description:
-    "A support vector machine is a type of supervised learning algorithm used for classification and regression analysis.",
+    "A support vector machine is a machine learning algorithm that helps classify data by finding the best boundary to separate different categories.",
   shortDescription: "Classify data points with decision boundaries.",
   synonyms: ["svm", "support vector machine"],
 };

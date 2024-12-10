@@ -42,6 +42,7 @@ export {
   Loader,
   SearchBox,
 } from "./custom/general";
+export { Prose } from "./custom/general/prose";
 
 export {
   Select,

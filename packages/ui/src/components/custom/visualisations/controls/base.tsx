@@ -5,6 +5,7 @@ import { Button, Slider } from "../../../shadcn";
 import { IoPlay } from "react-icons/io5";
 import { useShowHints } from "../../../../lib/hooks/use-show-hints";
 import { cn } from "../../../../lib/utils";
+import { Prose } from "../../general";
 
 export function BaseControls({
   title,
@@ -35,9 +36,7 @@ export function BaseControls({
       >
         <div className="grid gap-2">
           <h3 className="text-xl font-bold">{title}</h3>
-          <div className="prose text-muted-foreground">
-            {algorithmDescription}
-          </div>
+          <Prose>{algorithmDescription}</Prose>
         </div>
 
         <div className="grid gap-4 overflow-auto max-h-[calc(100vh-200px)]">
@@ -102,9 +101,9 @@ export function BaseControls({
             </div>
           </div>
         </div>
-        <div className="prose text-muted-foreground order-2 lg:order-3 xl:p-4 xl:border rounded-lg min-h-0 flex-grow overflow-scroll">
+        <Prose className="order-2 lg:order-3 xl:p-4 xl:border rounded-lg min-h-0 flex-grow overflow-scroll">
           {currentStep.description}
-        </div>
+        </Prose>
       </div>
     </div>
   );
