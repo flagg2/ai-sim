@@ -26,7 +26,7 @@ module.exports = {
     },
   },
   ignorePatterns: [
-   ".eslintrc.js",
+    ".eslintrc.js",
     "**/dist/*",
     "**/node_modules/*",
     "**/*.config.{js,cjs,mjs,ts}",
@@ -38,7 +38,6 @@ module.exports = {
   ],
   rules: {
     "@next/next/no-html-link-for-pages": "off",
-    "@typescript-eslint/no-explicit-any": "off",
   },
   overrides: [
     {

@@ -7,7 +7,7 @@ import {
   Vector3,
 } from "three";
 import { Renderable, ThreeProps } from "./renderable";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json";
 
@@ -22,7 +22,7 @@ type TreeNode = {
  * Renders a tree in 2D space.
  */
 export class Tree implements Renderable {
-  private font: any;
+  private font: Font;
 
   constructor(private rootNode: TreeNode) {
     const loader = new FontLoader();

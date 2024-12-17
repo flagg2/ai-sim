@@ -19,8 +19,7 @@ export default function Page() {
               MLens
             </h1>
             <p className="text-muted-foreground md:text-lg">
-              This website offers a collection of interactive visualizations of
-              ML algorithms.
+              Explore ML algorithm visualizations
             </p>
             <SearchBox
               items={registry}
@@ -30,8 +29,8 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <section className="md:pt-6 pb-6 md:pb-12 max-h-[calc(100vh-10rem)] overflow-auto">
-        <div className="container grid gap-4 xl:gap-8 px-4 mx-auto md:grid-cols-2 lg:grid-cols-3 md:px-6">
+      <section className="md:pt-6 pb-6 md:pb-12 max-h-[calc(100vh-10rem)] xl:max-h-none  overflow-auto">
+        <div className="container grid gap-4 xl:gap-8 px-4 mx-auto md:grid-cols-2 lg:grid-cols-3 md:px-6 pb-6">
           {hits.map((viz, index) => (
             <Link
               key={index}
@@ -41,13 +40,16 @@ export default function Page() {
             >
               <div className="w-full h-32 lg:h-56 dark:bg-[#050505] bg-[#F6F6F6] relative">
                 <Image
-                  layout="fill"
+                  fill
+                  priority={index === 0}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   src={viz.image.paths.light}
                   alt={viz.image.alt}
                   className="block dark:hidden object-contain w-full h-32 lg:h-56 group-hover:opacity-50 transition-opacity "
                 />
                 <Image
-                  layout="fill"
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   src={viz.image.paths.dark}
                   alt={viz.image.alt}
                   className="dark:block hidden object-contain w-full h-32 lg:h-56 group-hover:opacity-50 transition-opacity "

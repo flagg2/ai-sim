@@ -44,7 +44,6 @@ export function BaseControls({
           <div className="bg-background pt-2 absolute xl:relative bottom-4 left-4 xl:left-auto right-4 xl:right-auto flex gap-2">
             <Button
               onClick={() => {
-                console.log("setIsDrawerOpen", setIsDrawerOpen);
                 start();
               }}
               className="flex-grow"

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useTransition } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useInterval } from "usehooks-ts";
 import { useDebounce } from "./use-debounce";
 import { useIsTouchDevice } from "./use-is-touch-device";
@@ -47,7 +47,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
       canGoBackward: boolean;
       status: "running";
     } {
-  const [isLoading, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
@@ -120,12 +120,17 @@ export function useRunner<TStep extends Step, TConfig extends object>({
 
   const start = useCallback(() => {
     setIsStarted(true);
-    startTransition(() => {
-      void getSteps(config, initialStep).then((steps) => {
-        console.log(steps);
+    setIsLoading(true);
+    void getSteps(config, initialStep)
+      .then((steps) => {
         setSteps(steps);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-    });
   }, [config, initialStep, getSteps, setSteps]);
 
   const stop = useCallback(() => {

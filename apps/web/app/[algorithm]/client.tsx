@@ -6,6 +6,7 @@ import {
   Visualization,
   VisualizationSkeleton,
 } from "@repo/ui/components";
+import { HeaderSkeleton } from "../../../../packages/ui/src/components/custom/general/header";
 
 interface AlgorithmClientProps {
   params: { algorithm: string };
@@ -18,15 +19,20 @@ export default function AlgorithmClient({ params }: AlgorithmClientProps) {
         `../../../../packages/algorithms/src/impl/${params.algorithm}/${params.algorithm}`
       ).then(async (algorithm) => {
         return () => (
-          <>
+          <div className="h-screen">
             <Header title={algorithm.default.meta.title} />
             <Visualization algorithm={algorithm.default} />
-          </>
+          </div>
         );
       }),
     {
       ssr: true,
-      loading: () => <VisualizationSkeleton />,
+      loading: () => (
+        <>
+          <HeaderSkeleton />
+          <VisualizationSkeleton />
+        </>
+      ),
     },
   );
 

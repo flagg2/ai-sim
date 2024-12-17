@@ -11,6 +11,7 @@ export function Prose({
   const { theme } = useTheme();
   return (
     <div
+      suppressHydrationWarning
       className={cn(
         "prose prose-p:mt-0 prose-strong:text-secondary-foreground text-secondary-foreground ",
         className,

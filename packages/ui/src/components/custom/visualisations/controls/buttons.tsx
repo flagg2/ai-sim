@@ -47,7 +47,6 @@ export function ControlsButtons({
         <FaBackward className="h-5 w-5" />
         <span className="sr-only">Backward</span>
       </Button>
-      {/*  */}
       {!hidePlayButton && (
         <>
           {isPlaying ? (

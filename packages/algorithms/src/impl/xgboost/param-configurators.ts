@@ -1,4 +1,4 @@
-import { SelectParamConfigurator, SliderParamConfigurator } from "../../lib";
+import { SliderParamConfigurator } from "../../lib";
 import type { XGBoostDefinition } from "./types";
 
 export const xgboostParamConfigurators: XGBoostDefinition["paramConfigurators"] =

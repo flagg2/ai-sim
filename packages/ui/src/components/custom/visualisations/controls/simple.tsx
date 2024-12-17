@@ -59,8 +59,7 @@ export function SimpleControls({
     return null;
   }
 
-  const { currentStep, totalStepCount, currentStepIndex, gotoWithSlider } =
-    runner;
+  const { currentStep, totalStepCount, currentStepIndex } = runner;
 
   return (
     <AnimatePresence>

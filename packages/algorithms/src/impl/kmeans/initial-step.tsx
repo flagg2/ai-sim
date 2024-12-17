@@ -1,6 +1,5 @@
 import Expression from "../../lib/descriptions/math";
 import type { KMeansDefinition } from "./types";
-import Note from "../../lib/descriptions/note";
 
 export const getKMeansInitialStep: KMeansDefinition["getInitialStep"] = (
   config,

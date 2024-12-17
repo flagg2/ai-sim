@@ -11,10 +11,10 @@ import { SimpleControls } from "./controls/simple";
 import { BaseControls } from "./controls/base";
 import { useVisualisation } from "../../../lib/hooks/use-visualisation";
 import Scene from "./scene/scene";
-import { useEffect } from "react";
 import { useShowHints } from "../../../lib/hooks/use-show-hints";
 
 export type VisualisationProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- This definition only works with any
   algorithm: AlgorithmDefinition<any, any, any>;
 };
 

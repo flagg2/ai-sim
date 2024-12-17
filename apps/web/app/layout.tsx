@@ -12,8 +12,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html suppressHydrationWarning className="overflow-hidden select-none">
-      <body className={cn(inter.className, "h-screen w-screen")}>
+    <html
+      suppressHydrationWarning
+      className="overflow-hidden xl:overflow-auto select-none"
+    >
+      <body className={cn(inter.className, "w-screen")}>
         <ThemeProvider attribute="class" defaultTheme="system">
           {children}
         </ThemeProvider>

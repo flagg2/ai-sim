@@ -49,7 +49,6 @@ export function useSwipeGesture({
   }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    console.log("Mouse down");
     if (isTouchDevice) return;
     //  cleanupListeners();
     startY.current = e.clientY;

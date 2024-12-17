@@ -31,9 +31,7 @@ module.exports = {
     "**/playwright-report/**/*",
     "**/test-results/**/*",
   ],
-  rules: {
-    "@typescript-eslint/no-explicit-any": "off",
-  },
+  rules: {},
   overrides: [
     {
       files: ["*.ts", "*.tsx"],

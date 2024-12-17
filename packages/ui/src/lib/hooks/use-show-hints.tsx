@@ -21,6 +21,7 @@ export const useShowHints = create<ShowHintsState>()(
     }),
     {
       name: "hints-storage",
+      skipHydration: true,
     },
   ),
 );
