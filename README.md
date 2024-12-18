@@ -43,10 +43,6 @@ Make sure that ports 3000 and 8000 are available on your machine.
 
 1. Navigate to the root of the repository
 
-   ```bash
-   cd app
-   ```
-
 2. Build and run with Docker
 
    ```bash
@@ -60,6 +56,7 @@ Make sure that ports 3000 and 8000 are available on your machine.
 ```
 apps/
 └── web/                         # Next.js web application
+└── api/                         # Supplementary Python API
 packages/
     ├── algorithms/              # Algorithm implementations and core logic
     ├── eslint-config/           # ESLint configuration files
