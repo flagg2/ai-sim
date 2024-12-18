@@ -13,5 +13,5 @@ export const linearRegressionMeta: LinearRegressionDefinition["meta"] = {
   description:
     "Linear regression is a statistical method used to model the relationship between a dependent variable and one or more independent variables.",
   shortDescription: "Find the best-fitting line through data points.",
-  synonyms: ["linear regression", "regression"],
+  keywords: ["linear regression", "regression"],
 };

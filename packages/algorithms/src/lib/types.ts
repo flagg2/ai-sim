@@ -83,7 +83,7 @@ export type AlgorithmMeta = {
   title: string;
   description: string;
   shortDescription: string;
-  synonyms: string[];
+  keywords: string[];
 };
 
 /**

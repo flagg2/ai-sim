@@ -13,5 +13,5 @@ export const autoencoderMeta: AutoEncoderDefinition["meta"] = {
   description:
     "An autoencoder is a type of artificial neural network used to learn efficient codings of unlabeled data.",
   shortDescription: "Neural network for efficient data compression.",
-  synonyms: ["autoencoder", "neural networks"],
+  keywords: ["autoencoder", "neural networks"],
 };

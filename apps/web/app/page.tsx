@@ -23,7 +23,7 @@ export default function Page() {
             </p>
             <SearchBox
               items={registry}
-              keys={["title", "synonyms"]}
+              keys={["title", "keywords"]}
               onResults={setHits}
             />
           </div>

@@ -15,5 +15,5 @@ export const xgboostMeta: XGBoostDefinition["meta"] = {
     "It builds an ensemble of decision trees sequentially, where each tree tries to " +
     "correct the errors made by the previous trees.",
   shortDescription: "Powerful tree ensemble learning algorithm.",
-  synonyms: ["xgboost", "gradient boosting", "tree ensemble"],
+  keywords: ["xgboost", "gradient boosting", "tree ensemble"],
 };

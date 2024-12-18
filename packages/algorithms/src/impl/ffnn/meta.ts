@@ -13,5 +13,5 @@ export const ffnnMeta: FFNNDefinition["meta"] = {
   description:
     "A feedforward neural network is a type of artificial neural network where the connections between the nodes do not form any cycles.",
   shortDescription: "Basic neural network for pattern recognition.",
-  synonyms: ["neural network", "neural networks", "ffnn"],
+  keywords: ["neural network", "neural networks", "ffnn"],
 };

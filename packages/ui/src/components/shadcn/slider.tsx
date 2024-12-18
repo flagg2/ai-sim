@@ -9,7 +9,7 @@ const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & {
     undraggable?: boolean;
-    label?: string; // Add label prop
+    label?: string;
   }
 >(({ className, undraggable = false, label, ...props }, ref) => {
   const { isTouchDevice } = useIsTouchDevice();
@@ -21,16 +21,13 @@ const Slider = React.forwardRef<
         "relative flex w-full touch-none select-none items-center",
         className,
       )}
-      aria-label={label || "Slider"} // Add descriptive label
+      aria-label={label || "Slider"}
       {...props}
       {...(isTouchDevice && {
         onPointerDown: (event) => event.preventDefault(),
       })}
     >
-      <SliderPrimitive.Track
-        className="slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-secondary"
-        aria-label={`${label || "Slider"} track`}
-      >
+      <SliderPrimitive.Track className="slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb
@@ -46,5 +43,7 @@ const Slider = React.forwardRef<
     </SliderPrimitive.Root>
   );
 });
+
+Slider.displayName = SliderPrimitive.Root.displayName;
 
 export { Slider };
