@@ -39,7 +39,7 @@ export function BaseControls({
         )}
       >
         <div className="grid gap-2">
-          <h3 className="text-xl font-bold">{title}</h3>
+          <h2 className="text-xl font-bold">{title}</h2>
           <Prose>{algorithmDescription}</Prose>
         </div>
 
