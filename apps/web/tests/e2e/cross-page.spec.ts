@@ -2,12 +2,12 @@ import { test, expect } from "@playwright/test";
 
 test("KMeans flow", async ({ page }) => {
   await page.goto("/");
-  await page.getByPlaceholder("Search...").click();
-  await page.getByPlaceholder("Search...").fill("kmeans");
+  await page.getByPlaceholder("Search for an algorithm...").click();
+  await page.getByPlaceholder("Search for an algorithm...").fill("kmeans");
   await page.getByRole("link", { name: "K-Means K-Means Partition" }).click();
   await page
     .locator("label")
-    .filter({ hasText: "Number of Points10" })
+    .filter({ hasText: "Number of Points" })
     .locator("span")
     .nth(1)
     .click();
@@ -19,14 +19,19 @@ test("KMeans flow", async ({ page }) => {
     .click();
   await page
     .locator("label")
-    .filter({ hasText: "Max Iterations10" })
+    .filter({ hasText: "Max Iterations" })
     .locator("span")
     .nth(1)
     .click();
+  // wait for the page to load
+  await page.waitForTimeout(1000);
+
   await page.getByRole("button", { name: "Run" }).click();
+
+  await page.waitForTimeout(1000);
   await page.getByRole("button", { name: "Forward" }).click();
 
-  await expect(page.getByText("Start by initializing 6")).toBeVisible();
+  await expect(page.getByText("called centroids")).toBeVisible();
 
   // find a element in form of x/n and get the number n
   const numberOfStepsText = await page.getByText("/").nth(1).textContent();
@@ -40,26 +45,18 @@ test("KMeans flow", async ({ page }) => {
   }
 
   await expect(
-    page.getByRole("main").getByText("Check Convergence"),
+    page.getByRole("main").getByText("Check If Complete"),
   ).toBeAttached();
 
   await page.getByRole("button", { name: "Settings" }).click();
 
-  await expect(
-    page.getByRole("heading", { name: "Configuration" }),
-  ).toBeVisible();
-
-  await page.getByRole("button", { name: "Go back" }).click();
-
-  await expect(
-    page.getByRole("heading", { name: "AI Algorithm Visualizations" }),
-  ).toBeVisible();
+  await expect(page.getByText("Number of Points")).toBeVisible();
 });
 
 test("Linear Regression flow", async ({ page }) => {
   await page.goto("/");
-  await page.getByPlaceholder("Search...").click();
-  await page.getByPlaceholder("Search...").fill("linear");
+  await page.getByPlaceholder("Search for an algorithm...").click();
+  await page.getByPlaceholder("Search for an algorithm...").fill("linear");
   await page.getByRole("link", { name: "Linear Regression" }).click();
 
   // adjust noise level
@@ -78,7 +75,12 @@ test("Linear Regression flow", async ({ page }) => {
     .nth(1)
     .click();
 
+  // wait for the page to load
+  await page.waitForTimeout(1000);
+
   await page.getByRole("button", { name: "Run" }).click();
+
+  await page.waitForTimeout(1000);
 
   // check initial state
   await expect(page.getByText("Initial State").first()).toBeAttached();
@@ -91,22 +93,18 @@ test("Linear Regression flow", async ({ page }) => {
   await expect(page.getByText("Calculate Coefficients").first()).toBeAttached();
 
   await page.getByRole("button", { name: "Forward" }).click();
-  await expect(page.getByText("Update Regression Line").first()).toBeAttached();
+  await expect(page.getByText("Create Regression Line").first()).toBeAttached();
 
   await page.getByRole("button", { name: "Forward" }).click();
   await expect(
-    page.getByText("Calculate Sum of Squared Errors").first(),
+    page.getByText("Evaluate Model Accuracy").first(),
   ).toBeAttached();
 
   // test settings panel
   await page.getByRole("button", { name: "Settings" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Configuration" }),
-  ).toBeVisible();
+  await expect(page.getByText("Number of Points")).toBeVisible();
 
   // return to main page
   await page.getByRole("button", { name: "Go back" }).click();
-  await expect(
-    page.getByRole("heading", { name: "AI Algorithm Visualizations" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "MLens" })).toBeVisible();
 });

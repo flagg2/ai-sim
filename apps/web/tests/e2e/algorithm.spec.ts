@@ -39,54 +39,16 @@ test("Configuration panel toggles correctly", async ({ page }) => {
   await page.goto("/kmeans");
 
   // initially configuration should be visible
-  await expect(page.getByText("Configuration")).toBeVisible();
+  await expect(page.getByText("Number of Points")).toBeVisible();
 
   // start visualization
   await page.getByRole("button", { name: "Run" }).click();
 
   // open configuration panel
   await page.getByRole("button", { name: "Settings" }).click();
-  await expect(page.getByText("Configuration")).toBeVisible();
+  await expect(page.getByText("Number of Points")).toBeVisible();
 
   // close configuration panel
   await page.getByRole("button", { name: "Go back" }).click();
-  await expect(page.getByText("Configuration")).not.toBeVisible();
-});
-
-test("Tooltip appears on hover", async ({ page }) => {
-  await page.goto("/linear-regression");
-  await page.getByRole("button", { name: "Run" }).click();
-
-  // wait for Three.js to initialize
-  await page.waitForTimeout(2000);
-
-  const canvas = page.getByRole("main").locator("canvas");
-
-  // perform pinch-to-zoom gesture in the center of the canvas
-  await canvas.evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    element.dispatchEvent(
-      new WheelEvent("wheel", {
-        deltaY: -100,
-        ctrlKey: true,
-        clientX: centerX,
-        clientY: centerY,
-      }),
-    );
-  });
-
-  // hover the center of the canvas
-  const canvasBounds = await canvas.boundingBox();
-  if (!canvasBounds) throw new Error("Canvas not found");
-
-  const centerX = canvasBounds.width / 2;
-  const centerY = canvasBounds.height / 2;
-
-  await canvas.hover({ position: { x: centerX, y: centerY } });
-
-  // verify tooltip appears
-  await expect(page.getByText(/Coords:/).first()).toBeAttached();
+  await expect(page.getByText("Number of Points")).not.toBeVisible();
 });

@@ -4,9 +4,7 @@ test("Has title and links", async ({ page }) => {
   await page.goto("/");
 
   // check title
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "AI Algorithm Visualizations",
-  );
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("MLens");
 
   // check if visualizations are present
   await expect(page.getByRole("link")).toHaveCount(6);

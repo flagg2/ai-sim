@@ -7,7 +7,9 @@
     "build": "bun run --cwd apps/web build",
     "dev": "bun run --cwd apps/web dev",
     "lint": "eslint . --max-warnings 0",
-    "ui:add": "bunx --cwd packages/ui shadcn-ui@latest add"
+    "ui:add": "bunx --cwd packages/ui shadcn-ui@latest add",
+    "test:e2e": "bun run --cwd apps/web test:e2e",
+    "test:e2e:ui": "bun run --cwd apps/web test:e2e:ui"
   },
   "dependencies": {},
   "devDependencies": {
