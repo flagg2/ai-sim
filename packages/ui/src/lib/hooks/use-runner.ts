@@ -46,6 +46,14 @@ export function useRunner<TStep extends Step, TConfig extends object>({
       canGoForward: boolean;
       canGoBackward: boolean;
       status: "running";
+    }
+  | {
+      status: "error";
+      error: Error;
+      currentStep: TStep;
+      currentStepIndex: number;
+      sliderStepIndex: number;
+      config: TConfig;
     } {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -53,6 +61,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
   const [isStarted, setIsStarted] = useState(false);
   const [sliderStepIndex, setSliderStepIndex] = useState(0);
   const { isTouchDevice } = useIsTouchDevice();
+  const [error, setError] = useState<Error | null>(null);
 
   const play = useCallback(() => {
     setIsPlaying(true);
@@ -126,7 +135,7 @@ export function useRunner<TStep extends Step, TConfig extends object>({
         setSteps(steps);
       })
       .catch((error) => {
-        console.error(error);
+        setError(error);
       })
       .finally(() => {
         setIsLoading(false);
@@ -139,6 +148,17 @@ export function useRunner<TStep extends Step, TConfig extends object>({
   }, [setIsStarted, setSteps, initialStep]);
 
   const canGoForward = currentStepIndex < algorithmState.steps.length - 1;
+
+  if (error) {
+    return {
+      status: "error",
+      error,
+      currentStep: algorithmState.steps[0]!,
+      currentStepIndex: 0,
+      sliderStepIndex: 0,
+      config,
+    };
+  }
 
   if (!isStarted) {
     return {

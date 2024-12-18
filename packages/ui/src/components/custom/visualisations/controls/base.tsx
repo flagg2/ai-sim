@@ -6,6 +6,7 @@ import { IoPlay } from "react-icons/io5";
 import { useShowHints } from "../../../../lib/hooks/use-show-hints";
 import { cn } from "../../../../lib/utils";
 import { Prose } from "../../general";
+import { ErrorMessage } from "../../general/error-message";
 
 export function BaseControls({
   title,
@@ -13,7 +14,6 @@ export function BaseControls({
   configComponent,
   algorithmDescription,
   showConfig = true,
-  setIsDrawerOpen,
 }: {
   title: string;
   simulation: UseSimulationReturn;
@@ -22,9 +22,13 @@ export function BaseControls({
   showConfig?: boolean;
   setIsDrawerOpen?: (open: boolean) => void;
 }) {
-  const { status, sliderStepIndex } = runner;
   const { shouldShowHints } = useShowHints();
 
+  if (runner.status === "error") {
+    return <ErrorMessage />;
+  }
+
+  const { status } = runner;
   if (status === "configuring") {
     const { start } = runner;
     return (
@@ -66,8 +70,13 @@ export function BaseControls({
     );
   }
 
-  const { currentStep, currentStepIndex, totalStepCount, gotoWithSlider } =
-    runner;
+  const {
+    currentStep,
+    currentStepIndex,
+    totalStepCount,
+    gotoWithSlider,
+    sliderStepIndex,
+  } = runner;
 
   return (
     <div

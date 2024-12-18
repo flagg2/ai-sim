@@ -10,12 +10,12 @@ export default function Scene2D() {
     <>
       <OrthographicCamera
         makeDefault
-        position={[50, 50, 200]}
+        position={[100, 100, 200]}
         zoom={screenSize.width > breakpoints.mobile ? 3 : 2}
         near={0.1}
         far={2000}
         rotation={[0, 0, 0]}
-        lookAt={() => new Vector3(50, 50, 0)}
+        lookAt={() => new Vector3(100, 100, 0)}
       />
       <MapControls
         enableRotate={false}

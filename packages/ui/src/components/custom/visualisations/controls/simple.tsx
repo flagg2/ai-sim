@@ -5,6 +5,7 @@ import { ControlsButtons } from "./buttons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSwipeGesture } from "../../../../lib/hooks/use-swipe-gesture";
 import { useShowHints } from "../../../../lib/hooks/use-show-hints";
+import { ErrorMessage } from "../../general/error-message";
 
 export function SimpleControls({
   simulation: { runner },
@@ -26,6 +27,10 @@ export function SimpleControls({
     },
   });
 
+  if (runner.status === "error") {
+    return <ErrorMessage />;
+  }
+
   const { sliderStepIndex } = runner;
 
   if (runner.status === "configuring") {
@@ -46,9 +51,9 @@ export function SimpleControls({
         >
           <DrawerIndicator />
           <DrawerTrigger asChild>
-            <div className="flex flex-col items-center w-full justify-center font-bold py-4">
+            <button className="flex flex-col items-center w-full justify-center font-bold py-4">
               <div className="flex items-center text-lg">SWIPE UP TO START</div>
-            </div>
+            </button>
           </DrawerTrigger>
         </motion.div>
       </div>

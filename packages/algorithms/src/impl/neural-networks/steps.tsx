@@ -92,9 +92,9 @@ export const getNNSteps: (
           <div>
             <p>
               We apply the sigmoid activation function to transform the weighted
-              sum into an activation value:
+              sum into an activation value:{" "}
+              <Expression>{"\\sigma(x) = \\frac{1}{1 + e^{-x}}"}</Expression>
             </p>
-            <Expression>{"\\sigma(x) = \\frac{1}{1 + e^{-x}}"}</Expression>
             <Note>
               The sigmoid function squashes any input into a value between 0 and
               1, creating a non-linear activation pattern.

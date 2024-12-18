@@ -24,13 +24,13 @@ export default function Expression({
 
   const expression = parseChildren(children);
 
+  if (block) {
+    return <BlockMath>{expression}</BlockMath>;
+  }
+
   return (
     <span className={`text-secondary-foreground ${className}`}>
-      {block ? (
-        <BlockMath>{expression}</BlockMath>
-      ) : (
-        <InlineMath>{expression}</InlineMath>
-      )}
+      <InlineMath>{expression}</InlineMath>
     </span>
   );
 }

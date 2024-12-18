@@ -4,7 +4,7 @@ MLens is an interactive web application for visualizing machine learning algorit
 
 ## Live Demo
 
-Visit [https://ai-sim.wittlinger.dev](https://ai-sim.wittlinger.dev) to see the application in action.
+Visit [https://mlens.wittlinger.dev](https://mlens.wittlinger.dev) to see the application in action.
 
 ## Features
 
@@ -38,6 +38,8 @@ Visit [https://ai-sim.wittlinger.dev](https://ai-sim.wittlinger.dev) to see the 
 - [Docker](https://www.docker.com/) (v20.10.0 or higher)
 
 ### Installation and Running
+
+Make sure that ports 3000 and 8000 are available on your machine.
 
 1. Navigate to the root of the repository
 

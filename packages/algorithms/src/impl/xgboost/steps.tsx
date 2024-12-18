@@ -61,7 +61,7 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
           For each point, we calculate the gradient of the loss function
           (pseudo-residuals). For binary classification with logistic loss:
         </p>
-        <Expression>
+        <Expression block>
           {"gradient = y - \\frac{1}{1 + e^{-\\text{prediction}}}"}
         </Expression>
         <Note>
@@ -112,10 +112,7 @@ export const getXGBoostSteps: XGBoostDefinition["getSteps"] = async (
           We update our predictions using the new tree's output scaled by the
           learning rate ({config.learningRate}):
         </p>
-        <Expression>
-          new\_prediction = current\_prediction + learning\_rate ×
-          tree\_prediction
-        </Expression>
+        <Expression block>new\_pred = curr\_pred + lr * tree\_pred</Expression>
         <Note>
           The decision boundary shows regions where predictions are positive
           (one class) vs negative (other class). The learning rate of{" "}
