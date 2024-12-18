@@ -50,7 +50,6 @@ export function useSwipeGesture({
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isTouchDevice) return;
-    //  cleanupListeners();
     startY.current = e.clientY;
     isDragging.current = true;
 
