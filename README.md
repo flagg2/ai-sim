@@ -69,7 +69,7 @@ packages/
 The application is designed to be extensible. To add a new algorithm with a certain `{slug}`
 
 1. Create a new file for the algorithm in `packages/algorithms/impl/{slug}/{slug}`
-2. Implement the [`AlgorithmDefinition` type](packages/algorithms/src/lib/types.ts) interface
+2. Implement the [`AlgorithmDefinition`](packages/algorithms/src/lib/types.ts) interface
 3. Add algorithm's metadata to the registry in `packages/algorithms/impl/index.ts`
 
 See existing algorithm implementations for examples.
