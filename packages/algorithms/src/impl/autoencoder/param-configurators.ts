@@ -6,10 +6,10 @@ export const autoEncoderParamConfigurators: AutoEncoderDefinition["paramConfigur
     learningRate: new SliderParamConfigurator({
       label: "Learning rate",
       description:
-        "The learning rate for the network. This number is usually relatively low, but you might want to bump it up for a more visible change during backpropagation",
+        "The learning rate for the network. This number is usually relatively low, but is by default set very high for a more visible change during backpropagation",
       min: 0,
-      max: 10,
+      max: 20,
       step: 0.1,
-      defaultValue: 0.2,
+      defaultValue: 10,
     }),
   };
